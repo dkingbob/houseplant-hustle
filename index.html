@@ -522,6 +522,39 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 }
 .roi-m-note{font-family:var(--tf);font-size:.7rem;opacity:.22;margin-top:.45rem}
 
+/* ─── PRICING ────────────────────────────── */
+.pricing-h{font-size:clamp(3rem,7vw,7vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:1.5rem}
+.pricing-h .lw{display:block;overflow:hidden}
+.pricing-h .lw span{display:block;transform:translateY(105%)}
+.pricing-sub{opacity:.35;max-width:52ch;margin-bottom:5rem;font-size:clamp(.82rem,1.05vw,1.05vw)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;align-items:start}
+.price-card{
+  padding:2.8rem 2.4rem;background:var(--mid);
+  position:relative;border-radius:4px;
+  display:flex;flex-direction:column;gap:1.6rem;
+  opacity:0;
+}
+.price-card-featured{
+  background:var(--lift);
+  outline:1px solid rgba(224,120,48,.25);
+  margin-top:-1.5rem;padding-top:4.3rem;
+}
+.price-badge{
+  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  background:var(--orange);color:var(--black);
+  font-family:var(--mf);font-size:.45rem;letter-spacing:.15em;text-transform:uppercase;
+  padding:.35em 1em;white-space:nowrap;
+}
+.price-tier{font-family:var(--mf);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);opacity:.8}
+.price-amount{font-family:var(--df);font-size:clamp(2.5rem,4vw,4vw);font-weight:800;line-height:1}
+.price-per{font-size:.9rem;font-weight:300;opacity:.4}
+.price-desc{font-family:var(--tf);font-size:.74rem;opacity:.38;line-height:1.6}
+.price-feats{list-style:none;display:flex;flex-direction:column;gap:.6rem;flex:1}
+.price-feats li{font-family:var(--mf);font-size:.56rem;letter-spacing:.06em;opacity:.55}
+.price-feats li:first-child,.price-feats li:nth-child(2),.price-feats li:nth-child(3){opacity:.75}
+.price-no{opacity:.2!important;text-decoration:line-through}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr}.price-card-featured{margin-top:0;padding-top:4.3rem}}
+
 /* ─── COMPARISON TABLE ───────────────────── */
 .comp-h{font-size:clamp(2.8rem,6vw,6vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:5rem}
 .comp-h .lw{display:block;overflow:hidden}
@@ -1480,6 +1513,64 @@ footer{
   </div>
 </section>
 
+<!-- ══ PRICING ══ -->
+<section id="pricing-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:5vh"></div>
+    <div class="eyb rv">Investment Architecture</div>
+    <h2 class="pricing-h">
+      <span class="lw"><span>Choose Your</span></span>
+      <span class="lw"><span>Growth Tier.</span></span>
+    </h2>
+    <p class="pricing-sub rv">All plans include Gerald's personal endorsement. Gerald is a fern. He has seen your financials. He is not impressed. Yet.</p>
+    <div class="pricing-grid rv">
+      <div class="price-card">
+        <div class="price-tier">Seed</div>
+        <div class="price-amount">$0<span class="price-per">/mo</span></div>
+        <div class="price-desc">For plants just beginning their entrepreneurial journey. Limited to one (1) ficus.</div>
+        <ul class="price-feats">
+          <li>✓ Basic leaf tracking</li>
+          <li>✓ Watering reminders</li>
+          <li>✓ 1 plant profile</li>
+          <li>✓ Gerald's acknowledgement</li>
+          <li class="price-no">✗ Revenue projections</li>
+          <li class="price-no">✗ Board seat (plant)</li>
+        </ul>
+        <button class="btn" style="width:100%;text-align:center">Start Growing</button>
+      </div>
+      <div class="price-card price-card-featured">
+        <div class="price-badge">Most Popular With Orchids</div>
+        <div class="price-tier">Series A</div>
+        <div class="price-amount">$847<span class="price-per">/mo</span></div>
+        <div class="price-desc">For scaling operations with aggressive photosynthesis targets and mid-size foliage.</div>
+        <ul class="price-feats">
+          <li>✓ Everything in Seed</li>
+          <li>✓ ChloroML™ projections</li>
+          <li>✓ Unlimited plant profiles</li>
+          <li>✓ Q4 Droop Detection™</li>
+          <li>✓ Gerald on speed-dial</li>
+          <li>✓ Plant board seat</li>
+        </ul>
+        <button class="btn" style="width:100%;text-align:center">Scale Your Flora</button>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-amount"><span style="font-size:1.6rem;opacity:.6">Talk to</span><br>Gerald</div>
+        <div class="price-desc">For Fortune 500 companies ready to let their monstera run procurement. Custom SLA. Custom fronds.</div>
+        <ul class="price-feats">
+          <li>✓ Everything in Series A</li>
+          <li>✓ Dedicated plant liaison</li>
+          <li>✓ Custom species training</li>
+          <li>✓ IPO plant-readiness audit</li>
+          <li>✓ Brenda (legal cactus) included</li>
+          <li>✓ Gerald attends your offsite</li>
+        </ul>
+        <button class="btn ol" style="width:100%;text-align:center">Contact a Frond</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ══ COMPARISON TABLE ══ -->
 <section id="comp-sec" class="sec" data-scroll-section>
   <div class="inn">
@@ -1901,6 +1992,16 @@ footer{
   document.querySelectorAll('a,button,input,label,.suc-chip,.bcard,.feat,.stat-item').forEach(el=>{
     el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
     el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+  });
+  // Cursor trail particles
+  let lastTrail=0;
+  addEventListener('mousemove',e=>{
+    const now=Date.now();if(now-lastTrail<55)return;lastTrail=now;
+    const p=document.createElement('span');
+    p.style.cssText=`position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:3px;height:3px;border-radius:50%;background:var(--orange);pointer-events:none;z-index:9990;transform:translate(-50%,-50%);opacity:.55;transition:opacity .6s,transform .6s`;
+    document.body.appendChild(p);
+    requestAnimationFrame(()=>{p.style.opacity='0';p.style.transform='translate(-50%,-50%) scale(0)'});
+    setTimeout(()=>p.remove(),650);
   });
 })();
 
@@ -2786,6 +2887,16 @@ function startSite(){
     onEnter:()=>gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
   });
 
+  // ── Pricing section reveals ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#pricing-sec',start:'top 75%',once:true,
+    onEnter:()=>{
+      gsap.to('.pricing-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
+      gsap.fromTo('.price-card',{opacity:0,y:30},{opacity:1,y:0,duration:.75,stagger:.12,ease:'power2.out',delay:.2});
+    }
+  });
+
   // ── Comparison table reveals ──
   ScrollTrigger.create({
     scroller:'[data-scroll-container]',
@@ -3126,9 +3237,19 @@ document.getElementById('suc-btn').addEventListener('click',()=>document.getElem
 (function(){
   const seq=[38,38,40,40,37,39,37,39,66,65];
   let i=0;
+  let hintShown=false;
   addEventListener('keydown',e=>{
     if(e.keyCode===seq[i])i++;else i=e.keyCode===seq[0]?1:0;
-    if(i===seq.length){i=0;document.getElementById('konami-overlay').classList.add('on')}
+    if(i===seq.length){i=0;document.getElementById('konami-overlay').classList.add('on');return}
+    // Show hint after first correct key press
+    if(i===1&&!hintShown){
+      hintShown=true;
+      const hint=document.createElement('div');
+      hint.style.cssText='position:fixed;bottom:4rem;left:50%;transform:translateX(-50%);z-index:2000;font-family:var(--mf);font-size:.5rem;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);opacity:.7;background:rgba(5,12,6,.8);padding:.5em 1.2em;border-radius:100px;pointer-events:none;transition:opacity .5s';
+      hint.textContent='↑↑↓↓←→←→BA — keep going...';
+      document.body.appendChild(hint);
+      setTimeout(()=>{hint.style.opacity='0';setTimeout(()=>hint.remove(),550)},2200);
+    }
   });
 })();
 
