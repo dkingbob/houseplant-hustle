@@ -574,47 +574,125 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .bcard-read{font-family:var(--mf);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;opacity:.18}
 .bcard-date{font-family:var(--mf);font-size:.56rem;opacity:.12}
 
-/* ─── TESTIMONIALS ────────────────────────── */
-#tes-sec{
-  background:var(--deep);
-  padding:16vh var(--px);overflow:hidden;
-}
-.tes-tag{
-  font-family:var(--mf);font-size:.62rem;letter-spacing:.3em;
-  text-transform:uppercase;color:var(--orange);margin-bottom:1.8rem;opacity:0;
-}
-.tes-h{
-  font-size:clamp(2.5rem,5.5vw,5.5vw);
-  line-height:.84;font-weight:800;overflow:hidden;
-}
+/* ─── TESTIMONIALS — CAROUSEL ────────────── */
+#tes-sec{background:var(--deep);padding:16vh 0;overflow:hidden}
+.tes-inner{padding:0 var(--px)}
+.tes-tag{font-family:var(--mf);font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--orange);margin-bottom:1.8rem;opacity:0}
+.tes-h{font-size:clamp(2.5rem,5.5vw,5.5vw);line-height:.84;font-weight:800;overflow:hidden;margin-bottom:5rem}
 .tes-h .lw{display:block;overflow:hidden}
 .tes-h .lw span{display:block;transform:translateY(105%)}
-.tes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:6rem}
-.tes-card{
-  padding:3rem 2.5rem;
-  display:flex;flex-direction:column;gap:2rem;
-  opacity:0;transform:translateY(30px);
-  background:var(--mid);position:relative;overflow:hidden;
+.tes-carousel{position:relative;overflow:hidden}
+.tes-track{display:flex;transition:transform .68s cubic-bezier(.16,1,.3,1);will-change:transform}
+.tes-slide{
+  min-width:100%;padding:0 var(--px) 3rem;
+  display:grid;grid-template-columns:1fr auto;
+  gap:6vw;align-items:end;
 }
-.tes-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(88,240,102,.28),transparent);
-  opacity:0;transition:opacity .4s;
+.tes-quote-mark{
+  font-family:var(--df);font-size:clamp(5rem,12vw,12vw);
+  color:var(--orange);line-height:1;opacity:.16;
+  margin-bottom:-.35em;display:block;font-weight:800;
 }
-.tes-card:hover::before{opacity:1}
-.tes-q{
-  font-family:var(--tf);font-size:clamp(.88rem,1.1vw,1.1vw);
-  line-height:1.78;opacity:.52;font-style:italic;
+.tes-q2{
+  font-family:var(--df);font-size:clamp(1.15rem,2.2vw,2.2vw);
+  line-height:1.22;font-weight:300;font-style:italic;opacity:.68;
+  max-width:70ch;
 }
-.tes-who{display:flex;align-items:center;gap:1rem}
-.tes-av{
-  width:38px;height:38px;
-  background:rgba(88,240,102,.07);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;flex-shrink:0;
+.tes-who2{
+  text-align:right;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:flex-end;gap:.8rem;min-width:max-content;
 }
-.tes-nm{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
-.tes-role{font-family:var(--mf);font-size:.53rem;letter-spacing:.1em;text-transform:uppercase;opacity:.22}
+.tes-av2{font-size:2.2rem}
+.tes-nm2{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.tes-role2{font-family:var(--mf);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;opacity:.2}
+.tes-stars{color:var(--orange);font-size:.72rem;letter-spacing:.14em;margin-top:.28rem}
+.tes-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:2.5rem var(--px) 0;
+}
+.tes-dots{display:flex;gap:.55rem;align-items:center}
+.tes-dot{
+  width:22px;height:2px;background:rgba(240,237,230,.14);
+  border:none;padding:0;cursor:pointer;transition:background .3s,width .3s;
+}
+.tes-dot.active{background:var(--orange);width:38px}
+.tes-arrows{display:flex;gap:.7rem}
+.tes-arr{
+  width:40px;height:40px;border:1px solid rgba(240,237,230,.1);
+  background:transparent;color:rgba(240,237,230,.32);
+  border-radius:50%;cursor:pointer;font-size:.95rem;
+  transition:all .22s;display:flex;align-items:center;justify-content:center;
+}
+.tes-arr:hover{border-color:var(--orange);color:var(--orange)}
+
+/* ─── AUDIO TOGGLE ──────────────────────────── */
+#audio-btn{
+  position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  background:rgba(240,237,230,.04);border:1px solid rgba(240,237,230,.08);
+  color:rgba(240,237,230,.28);font-family:var(--mf);font-size:.52rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  padding:.38em 1.2em;border-radius:100px;cursor:pointer;
+  z-index:449;transition:all .25s;
+  display:flex;align-items:center;gap:.5rem;
+}
+#audio-btn:hover{border-color:rgba(240,237,230,.22);color:rgba(240,237,230,.55)}
+#audio-btn.on{border-color:rgba(88,240,102,.35);color:rgba(88,240,102,.65)}
+
+/* ─── LEGAL MODAL ───────────────────────────── */
+#legal-overlay{
+  position:fixed;inset:0;z-index:1200;
+  background:rgba(5,12,6,.92);backdrop-filter:blur(14px);
+  display:none;align-items:center;justify-content:center;padding:var(--px);
+}
+#legal-overlay.on{display:flex}
+#legal-box{
+  background:var(--mid);max-width:660px;width:100%;
+  max-height:82vh;border-radius:14px;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 60px 120px rgba(0,0,0,.7);
+}
+#legal-hd{
+  padding:1.6rem 2rem;border-bottom:1px solid rgba(240,237,230,.05);
+  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+#legal-hd h3{font-size:.95rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+#legal-hd-sub{font-family:var(--mf);font-size:.5rem;letter-spacing:.1em;color:var(--orange);opacity:.55}
+#legal-body{overflow-y:auto;padding:1.8rem 2rem;flex:1}
+#legal-body h4{
+  font-family:var(--mf);font-size:.58rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--orange);margin:1.8rem 0 .55rem;opacity:.75;
+}
+#legal-body h4:first-child{margin-top:0}
+#legal-body p{font-family:var(--tf);font-size:.76rem;opacity:.36;line-height:1.74;margin-bottom:.8rem}
+#legal-ft{
+  padding:1.3rem 2rem;border-top:1px solid rgba(240,237,230,.05);
+  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+#legal-fine{font-family:var(--mf);font-size:.48rem;opacity:.1;letter-spacing:.04em;max-width:30ch}
+#legal-accept{font-size:.65rem;padding:.6em 1.8em}
+#legal-close{
+  background:none;border:none;color:rgba(240,237,230,.28);
+  font-size:1.2rem;cursor:pointer;transition:color .2s;padding:0;line-height:1;
+}
+#legal-close:hover{color:var(--white)}
+
+/* ─── KONAMI EASTER EGG ─────────────────────── */
+#konami-overlay{
+  position:fixed;inset:0;z-index:3000;
+  background:rgba(5,12,6,.97);
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;padding:var(--px);
+}
+#konami-overlay.on{display:flex;animation:kfIn .3s ease-out forwards}
+@keyframes kfIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+#konami-emoji{font-size:clamp(3rem,10vw,10vw);margin-bottom:1.8rem;display:block;animation:kSpin 4s linear infinite}
+@keyframes kSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+#konami-h{
+  font-size:clamp(1.6rem,4.5vw,4.5vw);font-weight:800;
+  text-transform:uppercase;letter-spacing:-.02em;
+  color:var(--orange);margin-bottom:1rem;
+}
+#konami-p{font-family:var(--tf);opacity:.4;max-width:40ch;line-height:1.68;margin-bottom:2.5rem}
 
 /* ─── NEWSLETTER ──────────────────────────── */
 #nl-sec{
@@ -1343,17 +1421,69 @@ footer{
 
 <!-- ══ TESTIMONIALS ══ -->
 <section id="tes-sec" class="sec" data-scroll-section>
-  <div class="inn">
+  <div class="tes-inner">
     <div class="dash" style="margin-bottom:4rem"></div>
     <div class="tes-tag">Social Proof</div>
     <h2 class="tes-h">
       <span class="lw"><span>People Who Believe</span></span>
       <span class="lw"><span>In The Plant.</span></span>
     </h2>
-    <div class="tes-grid">
-      <div class="tes-card"><p class="tes-q">"After implementing Houseplant Hustle, our EBITDA grew 340%. Our monstera also received a promotion. He is Head of Growth. He has not attended a single meeting. Performance is up."</p><div class="tes-who"><div class="tes-av">🌱</div><div><div class="tes-nm">Chad Synergize</div><div class="tes-role">Chief Disruption Officer, Synapse LLC</div></div></div></div>
-      <div class="tes-card"><p class="tes-q">"I replaced my analytics team with a cactus. Projections are statistically identical. Monthly costs: $4 in fertilizer. The team took it well. The cactus did not care."</p><div class="tes-who"><div class="tes-av">🌵</div><div><div class="tes-nm">Brittney Leverage</div><div class="tes-role">Founder &amp; CEO, Pivot Collective</div></div></div></div>
-      <div class="tes-card"><p class="tes-q">"My fern predicted the 2024 correction with 98% accuracy. We closed our Series B. The fern holds 15% equity. It attended the term sheet signing via FaceTime. Nobody laughed."</p><div class="tes-who"><div class="tes-av">🌾</div><div><div class="tes-nm">Blake Momentum</div><div class="tes-role">GP, Leaf Capital Partners</div></div></div></div>
+  </div>
+  <div class="tes-carousel">
+    <div class="tes-track" id="tes-track">
+      <div class="tes-slide">
+        <div>
+          <span class="tes-quote-mark">"</span>
+          <p class="tes-q2">After implementing Houseplant Hustle, our EBITDA grew 340%. Our monstera also received a promotion. He is Head of Growth. He has not attended a single meeting. Performance is up.</p>
+        </div>
+        <div class="tes-who2">
+          <div class="tes-av2">🌱</div>
+          <div>
+            <div class="tes-nm2">Chad Synergize</div>
+            <div class="tes-role2">Chief Disruption Officer, Synapse LLC</div>
+            <div class="tes-stars">★ ★ ★ ★ ★</div>
+          </div>
+        </div>
+      </div>
+      <div class="tes-slide">
+        <div>
+          <span class="tes-quote-mark">"</span>
+          <p class="tes-q2">I replaced my analytics team with a cactus. Projections are statistically identical. Monthly costs: $4 in fertilizer. The team took it well. The cactus did not care.</p>
+        </div>
+        <div class="tes-who2">
+          <div class="tes-av2">🌵</div>
+          <div>
+            <div class="tes-nm2">Brittney Leverage</div>
+            <div class="tes-role2">Founder &amp; CEO, Pivot Collective</div>
+            <div class="tes-stars">★ ★ ★ ★ ★</div>
+          </div>
+        </div>
+      </div>
+      <div class="tes-slide">
+        <div>
+          <span class="tes-quote-mark">"</span>
+          <p class="tes-q2">My fern predicted the 2024 correction with 98% accuracy. We closed our Series B. The fern holds 15% equity. It attended the term sheet signing via FaceTime. Nobody laughed.</p>
+        </div>
+        <div class="tes-who2">
+          <div class="tes-av2">🌾</div>
+          <div>
+            <div class="tes-nm2">Blake Momentum</div>
+            <div class="tes-role2">GP, Leaf Capital Partners</div>
+            <div class="tes-stars">★ ★ ★ ★ ★</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tes-nav">
+    <div class="tes-dots">
+      <button class="tes-dot active" data-i="0"></button>
+      <button class="tes-dot" data-i="1"></button>
+      <button class="tes-dot" data-i="2"></button>
+    </div>
+    <div class="tes-arrows">
+      <button class="tes-arr" id="tes-prev">←</button>
+      <button class="tes-arr" id="tes-next">→</button>
     </div>
   </div>
 </section>
@@ -1375,7 +1505,7 @@ footer{
   <div class="f-brand">HOUSEPLANT<em>HUSTLE</em></div>
   <ul class="f-links">
     <li><a href="#">Privacy</a></li>
-    <li><a href="#">Terms of Foliage</a></li>
+    <li><a href="#" onclick="event.preventDefault();document.getElementById('legal-overlay').classList.add('on')">Terms of Foliage</a></li>
     <li><a href="#">Ethics</a></li>
     <li><a href="#">IPO (Initial Plant Offering)</a></li>
   </ul>
@@ -1424,6 +1554,52 @@ footer{
     <button class="mbtn" data-mode="xray">X-Ray</button>
     <button class="mbtn" data-mode="wireframe">Wire</button>
   </div>
+</div>
+
+<!-- AUDIO TOGGLE -->
+<button id="audio-btn">
+  <span id="audio-ic">♩</span><span id="audio-lbl">Ambient</span>
+</button>
+
+<!-- LEGAL MODAL -->
+<div id="legal-overlay">
+  <div id="legal-box">
+    <div id="legal-hd">
+      <h3>Terms of Foliage™</h3>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span id="legal-hd-sub">v3.1.4 — reviewed by Gerald (the monstera)</span>
+        <button id="legal-close" onclick="document.getElementById('legal-overlay').classList.remove('on')">✕</button>
+      </div>
+    </div>
+    <div id="legal-body">
+      <h4>1. Plant Personhood</h4>
+      <p>By accessing this platform you irrevocably acknowledge that Gerald, the monstera depicted herein, is a legal person under the jurisdiction of Houseplant Hustle Inc. Gerald may exercise voting rights on company decisions at his sole discretion. Gerald's votes count triple on all matters involving sunlight placement.</p>
+      <h4>2. Fiduciary Duty of Your Houseplant</h4>
+      <p>Your houseplant hereby assumes fiduciary responsibility for any financial decisions made within three (3) hours of a photosynthesis event. Houseplant Hustle Inc. accepts no liability for trades executed while your plant was in direct sunlight. The plant was simply doing its job.</p>
+      <h4>3. Chlorophyll Non-Disclosure Agreement</h4>
+      <p>All chlorophyll produced during use of this platform is subject to a 5-year NDA. You may not discuss, reference, or commercialise said chlorophyll without prior written consent from the Legal Frond Team (LFT). The LFT is a cactus named Brenda. Brenda does not respond to emails.</p>
+      <h4>4. Root Cause Liability Waiver</h4>
+      <p>Neither Houseplant Hustle Inc. nor its affiliate succulents accept liability for any Root Cause Analysis findings determined to be inaccurate due to overwatering, underwatering, or exposure to motivational podcasts.</p>
+      <h4>5. The Sentient Leaf Clause</h4>
+      <p>In the event that a leaf becomes sentient during use of this platform, all intellectual property generated by said leaf belongs exclusively to the leaf. The leaf may engage legal counsel. You may not interfere with leaf counsel. This clause has been invoked once (2024 Q3, Oakland, CA).</p>
+      <h4>6. Photosynthesis as Financial Advice</h4>
+      <p>Nothing on this platform constitutes financial advice. Everything on this platform is plant advice. The distinction is meaningful and legally significant in at least three jurisdictions. Your solicitor will understand once they see the monstera's quarterly projections.</p>
+      <h4>7. The Gerald Indemnity</h4>
+      <p>Under no circumstances shall Gerald be held liable for market downturns, geopolitical events, or the general vibes of Q4. Gerald has been consulted. Gerald has no comment. Gerald is currently in the east-facing window and appears content. This is not an endorsement of market conditions.</p>
+    </div>
+    <div id="legal-ft">
+      <span id="legal-fine">Binding in 0 jurisdictions. Gerald reviewed it. Gerald approved.</span>
+      <button class="btn" id="legal-accept" onclick="document.getElementById('legal-overlay').classList.remove('on')">I Understand (Reluctantly)</button>
+    </div>
+  </div>
+</div>
+
+<!-- KONAMI EASTER EGG -->
+<div id="konami-overlay">
+  <span id="konami-emoji">🪴</span>
+  <h2 id="konami-h">Secret Growth Protocol<br>Activated</h2>
+  <p id="konami-p">Congratulations. Your plant is now technically a unicorn startup. Valuation: $1.2B. The ficus led the Series A. The cactus wants carry.</p>
+  <button class="btn" onclick="document.getElementById('konami-overlay').classList.remove('on')">Close (The Orchid Is Watching)</button>
 </div>
 
 <!-- CHATBOT -->
@@ -2353,14 +2529,13 @@ function startSite(){
     onEnter:()=>gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
   });
 
-  // ── Testimonial reveals ──
+  // ── Testimonial carousel reveal ──
   ScrollTrigger.create({
     scroller:'[data-scroll-container]',
-    trigger:'#tes-sec',start:'top 75%',once:true,
+    trigger:'#tes-sec',start:'top 78%',once:true,
     onEnter:()=>{
       gsap.to('.tes-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
       gsap.to('.tes-tag',{opacity:1,duration:.8,ease:'power2.out'});
-      gsap.to('.tes-card',{opacity:1,y:0,duration:.8,ease:'power3.out',stagger:.12,delay:.2});
     }
   });
 
@@ -2556,6 +2731,72 @@ function sR(t){const r=SR[t]||SR._;addM(r[Math.random()*r.length|0],false)}
 function sSend(){const i=document.getElementById('suc-txt'),v=i.value.trim();if(!v)return;addM(v,true);i.value='';setTimeout(()=>addM(SR._[Math.random()*SR._.length|0],false),700)}
 function addM(txt,u){const d=document.getElementById('suc-msgs'),m=document.createElement('div');m.className='suc-msg'+(u?' u':'');m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight}
 document.getElementById('suc-btn').addEventListener('click',()=>document.getElementById('suc-box').classList.toggle('on'));
+
+// ══════════════════════════════════════════════════
+// TESTIMONIALS CAROUSEL
+// ══════════════════════════════════════════════════
+(function(){
+  const track=document.getElementById('tes-track');
+  const dots=document.querySelectorAll('.tes-dot');
+  if(!track||!dots.length)return;
+  let cur=0,n=track.children.length,auto;
+  function goTo(i){
+    cur=(i+n)%n;
+    track.style.transform=`translateX(-${cur*100}%)`;
+    dots.forEach((d,j)=>d.classList.toggle('active',j===cur));
+  }
+  const next=()=>goTo(cur+1),prev=()=>goTo(cur-1);
+  function startAuto(){auto=setInterval(next,5200)}
+  function stopAuto(){clearInterval(auto)}
+  dots.forEach(d=>d.addEventListener('click',()=>{stopAuto();goTo(+d.dataset.i);startAuto()}));
+  document.getElementById('tes-next')?.addEventListener('click',()=>{stopAuto();next();startAuto()});
+  document.getElementById('tes-prev')?.addEventListener('click',()=>{stopAuto();prev();startAuto()});
+  track.parentElement.addEventListener('mouseenter',stopAuto);
+  track.parentElement.addEventListener('mouseleave',startAuto);
+  startAuto();
+})();
+
+// ══════════════════════════════════════════════════
+// AMBIENT AUDIO
+// ══════════════════════════════════════════════════
+(function(){
+  const btn=document.getElementById('audio-btn');
+  if(!btn)return;
+  let ctx=null,master=null,on=false;
+  function init(){
+    ctx=new(window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
+    [[55,'sine',.06],[110,'sine',.03],[165,'triangle',.016],[82.5,'sine',.022]].forEach(([f,t,g])=>{
+      const o=ctx.createOscillator(),gn=ctx.createGain();
+      o.type=t;o.frequency.value=f;gn.gain.value=g;
+      o.connect(gn);gn.connect(master);o.start();
+    });
+    const lfo=ctx.createOscillator(),lG=ctx.createGain();
+    lfo.frequency.value=.055;lG.gain.value=.02;
+    lfo.connect(lG);lG.connect(master.gain);lfo.start();
+  }
+  btn.addEventListener('click',()=>{
+    if(!ctx)init();
+    on=!on;
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.linearRampToValueAtTime(on?1:0,ctx.currentTime+1.4);
+    btn.classList.toggle('on',on);
+    document.getElementById('audio-ic').textContent=on?'♪':'♩';
+    document.getElementById('audio-lbl').textContent=on?'Sound On':'Ambient';
+  });
+})();
+
+// ══════════════════════════════════════════════════
+// KONAMI CODE: ↑↑↓↓←→←→BA
+// ══════════════════════════════════════════════════
+(function(){
+  const seq=[38,38,40,40,37,39,37,39,66,65];
+  let i=0;
+  addEventListener('keydown',e=>{
+    if(e.keyCode===seq[i])i++;else i=e.keyCode===seq[0]?1:0;
+    if(i===seq.length){i=0;document.getElementById('konami-overlay').classList.add('on')}
+  });
+})();
 
 // ══════════════════════════════════════════════════
 // WAITLIST BUTTON
