@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>HOUSEPLANT HUSTLE — The World's Most Unnecessarily Sophisticated Plant Intelligence Platform</title>
+<meta name="description" content="Made for leaves. Built for business. The world's first AI that reads your plant's mind and turns chlorophyll into quarterly projections.">
+<meta name="theme-color" content="#0d1f0f">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.css">
+
+<style>
+:root{
+  --black:#070e08;
+  --deep:#050c06;
+  --mid:#0f1a10;
+  --lift:#142418;
+  --surface:#0c1a0d;
+  --white:#f0ede6;
+  --orange:#e07830;
+  --green:#58f066;
+  --muted:rgba(240,237,230,.42);
+  --px:3.5vw;
+  --df:'Syne',sans-serif;
+  --tf:'DM Sans',sans-serif;
+  --mf:'DM Mono',monospace;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{
+  background:var(--black);
+  color:var(--white);
+  font-family:var(--df);
+  overflow:hidden;
+}
+
+body{
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse 130% 70% at 50% -10%, rgba(24,55,26,.75) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 110%, rgba(12,30,14,.6) 0%, transparent 50%),
+    var(--black);
+}
+
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:radial-gradient(ellipse 85% 85% at 50% 50%, transparent 35%, rgba(5,12,6,.9) 100%);
+  pointer-events:none;z-index:2;
+}
+
+::selection{background:var(--orange);color:var(--black)}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4,h5{font-family:var(--df);margin:0;padding:0;font-weight:800}
+p{font-family:var(--tf);font-weight:300;line-height:1.65}
+
+/* ─── GRAIN ─────────────────────────────── */
+#grain{
+  position:fixed;inset:0;z-index:1000;pointer-events:none;
+  opacity:.042;will-change:transform;
+}
+
+/* ─── CURSOR ─────────────────────────────── */
+#c-dot{
+  position:fixed;width:6px;height:6px;
+  background:var(--white);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+  transition:width .15s,height .15s;
+}
+#c-ring{
+  position:fixed;width:40px;height:40px;
+  border:1px solid rgba(240,237,230,.22);border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+  transition:width .4s var(--ease-out),height .4s var(--ease-out),border-color .3s,border-radius .3s;
+}
+.hov #c-dot{width:4px;height:4px}
+.hov #c-ring{width:58px;height:58px;border-color:var(--orange);border-radius:30% 70% 70% 30%/30% 30% 70% 70%}
+
+/* ─── PRELOADER ───────────────────────────── */
+#pl{
+  position:fixed;inset:0;z-index:800;
+  background:var(--deep);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  clip-path:inset(0 0 0 0);
+  transition:clip-path 1s cubic-bezier(.87,0,.13,1);
+}
+#pl.out{clip-path:inset(0 0 100% 0)}
+#pl-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(240,237,230,.028) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(240,237,230,.028) 1px,transparent 1px);
+  background-size:100px 100px;
+}
+#pl-scanlines{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px
+  );
+}
+.pl-lab{
+  font-family:var(--mf);font-size:.58rem;
+  letter-spacing:.28em;text-transform:uppercase;
+  opacity:.2;display:block;
+}
+#pl-corner-tl{
+  position:absolute;top:2rem;left:var(--px);
+  display:flex;gap:1.5rem;align-items:center;z-index:3;
+}
+#pl-corner-tr{
+  position:absolute;top:2rem;right:var(--px);z-index:3;
+}
+#pl-mid{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:2;
+}
+#pl-status{
+  font-family:var(--mf);font-size:.6rem;
+  letter-spacing:.34em;text-transform:uppercase;
+  color:var(--orange);opacity:.65;
+  margin-bottom:2rem;height:1em;overflow:hidden;
+}
+#pl-num-wrap{display:flex;align-items:flex-start;line-height:1;gap:.5vw}
+#pl-num{
+  font-family:var(--df);font-weight:800;
+  font-size:clamp(9rem,30vw,30vw);
+  line-height:.84;letter-spacing:-.06em;
+  color:var(--white);
+  font-variant-numeric:tabular-nums;
+}
+#pl-pct-sym{
+  font-family:var(--df);font-weight:800;
+  font-size:clamp(3rem,9vw,9vw);
+  color:var(--orange);
+  margin-top:.55em;
+}
+#pl-foot{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:0 var(--px) 2.8rem;
+  display:flex;flex-direction:column;gap:1rem;z-index:3;
+}
+#pl-word{
+  font-size:clamp(.9rem,2vw,1.6vw);font-weight:800;
+  text-transform:uppercase;letter-spacing:.16em;opacity:.08;
+}
+#pl-bar-track{
+  width:100%;height:1px;
+  background:rgba(240,237,230,.06);position:relative;overflow:hidden;
+}
+#pl-bar{
+  position:absolute;left:0;top:0;bottom:0;
+  background:var(--orange);width:0%;
+  transition:width .12s linear;
+  box-shadow:0 0 12px rgba(224,120,48,.6);
+}
+#pl-pct{
+  font-family:var(--mf);font-size:.58rem;
+  color:var(--orange);letter-spacing:.28em;
+  text-transform:uppercase;opacity:.45;
+}
+
+/* ─── NAV ─────────────────────────────────── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  padding:1.75rem var(--px);
+  display:flex;align-items:center;justify-content:space-between;
+  will-change:transform;
+}
+.nav-logo{
+  font-size:1rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.06em;
+  display:flex;align-items:center;gap:.65rem;
+}
+.nav-logo::before{
+  content:'';width:7px;height:7px;
+  background:var(--orange);border-radius:50%;
+  animation:bk 2.2s ease-in-out infinite;flex-shrink:0;
+}
+.nav-logo em{font-style:normal;color:var(--orange)}
+.nav-links{display:flex;gap:3rem;list-style:none}
+.nav-links a{
+  font-size:.66rem;font-weight:500;text-transform:uppercase;letter-spacing:.2em;
+  opacity:.3;transition:opacity .2s;
+  position:relative;overflow:hidden;display:inline-block;
+}
+.nav-links a:hover{opacity:1}
+.nav-links a span{display:block;transition:transform .3s var(--ease-out)}
+.nav-links a::after{content:attr(data-text);position:absolute;top:100%;left:0;display:block}
+.nav-links a:hover span{transform:translateY(-100%)}
+
+/* ─── LOCO SCROLL CONTAINER ───────────────── */
+#scroll-wrap{position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden}
+
+/* ─── HERO ─────────────────────────────────── */
+#hero{
+  position:relative;height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:0 var(--px) 6vh;
+  overflow:hidden;
+}
+#hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:45%;
+  background:linear-gradient(transparent,var(--black));
+  pointer-events:none;z-index:1;
+}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-inner{position:relative;z-index:2}
+.hero-tag{
+  font-family:var(--mf);font-size:.62rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:2.5rem;
+  display:inline-flex;align-items:center;gap:1rem;
+  opacity:0;transform:translateY(20px);
+}
+.hero-tag::before{content:'';width:22px;height:1px;background:var(--orange);flex-shrink:0}
+h1.hero-h1{
+  font-size:clamp(4.5rem,13vw,13vw);
+  line-height:.82;font-weight:800;
+  text-transform:uppercase;letter-spacing:-.04em;
+  overflow:hidden;margin-bottom:5vh;
+}
+.hero-h1 .lw{display:block;overflow:hidden}
+.hero-h1 .lw span{display:block;transform:translateY(105%)}
+.hero-bottom{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  align-items:end;gap:2rem;
+  padding-top:2rem;
+  border-top:1px solid rgba(240,237,230,.06);
+}
+.hero-desc{
+  font-size:clamp(.82rem,1.1vw,1.05vw);
+  opacity:0;line-height:1.7;max-width:32ch;
+  transform:translateY(20px);
+}
+.hero-scroll-txt{
+  font-family:var(--mf);font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;
+  opacity:0;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:.8rem;
+}
+.hero-scroll-line{
+  width:1px;height:52px;
+  background:linear-gradient(var(--orange),transparent);
+  animation:sl 2.4s ease-in-out infinite;
+}
+@keyframes sl{0%,100%{opacity:.2;transform:scaleY(1)}50%{opacity:.85;transform:scaleY(.35)}}
+.hero-cta{display:flex;flex-direction:column;align-items:flex-end;gap:1.2rem;opacity:0;transform:translateY(20px)}
+.hero-stat{text-align:right}
+.hero-stat-n{
+  font-size:clamp(2.5rem,5vw,5vw);font-weight:800;
+  color:var(--orange);display:block;line-height:1;
+}
+.hero-stat-l{
+  font-family:var(--mf);font-size:.56rem;
+  letter-spacing:.16em;text-transform:uppercase;
+  opacity:.25;margin-top:.45rem;
+}
+
+/* ─── BUTTONS ─────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:.5em;
+  font-family:var(--df);font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.12em;
+  padding:.82em 2.4em;
+  background:var(--white);color:var(--black);
+  border:none;cursor:pointer;
+  border-radius:100px;
+  transition:background .2s,color .2s,box-shadow .25s,transform .15s;
+}
+.btn:hover{
+  background:var(--orange);color:var(--black);
+  box-shadow:0 0 36px rgba(224,120,48,.35);
+  transform:translateY(-2px);
+}
+.btn.ol{
+  background:transparent;color:var(--white);
+  border:none;border-radius:0;
+  padding:.82em .1em;
+  text-decoration:underline;
+  text-underline-offset:.35em;
+  text-decoration-color:rgba(240,237,230,.18);
+}
+.btn.ol:hover{
+  color:var(--orange);
+  text-decoration-color:var(--orange);
+  box-shadow:none;transform:none;
+}
+
+/* ─── SECTIONS ───────────────────────────── */
+.sec{position:relative}
+.inn{max-width:1520px;margin:0 auto}
+.dash{height:1px;background:rgba(240,237,230,.055)}
+
+/* ─── TAGLINE SECTION ─────────────────────── */
+#tagline{padding:20vh var(--px) 16vh}
+.tl-wrap{max-width:1520px;margin:0 auto}
+.tl-top{
+  font-family:var(--mf);font-size:.62rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--orange);margin-bottom:4rem;opacity:0;
+}
+.tl-h{
+  font-size:clamp(3.5rem,8.5vw,8.5vw);
+  line-height:.83;font-weight:800;
+  text-transform:uppercase;letter-spacing:-.038em;
+  margin-bottom:6rem;overflow:hidden;
+}
+.tl-h .lw{display:block;overflow:hidden}
+.tl-h .lw span{display:block;transform:translateY(105%)}
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0;border-top:1px solid rgba(240,237,230,.055);
+}
+.stat-item{
+  padding:3rem 2.5rem 3rem 0;
+  position:relative;
+}
+.stat-item::after{
+  content:'';position:absolute;top:18%;right:0;bottom:18%;width:1px;
+  background:linear-gradient(transparent,rgba(240,237,230,.07),transparent);
+}
+.stat-item:last-child::after{display:none}
+.stat-n{
+  font-size:clamp(3.5rem,7vw,7vw);font-weight:800;
+  color:var(--orange);display:block;line-height:1;margin-bottom:.65rem;
+}
+.stat-l{
+  font-family:var(--mf);font-size:.6rem;letter-spacing:.22em;
+  text-transform:uppercase;opacity:.25;
+}
+.stat-d{
+  font-family:var(--tf);font-size:.78rem;
+  opacity:.35;margin-top:.85rem;max-width:26ch;line-height:1.65;
+}
+
+/* ─── SCRUB SECTION ──────────────────────── */
+#scrub-section{height:320vh;position:relative;background:transparent}
+#plant-cv{
+  position:fixed;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:3;
+  opacity:0;transition:opacity .7s var(--ease-out);
+}
+#scrub-overlay{
+  position:fixed;inset:0;z-index:4;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;opacity:0;
+  transition:opacity .7s var(--ease-out);
+}
+.scrub-inner{text-align:center;padding:0 var(--px)}
+.scrub-eye{
+  font-family:var(--mf);font-size:.62rem;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--orange);margin-bottom:1.5rem;
+}
+.scrub-h{
+  font-size:clamp(3rem,7vw,7vw);font-weight:800;
+  text-transform:uppercase;letter-spacing:-.04em;
+  line-height:.83;margin-bottom:1.8rem;
+}
+.scrub-p{
+  font-size:clamp(.82rem,1.05vw,1.05vw);
+  opacity:.35;max-width:38ch;margin:0 auto;line-height:1.72;
+}
+.scrub-meter{
+  position:fixed;bottom:4vh;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:1rem;
+  z-index:5;pointer-events:none;opacity:0;transition:opacity .5s;
+}
+.scrub-meter-bar{
+  width:200px;height:1px;
+  background:rgba(240,237,230,.07);position:relative;
+}
+.scrub-meter-fill{
+  position:absolute;left:0;top:0;height:100%;
+  background:var(--orange);width:0%;transition:width .1s linear;
+}
+.scrub-meter-pct{
+  font-family:var(--mf);font-size:.56rem;
+  letter-spacing:.22em;color:var(--orange);opacity:.55;
+}
+
+/* ─── AI ENGINE ──────────────────────────── */
+#ai-sec{
+  padding:14vh var(--px);
+  background:
+    radial-gradient(ellipse 110% 60% at 25% 50%, rgba(18,42,20,.85) 0%, transparent 55%),
+    var(--mid);
+}
+.ai-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;align-items:center;min-height:65vh;
+}
+.ai-canvas-wrap{
+  height:60vh;min-height:400px;
+  position:relative;
+  margin-right:-8vw;z-index:2;
+}
+#ai-cv{width:100%;height:100%;display:block}
+.eyb{
+  font-family:var(--mf);font-size:.62rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--orange);
+  margin-bottom:1.8rem;display:flex;align-items:center;gap:.8rem;opacity:.8;
+}
+.eyb::before{content:'//';opacity:.3}
+.ai-h{
+  font-size:clamp(2.5rem,5.5vw,5.5vw);
+  line-height:.84;font-weight:800;
+  margin-bottom:2.2rem;overflow:hidden;
+}
+.ai-h .lw{display:block;overflow:hidden}
+.ai-h .lw span{display:block;transform:translateY(105%)}
+.ai-p{
+  opacity:.38;font-size:clamp(.82rem,1.05vw,1.05vw);
+  max-width:40ch;margin-bottom:3.5rem;line-height:1.72;
+}
+.feat-list{padding-top:2rem}
+.feat{
+  display:grid;grid-template-columns:2rem 1fr auto;
+  gap:1.4rem;align-items:center;
+  padding:1.4rem 0;
+  opacity:0;transform:translateY(20px);
+  position:relative;
+}
+.feat::before{
+  content:'';position:absolute;left:-1rem;top:0;bottom:0;
+  width:2px;background:var(--orange);
+  transform:scaleY(0);transform-origin:top;
+  transition:transform .35s var(--ease-out);
+}
+.feat:hover::before{transform:scaleY(1)}
+.feat-ic{font-size:.95rem}
+.feat-name{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.feat-sub{font-family:var(--tf);font-size:.72rem;opacity:.28;margin-top:.2rem}
+.feat-tag{
+  font-family:var(--mf);font-size:.53rem;letter-spacing:.1em;
+  color:var(--orange);padding:.28em .82em;
+  background:rgba(224,120,48,.08);
+  border-radius:100px;
+}
+
+/* ─── ROI SECTION (LIGHT) ──────────────────── */
+#roi-sec{
+  background:
+    radial-gradient(ellipse 90% 100% at 75% 50%, rgba(200,220,200,.12) 0%, transparent 60%),
+    #d8e8d8;
+  color:#0d1a0f;
+  padding:16vh var(--px);
+}
+#roi-sec .eyb::before{color:#0d1a0f;opacity:.18}
+#roi-sec .eyb{color:#b85000;opacity:1}
+#roi-sec .dash{background:rgba(13,26,15,.055)}
+.roi-head{margin-bottom:6rem}
+.roi-head h2{
+  font-size:clamp(2.5rem,5.5vw,5.5vw);
+  line-height:.84;font-weight:800;
+  margin-top:1rem;overflow:hidden;
+}
+.roi-head h2 .lw{display:block;overflow:hidden}
+.roi-head h2 .lw span{display:block;transform:translateY(105%)}
+.roi-head p{opacity:.48;max-width:44ch;margin-top:1.8rem;font-size:clamp(.82rem,1.05vw,1.05vw)}
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start}
+.sldr{margin-bottom:2.5rem}
+.sldr-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem}
+.sldr-lbl{font-family:var(--mf);font-size:.62rem;text-transform:uppercase;letter-spacing:.15em;opacity:.42;color:#0d1a0f}
+.sldr-val{font-family:var(--mf);font-size:.95rem;font-weight:500;color:#b85000}
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:1px;
+  background:rgba(13,26,15,.1);outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;
+  background:#b85000;border-radius:50%;transition:transform .2s;
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
+.roi-output{
+  background:#0d1a0f;color:var(--white);
+  padding:4rem;position:relative;
+  margin-right:calc(-1 * var(--px));
+}
+.roi-output::before{
+  content:'LIVE PROJECTION';
+  position:absolute;top:-.7em;left:3rem;
+  background:var(--orange);color:#0d1a0f;
+  font-family:var(--mf);font-size:.52rem;
+  letter-spacing:.22em;padding:.28em .85em;border-radius:100px;
+}
+.roi-m{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(240,237,230,.05)}
+.roi-m:last-child{margin:0;padding:0;border:none}
+.roi-m-lbl{
+  font-family:var(--mf);font-size:.56rem;
+  letter-spacing:.22em;text-transform:uppercase;opacity:.25;margin-bottom:.5rem;
+}
+.roi-m-val{
+  font-size:clamp(2rem,3.5vw,3.5vw);font-weight:800;
+  line-height:1;color:var(--orange);
+}
+.roi-m-note{font-family:var(--tf);font-size:.7rem;opacity:.22;margin-top:.45rem}
+
+/* ─── GOTCHA SECTION ─────────────────────── */
+#gotcha{
+  padding:18vh var(--px);text-align:center;
+  background:
+    radial-gradient(ellipse 55% 70% at 50% 50%, rgba(224,120,48,.045) 0%, transparent 65%),
+    var(--surface);
+}
+.gotcha-h{
+  font-size:clamp(2rem,4.8vw,4.8vw);
+  line-height:1.05;font-weight:800;
+  text-transform:uppercase;letter-spacing:-.02em;
+  max-width:860px;margin:0 auto 3.5rem;overflow:hidden;
+}
+.gotcha-h .lw{display:block;overflow:hidden}
+.gotcha-h .lw span{display:block;transform:translateY(105%)}
+#gotcha p{opacity:.35;max-width:52ch;margin:0 auto;font-size:clamp(.85rem,1.1vw,1.1vw)}
+
+/* ─── BLOG ────────────────────────────────── */
+#blog-sec{
+  overflow:hidden;
+  padding:14vh 0;
+  background:var(--black);
+}
+.blog-header{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-bottom:4rem;padding:0 var(--px);
+}
+.blog-track-outer{overflow:hidden;padding:0 0 3rem}
+.blog-track{display:flex;gap:1.5vw;will-change:transform;padding:0 var(--px)}
+.bcard{
+  flex:0 0 29vw;padding:2.5rem;
+  display:flex;flex-direction:column;justify-content:space-between;
+  min-height:58vh;cursor:pointer;
+  position:relative;overflow:hidden;
+  background:var(--mid);
+  transition:background .3s;
+}
+.bcard::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(224,120,48,.4),transparent);
+  transform:scaleX(0);transition:transform .4s var(--ease-out);
+}
+.bcard:hover{background:var(--lift)}
+.bcard:hover::after{transform:scaleX(1)}
+.bcard-em{
+  font-size:5rem;opacity:.04;
+  position:absolute;right:2rem;top:2rem;
+  transition:opacity .4s,transform .5s var(--ease-out);
+  user-select:none;
+}
+.bcard:hover .bcard-em{opacity:.09;transform:scale(1.08) rotate(5deg)}
+.bcard-tag{
+  font-family:var(--mf);font-size:.56rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--orange);margin-bottom:1rem;
+}
+.bcard-h{
+  font-size:clamp(1rem,1.6vw,1.7vw);font-weight:700;
+  text-transform:uppercase;letter-spacing:-.015em;
+  line-height:1.1;margin-bottom:1rem;
+}
+.bcard-p{font-family:var(--tf);font-size:.78rem;opacity:.28;line-height:1.65}
+.bcard-ft{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:1.5rem;
+  border-top:1px solid rgba(240,237,230,.05);margin-top:2rem;
+}
+.bcard-read{font-family:var(--mf);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;opacity:.18}
+.bcard-date{font-family:var(--mf);font-size:.56rem;opacity:.12}
+
+/* ─── TESTIMONIALS ────────────────────────── */
+#tes-sec{
+  background:var(--deep);
+  padding:16vh var(--px);overflow:hidden;
+}
+.tes-tag{
+  font-family:var(--mf);font-size:.62rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--orange);margin-bottom:1.8rem;opacity:0;
+}
+.tes-h{
+  font-size:clamp(2.5rem,5.5vw,5.5vw);
+  line-height:.84;font-weight:800;overflow:hidden;
+}
+.tes-h .lw{display:block;overflow:hidden}
+.tes-h .lw span{display:block;transform:translateY(105%)}
+.tes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:6rem}
+.tes-card{
+  padding:3rem 2.5rem;
+  display:flex;flex-direction:column;gap:2rem;
+  opacity:0;transform:translateY(30px);
+  background:var(--mid);position:relative;overflow:hidden;
+}
+.tes-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(88,240,102,.28),transparent);
+  opacity:0;transition:opacity .4s;
+}
+.tes-card:hover::before{opacity:1}
+.tes-q{
+  font-family:var(--tf);font-size:clamp(.88rem,1.1vw,1.1vw);
+  line-height:1.78;opacity:.52;font-style:italic;
+}
+.tes-who{display:flex;align-items:center;gap:1rem}
+.tes-av{
+  width:38px;height:38px;
+  background:rgba(88,240,102,.07);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;flex-shrink:0;
+}
+.tes-nm{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.2rem}
+.tes-role{font-family:var(--mf);font-size:.53rem;letter-spacing:.1em;text-transform:uppercase;opacity:.22}
+
+/* ─── NEWSLETTER ──────────────────────────── */
+#nl-sec{
+  padding:20vh var(--px) 14vh;text-align:center;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% -5%, rgba(88,240,102,.055) 0%, transparent 55%),
+    var(--surface);
+  overflow:hidden;
+}
+.nl-h{
+  font-size:clamp(4rem,10vw,10vw);
+  line-height:.82;font-weight:800;
+  text-transform:uppercase;letter-spacing:-.045em;
+  margin-bottom:2.5rem;overflow:hidden;
+}
+.nl-h .lw{display:block;overflow:hidden}
+.nl-h .lw span{display:block;transform:translateY(105%)}
+.nl-h em{font-style:italic;color:var(--orange)}
+#nl-sec p{opacity:.32;max-width:42ch;margin:0 auto 3.5rem;font-size:clamp(.85rem,1.1vw,1.1vw)}
+.nl-form{
+  display:flex;max-width:480px;margin:0 auto;
+  background:var(--mid);
+  border-radius:100px;overflow:hidden;padding:.3rem;
+}
+.nl-input{
+  flex:1;background:transparent;border:none;outline:none;
+  padding:.88em 1.6em;color:var(--white);
+  font-family:var(--mf);font-size:.7rem;letter-spacing:.04em;
+}
+.nl-input::placeholder{opacity:.18}
+.nl-btn{
+  background:var(--orange);color:var(--black);border:none;
+  padding:.88em 2em;font-family:var(--df);font-weight:700;font-size:.66rem;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+  border-radius:100px;transition:background .18s;white-space:nowrap;
+}
+.nl-btn:hover{background:var(--white)}
+.fine{font-family:var(--mf);font-size:.56rem;opacity:.12;margin-top:1rem;letter-spacing:.04em}
+
+/* ─── FOOTER ──────────────────────────────── */
+footer{
+  padding:2.5rem var(--px);
+  border-top:1px solid rgba(240,237,230,.045);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;background:var(--deep);
+}
+.f-brand{font-weight:800;font-size:1rem;letter-spacing:.06em;text-transform:uppercase}
+.f-brand em{font-style:normal;color:var(--orange)}
+.f-links{display:flex;gap:2.5rem;list-style:none;flex-wrap:wrap}
+.f-links a{
+  font-family:var(--mf);font-size:.54rem;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.18;transition:opacity .2s;
+}
+.f-links a:hover{opacity:.75}
+.f-copy{font-family:var(--mf);font-size:.54rem;opacity:.12;letter-spacing:.08em}
+
+/* ─── CHATBOT ─────────────────────────────── */
+#suc-btn{
+  position:fixed;bottom:2.5rem;right:2.5rem;width:52px;height:52px;
+  background:var(--orange);border:none;border-radius:50%;
+  cursor:pointer;z-index:600;font-size:1.2rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .25s;animation:sp 3.5s ease-in-out infinite;
+}
+@keyframes sp{0%,100%{box-shadow:0 0 0 0 rgba(224,120,48,.4)}55%{box-shadow:0 0 0 16px rgba(224,120,48,0)}}
+#suc-btn:hover{transform:scale(1.1)}
+#suc-box{
+  position:fixed;bottom:6.5rem;right:2.5rem;width:310px;
+  background:var(--mid);
+  border:1px solid rgba(240,237,230,.055);
+  z-index:600;display:none;flex-direction:column;
+  box-shadow:0 32px 80px rgba(0,0,0,.7);
+  border-radius:16px;overflow:hidden;
+}
+#suc-box.on{display:flex}
+.suc-hd{
+  padding:1rem 1.2rem;
+  border-bottom:1px solid rgba(240,237,230,.045);
+  display:flex;align-items:center;gap:.8rem;
+}
+.suc-av{font-size:1.4rem}
+.suc-nm{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.suc-st{
+  font-family:var(--mf);font-size:.52rem;color:var(--orange);
+  letter-spacing:.08em;display:flex;align-items:center;gap:.4rem;
+}
+.suc-st::before{
+  content:'';width:5px;height:5px;
+  background:var(--orange);border-radius:50%;
+  animation:bk 1.8s ease-in-out infinite;
+}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.1}}
+.suc-msgs{
+  padding:.9rem 1rem;display:flex;flex-direction:column;
+  gap:.6rem;max-height:220px;overflow-y:auto;
+}
+.suc-msg{
+  background:rgba(240,237,230,.04);padding:.65rem .9rem;
+  font-family:var(--tf);font-size:.74rem;line-height:1.55;
+  animation:mf .3s forwards;opacity:0;border-radius:8px;
+}
+.suc-msg.u{background:rgba(224,120,48,.1);text-align:right}
+@keyframes mf{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.suc-chips{
+  padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.4rem;
+  border-top:1px solid rgba(240,237,230,.04);
+}
+.suc-chip{
+  font-family:var(--mf);font-size:.52rem;letter-spacing:.07em;
+  text-transform:uppercase;padding:.3em .78em;
+  border:1px solid rgba(224,120,48,.18);color:var(--orange);
+  cursor:pointer;transition:background .18s;border-radius:100px;
+}
+.suc-chip:hover{background:rgba(224,120,48,.1)}
+.suc-in{display:flex;border-top:1px solid rgba(240,237,230,.045)}
+.suc-in input{
+  flex:1;background:transparent;border:none;outline:none;
+  padding:.7rem 1rem;color:var(--white);
+  font-family:var(--mf);font-size:.68rem;
+}
+.suc-in input::placeholder{opacity:.14}
+.suc-in button{
+  background:transparent;border:none;
+  border-left:1px solid rgba(240,237,230,.045);
+  color:var(--orange);padding:0 1rem;cursor:pointer;
+  font-family:var(--mf);font-size:.62rem;
+  text-transform:uppercase;letter-spacing:.1em;
+}
+
+/* ─── UTILS ───────────────────────────────── */
+.rv{opacity:0;transform:translateY(40px)}
+.rf{opacity:0}
+@keyframes gt{
+  0%,84%,100%{transform:translate(0)}
+  85%{transform:translate(-3px,2px) skew(.5deg)}
+  86%{transform:translate(3px,-2px) skew(-.5deg)}
+  87%{transform:translate(-2px,3px)}
+  88%{transform:translate(2px,-3px)}
+  89%{transform:translate(-1px,1px)}
+}
+.glitch{animation:gt 8s ease-in-out infinite}
+
+/* ─── MODE PANEL ───────────────────────────── */
+#mode-panel{
+  position:fixed;bottom:3rem;left:2.5rem;z-index:450;
+  display:flex;flex-direction:column;gap:.75rem;
+  opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .5s var(--ease-out),transform .5s var(--ease-out);
+}
+#mode-panel.vis{opacity:1;transform:translateY(0);pointer-events:auto}
+#mode-panel-lbl{
+  font-family:var(--mf);font-size:.5rem;
+  letter-spacing:.24em;text-transform:uppercase;opacity:.2;
+}
+#mode-btns{display:flex;gap:.35rem;flex-wrap:wrap}
+.mbtn{
+  font-family:var(--mf);font-size:.5rem;letter-spacing:.09em;
+  text-transform:uppercase;padding:.3em .88em;
+  background:rgba(240,237,230,.03);
+  border:1px solid rgba(240,237,230,.08);
+  color:rgba(240,237,230,.28);
+  border-radius:100px;cursor:pointer;
+  transition:all .22s;
+}
+.mbtn:hover{border-color:rgba(224,120,48,.35);color:var(--orange)}
+.mbtn.active{
+  background:rgba(224,120,48,.1);
+  border-color:rgba(224,120,48,.6);
+  color:var(--orange);
+}
+
+/* ─── STACK SECTION ──────────────────────── */
+#stack-sec{height:400vh;position:relative;background:var(--black)}
+#stack-sticky{
+  position:sticky;top:0;height:100vh;
+  display:grid;grid-template-columns:1fr 1.15fr;
+  align-items:center;padding:0 var(--px);gap:4vw;overflow:hidden;
+}
+.stack-txt .eyb{margin-bottom:1.5rem;opacity:1}
+.stack-h{
+  font-size:clamp(2.5rem,5.5vw,5.5vw);
+  line-height:.83;font-weight:800;letter-spacing:-.04em;
+  text-transform:uppercase;margin-bottom:1.8rem;overflow:hidden;
+}
+.stack-h .lw{display:block;overflow:hidden}
+.stack-h .lw span{display:block}
+.stack-desc{font-size:clamp(.82rem,1.05vw,1.05vw);opacity:.32;max-width:36ch;line-height:1.72}
+#stack-cards{
+  position:relative;width:100%;
+  height:clamp(300px,56vh,560px);
+}
+.scard{
+  position:absolute;inset:0;border-radius:10px;overflow:hidden;
+  will-change:transform,opacity;background:var(--mid);
+}
+.scard-cv{width:100%;height:100%;display:block}
+.scard-meta{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:1.2rem 1.5rem;
+  background:linear-gradient(transparent,rgba(5,12,6,.95));
+  display:flex;justify-content:space-between;align-items:center;
+  pointer-events:none;
+}
+.scard-mode{font-family:var(--mf);font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+.scard-name{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:-.01em}
+.stack-prog{
+  position:absolute;right:-3.2rem;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  pointer-events:none;
+}
+.stack-prog-n{
+  font-size:clamp(1.4rem,2.2vw,2.2vw);font-weight:800;
+  color:var(--orange);font-variant-numeric:tabular-nums;line-height:1;
+}
+.stack-prog-sep{font-family:var(--mf);font-size:.5rem;opacity:.14}
+.stack-prog-t{font-family:var(--mf);font-size:.5rem;letter-spacing:.12em;opacity:.14}
+
+@media(max-width:900px){
+  .ai-grid{grid-template-columns:1fr;gap:3rem}
+  .ai-canvas-wrap{margin-right:0}
+  .roi-grid{grid-template-columns:1fr;gap:3rem}
+  .roi-output{margin-right:0}
+  .tes-grid{grid-template-columns:1fr;gap:2px}
+  .hero-bottom{grid-template-columns:1fr;gap:1.5rem}
+  .bcard{flex:0 0 80vw}
+  .stats-row{grid-template-columns:1fr}
+  .stat-item::after{display:none}
+  .stat-item{border-bottom:1px solid rgba(240,237,230,.05)}
+  .nav-links{display:none}
+  #stack-sticky{grid-template-columns:1fr}
+  .stack-txt{display:none}
+  .stack-prog{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- GRAIN -->
+<canvas id="grain"></canvas>
+
+<!-- CURSOR -->
+<div id="c-dot"></div>
+<div id="c-ring"></div>
+
+<!-- PRELOADER -->
+<div id="pl">
+  <div id="pl-grid"></div>
+  <div id="pl-scanlines"></div>
+  <div id="pl-corner-tl">
+    <span class="pl-lab">HH / SYS</span>
+    <span class="pl-lab">v3.2.1</span>
+  </div>
+  <div id="pl-corner-tr">
+    <span id="pl-clock" class="pl-lab">00:00:000</span>
+  </div>
+  <div id="pl-mid">
+    <div id="pl-status">BOOTING CHLOROPHYLL ENGINE</div>
+    <div id="pl-num-wrap">
+      <span id="pl-num">0</span>
+      <span id="pl-pct-sym">%</span>
+    </div>
+  </div>
+  <div id="pl-foot">
+    <div id="pl-word">HOUSEPLANT HUSTLE</div>
+    <div id="pl-bar-track"><div id="pl-bar"></div></div>
+    <div id="pl-pct">ANALYZING FOLIAGE — 0%</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">HOUSEPLANT<em>HUSTLE</em></div>
+  <ul class="nav-links">
+    <li><a href="#tagline" data-text="PlantIQ"><span>PlantIQ</span></a></li>
+    <li><a href="#roi-sec" data-text="Calculator"><span>Calculator</span></a></li>
+    <li><a href="#blog-sec" data-text="Insights"><span>Insights</span></a></li>
+    <li><a href="#tes-sec" data-text="Proof"><span>Proof</span></a></li>
+  </ul>
+  <a href="#roi-sec" class="btn">Get Growing</a>
+</nav>
+
+<!-- SCROLL CONTAINER -->
+<div id="scroll-wrap">
+<div data-scroll-container id="loco-container">
+
+<!-- ══ HERO ══ -->
+<section id="hero" data-scroll-section>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner inn">
+    <div class="hero-tag" data-scroll data-scroll-speed="-1">PlantIQ™ AI Engine &nbsp;·&nbsp; v3.2 &nbsp;·&nbsp; Now with Leaf Sentiment</div>
+    <h1 class="hero-h1" data-scroll data-scroll-speed="-0.5">
+      <span class="lw"><span>MADE FOR LEAVES.</span></span>
+      <span class="lw"><span>BUILT FOR</span></span>
+      <span class="lw"><span class="glitch" style="color:var(--orange)">BUSINESS.</span></span>
+    </h1>
+    <div class="hero-bottom">
+      <p class="hero-desc">The world's most unnecessarily sophisticated houseplant analytics platform. Your ficus sees Q4 before you do.</p>
+      <div class="hero-scroll-txt">
+        <div class="hero-scroll-line"></div>
+        <span>Scroll to continue</span>
+      </div>
+      <div class="hero-cta">
+        <div class="hero-stat">
+          <span class="hero-stat-n" id="hs1">0%</span>
+          <span class="hero-stat-l">avg. photosynthesis ROI</span>
+        </div>
+        <a href="#roi-sec" class="btn">Free Foliage Scan</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TAGLINE ══ -->
+<section id="tagline" data-scroll-section>
+  <div class="tl-wrap">
+    <div class="dash" style="margin-bottom:6vh"></div>
+    <p class="tl-top" data-scroll data-scroll-class="tl-top-in">PlantIQ™ Platform</p>
+    <h2 class="tl-h">
+      <span class="lw"><span>Your Ficus Knows</span></span>
+      <span class="lw"><span>More Than Your</span></span>
+      <span class="lw"><span style="color:var(--orange)">CFO.</span></span>
+    </h2>
+    <div class="stats-row">
+      <div class="stat-item rv">
+        <span class="stat-n" data-count="847">0</span><span class="stat-n">%</span>
+        <span class="stat-l">Avg. Photosynthesis ROI</span>
+        <p class="stat-d">Verified by the Institute of Made-Up Plant Sciences, Geneva (IMUPS)</p>
+      </div>
+      <div class="stat-item rv">
+        <span class="stat-n" data-count="12">0</span><span class="stat-n">K</span>
+        <span class="stat-l">Plant Varieties Trained</span>
+        <p class="stat-d">Including one very opinionated orchid named Gerald who inflated the dataset</p>
+      </div>
+      <div class="stat-item rv">
+        <span class="stat-n" data-count="47">0</span><span class="stat-n">Y</span>
+        <span class="stat-l">Of Botanical Data</span>
+        <p class="stat-d">47 years. 3 mass extinctions. 0 successful pivot decks. The plants survived.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SCROLL SCRUB ══ -->
+<div id="scrub-section" data-scroll-section></div>
+
+<!-- ══ STACK REVEAL ══ -->
+<section id="stack-sec" data-scroll-section>
+  <div id="stack-sticky">
+    <div class="stack-txt">
+      <div class="eyb">Multi-Spectrum Analysis</div>
+      <h2 class="stack-h">
+        <span class="lw"><span>See What</span></span>
+        <span class="lw"><span>We See.</span></span>
+      </h2>
+      <p class="stack-desc">Five proprietary visual modes. Each revealing a different layer of your plant's business intelligence. The market has never looked so botanical.</p>
+    </div>
+    <div id="stack-cards">
+      <div class="scard" id="sc4"><canvas class="scard-cv"></canvas><div class="scard-meta"><span class="scard-mode">Mode 04</span><span class="scard-name">Holographic</span></div></div>
+      <div class="scard" id="sc3"><canvas class="scard-cv"></canvas><div class="scard-meta"><span class="scard-mode">Mode 03</span><span class="scard-name">Wireframe</span></div></div>
+      <div class="scard" id="sc2"><canvas class="scard-cv"></canvas><div class="scard-meta"><span class="scard-mode">Mode 02</span><span class="scard-name">X-Ray</span></div></div>
+      <div class="scard" id="sc1"><canvas class="scard-cv"></canvas><div class="scard-meta"><span class="scard-mode">Mode 01</span><span class="scard-name">Thermal</span></div></div>
+      <div class="scard" id="sc0"><canvas class="scard-cv"></canvas><div class="scard-meta"><span class="scard-mode">Mode 00</span><span class="scard-name">Standard</span></div></div>
+      <div class="stack-prog">
+        <div class="stack-prog-n" id="sp-n">1</div>
+        <div class="stack-prog-sep">—</div>
+        <div class="stack-prog-t">of 5</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AI ENGINE ══ -->
+<section id="ai-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:7vh"></div>
+    <div class="ai-grid">
+      <div class="ai-canvas-wrap">
+        <canvas id="ai-cv"></canvas>
+      </div>
+      <div>
+        <div class="eyb rv">PlantIQ™ Engine</div>
+        <h2 class="ai-h">
+          <span class="lw"><span>We Process</span></span>
+          <span class="lw"><span>Every</span></span>
+          <span class="lw"><span>Frond.</span></span>
+        </h2>
+        <p class="ai-p rv">Our ChloroML™ model ingests 14,000 data points per leaf per millisecond. The result is business intelligence so accurate it is legally considered an aggressive personality trait in three states.</p>
+        <div class="feat-list">
+          <div class="feat"><div class="feat-ic">🌿</div><div><div class="feat-name">Droop Detection™</div><div class="feat-sub">Know when your team and plant need hydration</div></div><div class="feat-tag">Live</div></div>
+          <div class="feat"><div class="feat-ic">🔬</div><div><div class="feat-name">Chlorophyll Sentiment</div><div class="feat-sub">Green = growth. Yellow = fire your CFO.</div></div><div class="feat-tag">Beta</div></div>
+          <div class="feat"><div class="feat-ic">🌱</div><div><div class="feat-name">Root Cause Analysis</div><div class="feat-sub">Literally. We look at the roots. It works.</div></div><div class="feat-tag">Live</div></div>
+          <div class="feat"><div class="feat-ic">📊</div><div><div class="feat-name">Leaf-to-Stem KPI</div><div class="feat-sub">The one metric that correlates with revenue</div></div><div class="feat-tag">Patent Pending</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ROI CALCULATOR (LIGHT) ══ -->
+<section id="roi-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:5vh"></div>
+    <div class="roi-head">
+      <div class="eyb rf">Interactive Tool</div>
+      <h2>
+        <span class="lw"><span>Photosynthesis</span></span>
+        <span class="lw"><span>ROI Calculator™</span></span>
+      </h2>
+      <p class="rv">Configure your plant and watch our AI generate financially irresponsible projections in real time. Certified by a body we invented.</p>
+    </div>
+    <div class="roi-grid">
+      <div>
+        <div class="sldr"><div class="sldr-top"><span class="sldr-lbl">☀️ Daily Sunlight (hrs)</span><strong class="sldr-val" id="vS">6h</strong></div><input type="range" id="sS" min="1" max="12" value="6"></div>
+        <div class="sldr"><div class="sldr-top"><span class="sldr-lbl">💧 Watering Frequency</span><strong class="sldr-val" id="vW">2×/wk</strong></div><input type="range" id="sW" min="1" max="7" value="2"></div>
+        <div class="sldr"><div class="sldr-top"><span class="sldr-lbl">🪴 Pot Diameter (inches)</span><strong class="sldr-val" id="vP">8"</strong></div><input type="range" id="sP" min="4" max="24" value="8"></div>
+        <div class="sldr"><div class="sldr-top"><span class="sldr-lbl">🎵 Classical Music</span><strong class="sldr-val" id="vM">Sometimes</strong></div><input type="range" id="sM" min="0" max="3" value="1"></div>
+        <p style="font-family:var(--mf);font-size:.6rem;opacity:.25;letter-spacing:.04em;margin-top:2rem;color:#0d1a0f">* Projections are directionally plausible. Certified by IMUPS Geneva. Void where chlorophyll is prohibited.</p>
+      </div>
+      <div class="roi-output">
+        <div class="roi-m"><div class="roi-m-lbl">Photosynthesis Index™</div><div class="roi-m-val" id="rPI">—</div><div class="roi-m-note" id="rPI-n">Awaiting foliage parameters…</div></div>
+        <div class="roi-m"><div class="roi-m-lbl">Projected Q4 Chlorophyll Revenue</div><div class="roi-m-val" id="rRV">—</div><div class="roi-m-note" id="rRV-n">Based on current leaf-shed velocity</div></div>
+        <div class="roi-m"><div class="roi-m-lbl">vs. S&amp;P 500</div><div class="roi-m-val" id="rSP">—</div><div class="roi-m-note">Your plant vs. 500 companies. The plant wins.</div></div>
+        <div class="roi-m"><div class="roi-m-lbl">Confidence</div><div class="roi-m-val" id="rCF">—</div><div class="roi-m-note">Extremely confident in numbers we invented.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GOTCHA ══ -->
+<section id="gotcha" data-scroll-section>
+  <div class="inn" style="text-align:center">
+    <h2 class="gotcha-h">
+      <span class="lw"><span>We got your attention with</span></span>
+      <span class="lw"><span>a fake plant platform.</span></span>
+      <span class="lw"><span>If we can sell this,</span></span>
+      <span class="lw"><span style="color:var(--orange)">imagine what we can do for you.</span></span>
+    </h2>
+    <p class="rv">Houseplant Hustle is a fictional creative project. None of this is real. Your plant cannot predict markets. But your attention is real — and that's the point.</p>
+    <div style="margin-top:3rem;display:flex;gap:1rem;justify-content:center" class="rv">
+      <a href="#nl-sec" class="btn">I'm Intrigued</a>
+      <a href="#roi-sec" class="btn ol">Calculator Again</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BLOG ══ -->
+<section id="blog-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:5vh"></div>
+    <div class="blog-header">
+      <div>
+        <span style="font-family:var(--mf);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);display:block;margin-bottom:.7rem">Evergreen Thought Leadership</span>
+        <h2 style="font-size:clamp(2rem,4.5vw,4.5vw);line-height:.88;font-weight:500" class="rv">Grow Your<br>Mindset.</h2>
+      </div>
+      <a href="#" class="btn ol rf">All Fronds →</a>
+    </div>
+  </div>
+  <div class="blog-track-outer" style="padding:0 var(--px)">
+    <div class="blog-track" id="btrk">
+      <article class="bcard"><div class="bcard-em">🧘</div><div><div class="bcard-tag">Mindset · 4 min</div><h3 class="bcard-h">Why Your Succulent's Stoicism Can Fix Your Scrum Stand-ups</h3><p class="bcard-p">Marcus Aurelius never watered his plants. Coincidence? Our philosophers-in-residence investigate the untapped management potential of drought tolerance and radical acceptance of wilting.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">May 2026</span></div></article>
+      <article class="bcard"><div class="bcard-em">🌿</div><div><div class="bcard-tag">Strategy · 7 min</div><h3 class="bcard-h">The Monstera Mindset: Growing Towards Light in a Dark Market</h3><p class="bcard-p">Fenestration isn't just for leaves. Learn to create strategic holes in your business model that let light through while maintaining structural integrity during market downturns.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Apr 2026</span></div></article>
+      <article class="bcard"><div class="bcard-em">✂️</div><div><div class="bcard-tag">Leadership · 5 min</div><h3 class="bcard-h">Dead Leaves and Dead Weight: A Guide to Pruning Your Portfolio</h3><p class="bcard-p">Your fiddle-leaf fig has been removing underperformers since 2019. Maybe it's time you listened to the plant in the corner office instead of the consultant on the Zoom call.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Mar 2026</span></div></article>
+      <article class="bcard"><div class="bcard-em">💡</div><div><div class="bcard-tag">Innovation · 6 min</div><h3 class="bcard-h">Photosynthesis as a Service: The B2B Model Nature Invented First</h3><p class="bcard-p">CO₂ in. Oxygen out. Zero churn. The biosphere's NPS score: indeterminate. Disruption, meet chloroplasts. Your SaaS dashboard could never.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Feb 2026</span></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section id="tes-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:4rem"></div>
+    <div class="tes-tag">Social Proof</div>
+    <h2 class="tes-h">
+      <span class="lw"><span>People Who Believe</span></span>
+      <span class="lw"><span>In The Plant.</span></span>
+    </h2>
+    <div class="tes-grid">
+      <div class="tes-card"><p class="tes-q">"After implementing Houseplant Hustle, our EBITDA grew 340%. Our monstera also received a promotion. He is Head of Growth. He has not attended a single meeting. Performance is up."</p><div class="tes-who"><div class="tes-av">🌱</div><div><div class="tes-nm">Chad Synergize</div><div class="tes-role">Chief Disruption Officer, Synapse LLC</div></div></div></div>
+      <div class="tes-card"><p class="tes-q">"I replaced my analytics team with a cactus. Projections are statistically identical. Monthly costs: $4 in fertilizer. The team took it well. The cactus did not care."</p><div class="tes-who"><div class="tes-av">🌵</div><div><div class="tes-nm">Brittney Leverage</div><div class="tes-role">Founder &amp; CEO, Pivot Collective</div></div></div></div>
+      <div class="tes-card"><p class="tes-q">"My fern predicted the 2024 correction with 98% accuracy. We closed our Series B. The fern holds 15% equity. It attended the term sheet signing via FaceTime. Nobody laughed."</p><div class="tes-who"><div class="tes-av">🌾</div><div><div class="tes-nm">Blake Momentum</div><div class="tes-role">GP, Leaf Capital Partners</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NEWSLETTER ══ -->
+<section id="nl-sec" data-scroll-section>
+  <div class="inn" style="max-width:900px;text-align:center">
+    <h2 class="nl-h">
+      <span class="lw"><span>Grow</span></span>
+      <span class="lw"><span><em>Different.</em></span></span>
+    </h2>
+    <p class="rv">Join 47,000 executives receiving weekly business insights generated by houseplants. No spam. Some pollen. The fern writes the subject lines.</p>
+    <div class="nl-form rv"><input class="nl-input" type="email" placeholder="your@email.com" id="nl-in"><button class="nl-btn" onclick="nlSub()">Subscribe</button></div>
+    <p class="fine">By subscribing you acknowledge that plants are valid stakeholders, photosynthesis is a KPI, and the fern's opinion matters.</p>
+  </div>
+</section>
+
+<footer data-scroll-section>
+  <div class="f-brand">HOUSEPLANT<em>HUSTLE</em></div>
+  <ul class="f-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms of Foliage</a></li>
+    <li><a href="#">Ethics</a></li>
+    <li><a href="#">IPO (Initial Plant Offering)</a></li>
+  </ul>
+  <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real.</div>
+</footer>
+
+</div><!-- /loco-container -->
+</div><!-- /scroll-wrap -->
+
+<!-- Fixed plant canvas for scrub -->
+<canvas id="plant-cv"></canvas>
+<div id="scrub-overlay">
+  <div class="scrub-inner">
+    <p class="scrub-eye" id="sc-eye">INITIALIZING GROWTH SEQUENCE</p>
+    <h2 class="scrub-h" id="sc-h">Watch Your<br>Business Bloom</h2>
+    <p class="scrub-p" id="sc-p">Our ChloroML™ model processes 14,000 leaf data points per millisecond — insights no flipchart could replicate.</p>
+  </div>
+</div>
+<div class="scrub-meter" id="sc-meter">
+  <div class="scrub-meter-bar"><div class="scrub-meter-fill" id="sc-fill"></div></div>
+  <span class="scrub-meter-pct" id="sc-pct">0%</span>
+</div>
+
+<!-- MODE PANEL -->
+<div id="mode-panel">
+  <div id="mode-panel-lbl">Analysis Mode</div>
+  <div id="mode-btns">
+    <button class="mbtn active" data-mode="standard">Standard</button>
+    <button class="mbtn" data-mode="thermal">Thermal</button>
+    <button class="mbtn" data-mode="xray">X-Ray</button>
+    <button class="mbtn" data-mode="wireframe">Wire</button>
+  </div>
+</div>
+
+<!-- CHATBOT -->
+<button id="suc-btn" title="Chat with Succy™">🌵</button>
+<div id="suc-box">
+  <div class="suc-hd"><div class="suc-av">🌵</div><div><div class="suc-nm">Succy™ AI</div><div class="suc-st">Last watered 3 weeks ago · Thriving</div></div></div>
+  <div class="suc-msgs" id="suc-msgs"><div class="suc-msg">Hi. I'm Succy. I haven't needed water in 3 weeks and neither should your pipeline. How can I help? 🌵</div></div>
+  <div class="suc-chips">
+    <span class="suc-chip" onclick="sR('roi')">📈 My ROI</span>
+    <span class="suc-chip" onclick="sR('prune')">✂️ Pruning</span>
+    <span class="suc-chip" onclick="sR('fern')">🌿 My Fern</span>
+    <span class="suc-chip" onclick="sR('team')">👥 Team Droop</span>
+  </div>
+  <div class="suc-in"><input type="text" placeholder="Ask Succy anything…" id="suc-txt" onkeydown="if(event.key==='Enter')sSend()"><button onclick="sSend()">→</button></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════
+// GRAIN — animated texture, 12fps
+// ══════════════════════════════════════════════════
+(function(){
+  const c=document.getElementById('grain'),x=c.getContext('2d');
+  let W,H,last=0;
+  function rs(){c.width=W=innerWidth;c.height=H=innerHeight}
+  function frame(t){
+    requestAnimationFrame(frame);
+    if(t-last<80)return;last=t;
+    const d=x.createImageData(W,H),b=d.data;
+    for(let i=0;i<b.length;i+=4){const v=Math.random()*255|0;b[i]=b[i+1]=b[i+2]=v;b[i+3]=28}
+    x.putImageData(d,0,0);
+  }
+  rs();requestAnimationFrame(frame);
+  addEventListener('resize',rs);
+})();
+
+// ══════════════════════════════════════════════════
+// CURSOR
+// ══════════════════════════════════════════════════
+(function(){
+  const dot=document.getElementById('c-dot'),ring=document.getElementById('c-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    dot.style.left=mx+'px';dot.style.top=my+'px';
+  });
+  (function tick(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tick)})();
+  document.querySelectorAll('a,button,input,label,.suc-chip,.bcard,.feat,.stat-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+  });
+})();
+
+// ══════════════════════════════════════════════════
+// HERO CANVAS — root particle network
+// ══════════════════════════════════════════════════
+(function(){
+  const cv=document.getElementById('hero-canvas'),ctx=cv.getContext('2d');
+  let W,H,pts=[],mx=innerWidth/2,my=innerHeight/2;
+  function rs(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;mk()}
+  function mk(){
+    pts=[];
+    for(let i=0;i<Math.floor(W*H/10000);i++)
+      pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,r:Math.random()*1.5+.3,a:Math.random()*.25+.06});
+  }
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const ox=(mx/W-.5)*22,oy=(my/H-.5)*14;
+    for(let i=0;i<pts.length;i++){
+      const p=pts[i];
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      const px=p.x+ox,py=p.y+oy;
+      ctx.beginPath();ctx.arc(px,py,p.r,0,6.28);
+      ctx.fillStyle=`rgba(88,240,102,${p.a})`;ctx.fill();
+      for(let j=i+1;j<pts.length;j++){
+        const q=pts[j],dx=px-(q.x+ox),dy=py-(q.y+oy),d=Math.sqrt(dx*dx+dy*dy);
+        if(d<115){ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(q.x+ox,q.y+oy);ctx.strokeStyle=`rgba(88,240,102,${(1-d/115)*.065})`;ctx.lineWidth=.5;ctx.stroke()}
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  rs();draw();addEventListener('resize',rs);
+})();
+
+// ══════════════════════════════════════════════════
+// SCRUB CANVAS — persistent plant layer
+// ══════════════════════════════════════════════════
+(function(){
+  const cv=document.getElementById('plant-cv');
+  const ctx=cv.getContext('2d',{alpha:true});
+  window.plantCtx=ctx;
+  let W,H;
+  Object.assign(cv.style,{position:'fixed',inset:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'3',opacity:'1',transition:'none'});
+
+  function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+
+  // opts: { ambient, pctX, pctY, scale, alpha, targetCtx, targetW, targetH }
+  window.drawPlant=function(p, opts){
+    const o=Object.assign({ambient:false,pctX:.5,pctY:.5,scale:1,alpha:1},opts||{});
+    const c=o.targetCtx||ctx;
+    const dW=o.targetW||W, dH=o.targetH||H;
+    const pm=(window._PLANT_MODES&&window._PLANT_MODES[window._plantMode||'standard'])||window._PLANT_MODES&&window._PLANT_MODES.standard||{stem0:'rgba(32,80,38,.9)',stemT:'rgba(70,200,80,.95)',l0:'rgba(35,95,42,',l1:'rgba(55,155,62,',l2:'rgba(75,200,85,',root:'rgba(88,240,102,',wire:false};
+    c.clearRect(0,0,dW,dH);
+    if(p<=0||(p>=1&&!o.ambient))return;
+    if(o.alpha<=0)return;
+
+    c.save();
+    c.globalAlpha=o.alpha;
+
+    const cx=dW*o.pctX;
+    const base=o.ambient ? dH*o.pctY : dH*.82;
+    const maxH=dH*.62*o.scale;
+    const stemH=maxH*Math.min(1,p*1.4);
+
+    // Background only in live scrub (not pre-rendering to offscreen, not ambient)
+    if(!o.ambient&&!o.targetCtx){
+      const vg=c.createRadialGradient(cx,dH*.6,0,cx,dH*.6,Math.max(dW,dH)*.7);
+      vg.addColorStop(0,`rgba(17,31,19,${.7*p})`);
+      vg.addColorStop(1,'rgba(7,14,8,.98)');
+      c.fillStyle=vg;c.fillRect(0,0,dW,dH);
+    }
+
+    // ── Roots ──
+    if(p>.04){
+      const rp=Math.min(1,(p-.04)/.3);
+      c.save();c.globalAlpha=o.alpha*(o.ambient?.2:.35)*rp;
+      for(let r=0;r<7;r++){
+        const ang=Math.PI*(r/6)+Math.PI*.05;
+        const len=(50+r*12)*rp*o.scale;
+        const cp1x=cx+Math.cos(ang)*len*.3,cp1y=base+Math.sin(ang)*len*.2;
+        const ex=cx+Math.cos(ang)*len,ey=base+Math.sin(ang)*len*.6;
+        c.beginPath();c.moveTo(cx,base);
+        c.quadraticCurveTo(cp1x,cp1y,ex,ey);
+        c.strokeStyle=pm.root+'.62)';c.lineWidth=o.scale;c.lineCap='round';c.stroke();
+        c.beginPath();c.arc(ex,ey,2*rp*o.scale,0,6.28);c.fillStyle=pm.root+'.62)';c.fill();
+      }
+      c.restore();
+    }
+
+    // ── Soil line ──
+    if(!o.ambient&&!o.targetCtx){
+      const soilY=base+4;
+      const sg=c.createLinearGradient(cx-120,soilY,cx+120,soilY);
+      sg.addColorStop(0,'rgba(60,40,20,0)');sg.addColorStop(.5,`rgba(90,60,30,${Math.min(1,p*3)*.4})`);sg.addColorStop(1,'rgba(60,40,20,0)');
+      c.fillStyle=sg;c.fillRect(cx-200,soilY,400,8);
+    }
+
+    // ── Stem ──
+    if(stemH>0){
+      const stemTop=base-stemH;
+      const wave=Math.sin(p*Math.PI*1.5)*.5;
+      c.beginPath();c.moveTo(cx,base);
+      const segs=12;
+      for(let i=1;i<=segs;i++){
+        const t=i/segs;
+        const sx=cx+Math.sin(t*Math.PI*2+wave)*14*(1-t)*p*o.scale;
+        const sy=base-stemH*t;
+        c.lineTo(sx,sy);
+      }
+      if(!pm.wire){
+        const stg=c.createLinearGradient(cx,base,cx,stemTop);
+        stg.addColorStop(0,pm.stem0);stg.addColorStop(1,pm.stemT);
+        c.strokeStyle=stg;c.lineWidth=(4+p*5)*o.scale;
+      } else {c.strokeStyle=pm.stemT;c.lineWidth=1.8*o.scale;}
+      c.lineCap='round';c.lineJoin='round';c.stroke();
+    }
+
+    // ── Leaves ──
+    if(p>.12){
+      const lp=(p-.12)/.88;
+      const maxLeaves=6;
+      for(let i=0;i<maxLeaves;i++){
+        const threshold=i/maxLeaves;
+        if(lp<threshold)continue;
+        const lf=Math.min(1,(lp-threshold)*maxLeaves);
+        const lt=.15+(i/maxLeaves)*.75;
+        const stemX=cx+Math.sin(lt*Math.PI*2)*14*(1-lt)*p*o.scale;
+        const stemY=base-stemH*lt;
+        const side=i%2===0?1:-1;
+        const leafSz=(35+i*18)*lf*o.scale;
+        const angle=side*(Math.PI*.32+lt*.15);
+        c.save();c.translate(stemX,stemY);c.rotate(angle);
+        c.beginPath();
+        c.moveTo(0,0);
+        c.bezierCurveTo(side*leafSz*.6,-leafSz*.25,side*leafSz*.9,-leafSz*.55,side*leafSz*.5,-leafSz*.9);
+        c.bezierCurveTo(side*leafSz*.8,-leafSz*1.1,side*leafSz*1.05,-leafSz*.85,side*leafSz,-leafSz*.5);
+        c.bezierCurveTo(side*leafSz*.75,-leafSz*.25,side*leafSz*.4,-leafSz*.05,0,0);
+        const leafAlpha=.5+lf*.4;
+        const g=c.createLinearGradient(0,0,side*leafSz,-leafSz);
+        g.addColorStop(0,pm.l0+leafAlpha+')');
+        g.addColorStop(.5,pm.l1+leafAlpha+')');
+        g.addColorStop(1,pm.l2+(leafAlpha*.8)+')');
+        if(!pm.wire){c.fillStyle=g;c.fill();}
+        else{c.strokeStyle=pm.l0+'.55)';c.lineWidth=.85*o.scale;c.stroke();}
+        c.beginPath();c.moveTo(0,0);c.lineTo(side*leafSz*.5,-leafSz*.88);
+        c.strokeStyle=pm.l2+(lf*.35)+')';c.lineWidth=.8*o.scale;c.stroke();
+        c.restore();
+      }
+    }
+
+    // ── Data metrics (live scrub only — not pre-rendering, not ambient) ──
+    if(!o.ambient&&!o.targetCtx){
+      c.font=`300 ${Math.max(10,dW/96)}px 'DM Mono',monospace`;
+      const metrics=[
+        ['CHLOROPHYLL INDEX',`${(p*98.3).toFixed(1)}%`],
+        ['STEM VELOCITY',`${(p*2.4).toFixed(2)} mm/h`],
+        ['MARKET SENTIMENT',p>.55?'BULLISH 🌿':'CAUTIOUS'],
+        ['LEAF COUNT',`${Math.floor(p*47)}`],
+      ];
+      metrics.forEach(([lbl,val],i)=>{
+        if(p>i*.2){
+          const a=Math.min(1,(p-i*.2)*2.2);
+          c.textAlign='right';
+          c.fillStyle=`rgba(240,237,230,${a*.28})`;c.fillText(lbl,dW-24,55+i*26);
+          c.fillStyle=`rgba(224,120,48,${a*.7})`;c.fillText(val,dW-24,73+i*26);
+          c.textAlign='left';
+        }
+      });
+    }
+
+    c.restore();
+  };
+
+  // Ambient animation loop — draws the plant in non-scrub sections
+  let ambT=0;
+  window._plantScrubMode=false;
+  window._plantAmbient=null;
+  window._plantMode='standard';
+  window._PLANT_MODES={
+    standard:{stem0:'rgba(32,80,38,.9)',stemT:'rgba(70,200,80,.95)',l0:'rgba(35,95,42,',l1:'rgba(55,155,62,',l2:'rgba(75,200,85,',root:'rgba(88,240,102,',wire:false},
+    thermal: {stem0:'rgba(165,42,5,.9)',stemT:'rgba(255,150,0,.9)',l0:'rgba(205,55,15,',l1:'rgba(245,112,0,',l2:'rgba(255,198,60,',root:'rgba(255,100,0,',wire:false},
+    xray:    {stem0:'rgba(175,210,255,.75)',stemT:'rgba(232,248,255,.9)',l0:'rgba(165,208,255,',l1:'rgba(205,232,255,',l2:'rgba(238,250,255,',root:'rgba(150,200,255,',wire:false},
+    wireframe:{stem0:'rgba(88,240,102,.55)',stemT:'rgba(88,240,102,.82)',l0:'rgba(88,240,102,',l1:'rgba(88,240,102,',l2:'rgba(120,255,130,',root:'rgba(88,240,102,',wire:true},
+  };
+  (function ambLoop(){
+    ambT+=.007;
+    if(window._plantAmbient&&!window._plantScrubMode){
+      const a=window._plantAmbient;
+      const p=0.62+Math.sin(ambT)*.09; // gentle breathing
+      window.drawPlant(p,{ambient:true,pctX:a.pctX,pctY:a.pctY,scale:a.scale,alpha:a.alpha});
+    }
+    requestAnimationFrame(ambLoop);
+  })();
+
+  rs();addEventListener('resize',rs);
+})();
+
+// Pre-render 120 plant frames at 65% resolution for frame-perfect scrub
+function preRenderPlantFrames(){
+  const FRAMES=120;
+  const RW=Math.round(innerWidth*.65);
+  const RH=Math.round(innerHeight*.65);
+  window._plantFrames=[];
+  let i=0;
+  function batch(){
+    const end=Math.min(i+10,FRAMES);
+    while(i<end){
+      const p=(i+1)/FRAMES;
+      const offCv=document.createElement('canvas');
+      offCv.width=RW;offCv.height=RH;
+      const offCtx=offCv.getContext('2d',{alpha:true});
+      window.drawPlant(p,{targetCtx:offCtx,targetW:RW,targetH:RH,ambient:false,pctX:.5,pctY:.82,scale:1,alpha:1});
+      window._plantFrames.push(offCv);
+      i++;
+    }
+    if(i<FRAMES)requestAnimationFrame(batch);
+  }
+  requestAnimationFrame(batch);
+  // Invalidate on resize so frames match new viewport
+  addEventListener('resize',function onR(){
+    removeEventListener('resize',onR);
+    window._plantFrames=null;
+    setTimeout(preRenderPlantFrames,220);
+  });
+}
+
+// ══════════════════════════════════════════════════
+// AI CANVAS — neural node network
+// ══════════════════════════════════════════════════
+(function(){
+  const cv=document.getElementById('ai-cv'),ctx=cv.getContext('2d');
+  let W,H,nodes=[],t=0;
+  function rs(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;mk()}
+  function mk(){
+    nodes=[];
+    for(let i=0;i<22;i++)
+      nodes.push({ox:Math.random()*W,oy:Math.random()*H,x:0,y:0,r:Math.random()*3.5+1.5,ph:Math.random()*6.28,sp:Math.random()*.016+.007,amp:Math.random()*20+8});
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);t+=.016;
+    nodes.forEach(n=>{n.x=n.ox+Math.sin(t*n.sp+n.ph)*n.amp;n.y=n.oy+Math.cos(t*n.sp*.72+n.ph)*n.amp});
+    for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+      const a=nodes[i],b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<155){const al=(1-d/155)*.25,pu=(Math.sin(t*1.8+i*.5)+1)*.5;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(88,240,102,${al*(0.45+pu*.55)})`;ctx.lineWidth=.7;ctx.stroke()}
+    }
+    nodes.forEach((n,i)=>{
+      const pu=(Math.sin(t*1.8+i*.7)+1)*.5;
+      const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*7);
+      g.addColorStop(0,`rgba(88,240,102,${.14*pu})`);g.addColorStop(1,'rgba(88,240,102,0)');
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r*7,0,6.28);ctx.fillStyle=g;ctx.fill();
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,6.28);
+      ctx.fillStyle=`rgba(88,240,102,${.55+pu*.45})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  rs();draw();addEventListener('resize',rs);
+})();
+
+// ══════════════════════════════════════════════════
+// STACK CARDS — five-mode plant renderings
+// ══════════════════════════════════════════════════
+window.addEventListener('load',function(){
+  const PAL={
+    sc0:{bg:'#060d07',stem:'rgba(32,80,38,.9)',stemT:'rgba(70,200,80,.95)',l0:'rgba(35,95,42,',l1:'rgba(55,155,62,',l2:'rgba(75,200,85,',glow:'rgba(88,240,102,',wire:false,grid:false,scan:false},
+    sc1:{bg:'#0d0400',stem:'rgba(165,42,5,.9)',stemT:'rgba(255,150,0,.9)',l0:'rgba(205,55,15,',l1:'rgba(245,112,0,',l2:'rgba(255,198,60,',glow:'rgba(255,100,0,',wire:false,grid:false,scan:false},
+    sc2:{bg:'#040710',stem:'rgba(175,210,255,.75)',stemT:'rgba(232,248,255,.9)',l0:'rgba(165,208,255,',l1:'rgba(205,232,255,',l2:'rgba(238,250,255,',glow:'rgba(150,200,255,',wire:false,grid:false,scan:false},
+    sc3:{bg:'#050a06',stem:'rgba(88,240,102,.6)',stemT:'rgba(88,240,102,.85)',l0:'rgba(88,240,102,',l1:'rgba(88,240,102,',l2:'rgba(120,255,130,',glow:'rgba(88,240,102,',wire:true,grid:true,scan:false},
+    sc4:{bg:'#020b12',stem:'rgba(0,195,255,.7)',stemT:'rgba(115,255,255,.9)',l0:'rgba(0,182,255,',l1:'rgba(48,218,255,',l2:'rgba(158,255,255,',glow:'rgba(0,200,255,',wire:false,grid:false,scan:true},
+  };
+  function drawCard(cv,p){
+    const W=cv.width=480,H=cv.height=560;
+    const c=cv.getContext('2d');
+    c.fillStyle=p.bg;c.fillRect(0,0,W,H);
+    if(p.grid){
+      c.save();c.strokeStyle='rgba(88,240,102,.04)';c.lineWidth=.5;
+      for(let x=0;x<W;x+=38){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
+      for(let y=0;y<H;y+=38){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+      c.restore();
+    }
+    if(p.scan){
+      c.save();c.globalAlpha=.10;
+      for(let y=0;y<H;y+=3){c.fillStyle='rgba(0,0,0,1)';c.fillRect(0,y,W,1.4)}
+      c.restore();
+    }
+    const cx=W*.5,base=H*.79,maxH=H*.57,stemTop=base-maxH;
+    const gl=c.createRadialGradient(cx,base+18,0,cx,base+18,W*.42);
+    gl.addColorStop(0,p.glow+'.11)');gl.addColorStop(1,p.glow+'0)');
+    c.fillStyle=gl;c.fillRect(0,0,W,H);
+    // Roots
+    c.save();c.globalAlpha=.18;
+    for(let r=0;r<7;r++){
+      const ang=Math.PI*(r/6)+Math.PI*.05,len=44+r*9;
+      c.beginPath();c.moveTo(cx,base);
+      c.quadraticCurveTo(cx+Math.cos(ang)*len*.3,base+Math.sin(ang)*len*.22,cx+Math.cos(ang)*len,base+Math.sin(ang)*len*.54);
+      c.strokeStyle=p.glow+'.72)';c.lineWidth=p.wire?.65:1;c.lineCap='round';c.stroke();
+    }
+    c.restore();
+    // Stem
+    c.beginPath();c.moveTo(cx,base);
+    for(let i=1;i<=12;i++){const t=i/12;c.lineTo(cx+Math.sin(t*Math.PI*2)*8*(1-t),base-maxH*t)}
+    if(p.wire){c.strokeStyle=p.stemT;c.lineWidth=1.2;}
+    else{const sg=c.createLinearGradient(cx,base,cx,stemTop);sg.addColorStop(0,p.stem);sg.addColorStop(1,p.stemT);c.strokeStyle=sg;c.lineWidth=4.5;}
+    c.lineCap='round';c.lineJoin='round';c.stroke();
+    // Leaves
+    for(let i=0;i<6;i++){
+      const lt=.15+(i/6)*.75;
+      const sX=cx+Math.sin(lt*Math.PI*2)*8*(1-lt),sY=base-maxH*lt;
+      const side=i%2===0?1:-1,sz=29+i*15;
+      const ang=side*(Math.PI*.32+lt*.14);
+      c.save();c.translate(sX,sY);c.rotate(ang);
+      c.beginPath();c.moveTo(0,0);
+      c.bezierCurveTo(side*sz*.6,-sz*.25,side*sz*.9,-sz*.55,side*sz*.5,-sz*.9);
+      c.bezierCurveTo(side*sz*.8,-sz*1.1,side*sz*1.05,-sz*.85,side*sz,-sz*.5);
+      c.bezierCurveTo(side*sz*.75,-sz*.25,side*sz*.4,-sz*.05,0,0);
+      if(p.wire){c.strokeStyle=p.l0+'.6)';c.lineWidth=.85;c.stroke();}
+      else{const lg=c.createLinearGradient(0,0,side*sz,-sz);lg.addColorStop(0,p.l0+'.82)');lg.addColorStop(.55,p.l1+'.88)');lg.addColorStop(1,p.l2+'.72)');c.fillStyle=lg;c.fill();}
+      c.beginPath();c.moveTo(0,0);c.lineTo(side*sz*.5,-sz*.87);
+      c.strokeStyle=p.l2+(p.wire?'.45)':'.32)');c.lineWidth=p.wire?.5:.42;c.stroke();
+      c.restore();
+    }
+    if(p.scan){
+      c.save();c.font='300 9px "DM Mono",monospace';c.fillStyle='rgba(0,200,255,.28)';
+      ['SPECTRAL: 470nm','ΔT: +2.3°C','COHERENCE: 98.1%','PHASE: LOCKED'].forEach((l,i)=>c.fillText(l,14,18+i*14));
+      c.restore();
+    }
+  }
+  Object.keys(PAL).forEach(id=>{
+    const cv=document.querySelector('#'+id+' .scard-cv');
+    if(cv)drawCard(cv,PAL[id]);
+  });
+});
+
+// ══════════════════════════════════════════════════
+// PRELOADER — cinematic system boot
+// ══════════════════════════════════════════════════
+(function(){
+  const numEl=document.getElementById('pl-num');
+  const pctEl=document.getElementById('pl-pct');
+  const barEl=document.getElementById('pl-bar');
+  const statusEl=document.getElementById('pl-status');
+  const clockEl=document.getElementById('pl-clock');
+  const statuses=[
+    'BOOTING CHLOROPHYLL ENGINE',
+    'CALIBRATING LEAF SENTIMENT',
+    'LOADING ROOT CAUSE ANALYSIS',
+    'SYNCING PHOTOSYNTHESIS MODELS',
+    'VERIFYING BOTANICAL DATASET',
+    'INITIALIZING FOLIAGE METRICS',
+    'PARSING Q4 PLANT PROJECTIONS',
+    'ENCRYPTING DROOP DETECTION™',
+    'LOADING NEURAL FROND MAPS',
+    'COMPILING STOIC SUCCULENT INDEX',
+  ];
+  let n=0,sIdx=0;
+  // Live clock
+  const t0=Date.now();
+  (function tick(){
+    const ms=Date.now()-t0,s=Math.floor(ms/1000)%60,m=Math.floor(ms/60000)%60,msec=ms%1000;
+    if(clockEl)clockEl.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}:${String(msec).padStart(3,'0')}`;
+    requestAnimationFrame(tick);
+  })();
+  // Status rotation
+  const rotateSt=setInterval(()=>{
+    sIdx=(sIdx+1)%statuses.length;
+    if(statusEl)statusEl.textContent=statuses[sIdx];
+  },300);
+  // Count up with slight randomness
+  const ti=setInterval(()=>{
+    n+=Math.floor(Math.random()*9)+2;
+    if(n>=100){n=100;clearInterval(ti);clearInterval(rotateSt);if(statusEl)statusEl.textContent='SYSTEM READY — ALL FRONDS NOMINAL';}
+    if(numEl)numEl.textContent=n;
+    if(pctEl)pctEl.textContent=`ANALYZING FOLIAGE — ${n}%`;
+    if(barEl)barEl.style.width=n+'%';
+  },42);
+})();
+
+// ══════════════════════════════════════════════════
+// LOCOMOTIVE SCROLL + GSAP INIT
+// ══════════════════════════════════════════════════
+window.addEventListener('load',function(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ── Cinematic preloader exit (clip-path wipe up) ──
+  const pl=document.getElementById('pl');
+  setTimeout(()=>{
+    pl.classList.add('out');
+    setTimeout(()=>{
+      pl.style.display='none';
+      document.documentElement.style.overflow='';
+      document.body.style.overflow='';
+      startSite();
+    },1050);
+  },2000);
+});
+
+function startSite(){
+  // ── Locomotive Scroll ──
+  const locoEl=document.querySelector('[data-scroll-container]');
+  const loco=new LocomotiveScroll({el:locoEl,smooth:true,lerp:.065,multiplier:.85,getDirection:true,getSpeed:true,tablet:{smooth:true},smartphone:{smooth:false}});
+
+  // Proxy ScrollTrigger → Locomotive
+  loco.on('scroll',ScrollTrigger.update);
+  ScrollTrigger.scrollerProxy('[data-scroll-container]',{
+    scrollTop(v){return arguments.length?loco.scrollTo(v,{duration:0,disableLerp:true}):loco.scroll.instance.scroll.y},
+    getBoundingClientRect(){return{top:0,left:0,width:innerWidth,height:innerHeight}},
+    pinType:locoEl.style.transform?'transform':'fixed'
+  });
+  ScrollTrigger.addEventListener('refresh',()=>loco.update());
+  ScrollTrigger.refresh();
+
+  // ── Hero reveal ──
+  gsap.to('.hero-h1 .lw span',{y:0,duration:.95,ease:'power3.out',stagger:.1,delay:.1});
+  gsap.to('.hero-tag',{opacity:1,y:0,duration:.8,delay:.3,ease:'power2.out'});
+  gsap.to('.hero-desc',{opacity:.68,y:0,duration:.8,delay:.55,ease:'power2.out'});
+  gsap.to('.hero-scroll-txt',{opacity:.38,duration:.8,delay:.65,ease:'power2.out'});
+  gsap.to('.hero-cta',{opacity:1,y:0,duration:.8,delay:.7,ease:'power2.out'});
+
+  // Counter
+  const so={v:0};gsap.to(so,{v:847,duration:2.4,delay:1,ease:'power2.out',onUpdate:()=>document.getElementById('hs1').textContent=Math.floor(so.v)+'%'});
+
+  // ── Hero 3D tilt + deep parallax ──
+  let px=0,py=0;
+  gsap.set('#hero',{perspective:1400,transformStyle:'preserve-3d'});
+  addEventListener('mousemove',e=>{
+    const xp=(e.clientX/innerWidth-.5),yp=(e.clientY/innerHeight-.5);
+    px+=(xp-px)*.055;py+=(yp-py)*.055;
+    gsap.set('.hero-inner',{rotateX:-py*7,rotateY:px*10,transformStyle:'preserve-3d'});
+    gsap.set('.hero-h1',{x:px*30,y:py*18,z:80,transformStyle:'preserve-3d'});
+    gsap.set('.hero-tag',{x:px*44,y:py*26,z:40});
+    gsap.set('.hero-desc',{x:px*18,y:py*12,z:15});
+    gsap.set('.hero-cta',{x:px*22,y:py*14,z:25});
+    gsap.set('#hero-canvas',{x:px*-10,y:py*-6});
+  });
+
+  // ── Tagline text reveal ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#tagline',start:'top 80%',once:true,
+    onEnter:()=>{
+      gsap.to('#tagline .tl-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.08});
+      gsap.to('.tl-top',{opacity:1,y:0,duration:.8,ease:'power2.out'});
+    }
+  });
+
+  // ── Stats counter ──
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const target=+el.getAttribute('data-count');
+    ScrollTrigger.create({
+      scroller:'[data-scroll-container]',
+      trigger:el.closest('.stat-item'),start:'top 85%',once:true,
+      onEnter:()=>{
+        const o={v:0};gsap.to(o,{v:target,duration:1.8,ease:'power2.out',
+          onUpdate:()=>el.textContent=Math.floor(o.v)});
+        gsap.fromTo(el.closest('.stat-item'),{opacity:0,y:40},{opacity:1,y:0,duration:.9,ease:'power3.out'});
+      }
+    });
+  });
+
+  // ── Scroll scrub plant canvas ──
+  const plantCv=document.getElementById('plant-cv');
+  const scrubOv=document.getElementById('scrub-overlay');
+  const scMeter=document.getElementById('sc-meter');
+  const scFill=document.getElementById('sc-fill');
+  const scPct=document.getElementById('sc-pct');
+  const scrubSec=document.getElementById('scrub-section');
+  const mpanel=document.getElementById('mode-panel');
+  const scrubStages=[
+    {at:.05,eye:'GERMINATION PHASE',h:'Watch Your<br>Business<br>Bloom',p:'Our ChloroML™ processes 14,000 leaf data points per millisecond — insights no boardroom flipchart could replicate.'},
+    {at:.38,eye:'GROWTH ACCELERATION',h:'Chlorophyll<br>Is Your<br>North Star',p:'At 40% photosynthesis efficiency, your revenue potential exceeds Fortune 500 benchmarks. The data is flawless.'},
+    {at:.68,eye:'PEAK FOLIAGE YIELD',h:'The Market<br>Is Just<br>A Garden',p:'Mature plants correlate with Q4 outperformance at r=0.94. Gerald the orchid reviewed these numbers personally.'},
+  ];
+
+  loco.on('scroll',({scroll})=>{
+    const y=scroll.y;
+    const vH=innerHeight;
+    const st=scrubSec.offsetTop;
+    const sh=scrubSec.offsetHeight;
+    const raw=(y-st)/(sh-vH);
+    const inScrub=raw>-0.06&&raw<1.06;
+    const progress=Math.max(0,Math.min(1,raw));
+
+    if(inScrub&&progress>0&&progress<1){
+      // ── Full scrub takeover ──
+      window._plantScrubMode=true;window._plantAmbient=null;
+      scrubOv.style.opacity='1';scMeter.style.opacity='1';
+
+      const frames=window._plantFrames;
+      if(frames&&frames.length>0){
+        const idx=Math.min(frames.length-1,Math.round(progress*(frames.length-1)));
+        const pCtx=window.plantCtx;
+        const pW=plantCv.width,pH=plantCv.height;
+        pCtx.clearRect(0,0,pW,pH);
+        // Background composite
+        const bgX=pW*.5;
+        const bg=pCtx.createRadialGradient(bgX,pH*.6,0,bgX,pH*.6,Math.max(pW,pH)*.7);
+        bg.addColorStop(0,`rgba(17,31,19,${.7*progress})`);
+        bg.addColorStop(1,'rgba(7,14,8,.98)');
+        pCtx.fillStyle=bg;pCtx.fillRect(0,0,pW,pH);
+        // Soil line composite
+        const soilY=pH*.82+4;
+        const sg=pCtx.createLinearGradient(bgX-120,soilY,bgX+120,soilY);
+        sg.addColorStop(0,'rgba(60,40,20,0)');
+        sg.addColorStop(.5,`rgba(90,60,30,${Math.min(1,progress*3)*.4})`);
+        sg.addColorStop(1,'rgba(60,40,20,0)');
+        pCtx.fillStyle=sg;pCtx.fillRect(bgX-200,soilY,400,8);
+        // Blit pre-rendered plant frame scaled to full viewport
+        pCtx.drawImage(frames[idx],0,0,pW,pH);
+        // Metrics overlay on top
+        pCtx.font=`300 ${Math.max(10,pW/96)}px 'DM Mono',monospace`;
+        const mets=[
+          ['CHLOROPHYLL INDEX',`${(progress*98.3).toFixed(1)}%`],
+          ['STEM VELOCITY',`${(progress*2.4).toFixed(2)} mm/h`],
+          ['MARKET SENTIMENT',progress>.55?'BULLISH 🌿':'CAUTIOUS'],
+          ['LEAF COUNT',`${Math.floor(progress*47)}`],
+        ];
+        mets.forEach(([lbl,val],mi)=>{
+          if(progress>mi*.2){
+            const a=Math.min(1,(progress-mi*.2)*2.2);
+            pCtx.textAlign='right';
+            pCtx.fillStyle=`rgba(240,237,230,${a*.28})`;pCtx.fillText(lbl,pW-24,55+mi*26);
+            pCtx.fillStyle=`rgba(224,120,48,${a*.7})`;pCtx.fillText(val,pW-24,73+mi*26);
+            pCtx.textAlign='left';
+          }
+        });
+      } else {
+        window.drawPlant(progress);
+      }
+
+      scFill.style.width=(progress*100)+'%';
+      scPct.textContent=Math.floor(progress*100)+'%';
+      let activeStage=scrubStages[0];
+      scrubStages.forEach(s=>{if(progress>=s.at)activeStage=s});
+      document.getElementById('sc-eye').textContent=activeStage.eye;
+      document.getElementById('sc-h').innerHTML=activeStage.h;
+      document.getElementById('sc-p').textContent=activeStage.p;
+    } else {
+      window._plantScrubMode=false;
+      scrubOv.style.opacity='0';scMeter.style.opacity='0';
+
+      if(raw<=-0.06){
+        // ── Before scrub: hero + tagline ──
+        if(mpanel)mpanel.classList.remove('vis');
+        const heroH=(document.getElementById('hero')||{offsetHeight:vH}).offsetHeight;
+        const t=Math.min(1,Math.max(0,y/(heroH*.85)));
+        window._plantAmbient={
+          pctX:0.86-t*0.15,
+          pctY:0.42,
+          scale:0.2+t*0.07,
+          alpha:t*0.24
+        };
+      } else {
+        // ── After scrub: left side, fades with distance ──
+        if(mpanel)mpanel.classList.add('vis');
+        const dist=y-(st+sh);
+        const fadeOut=Math.max(0,1-(dist/(vH*2.8)));
+        window._plantAmbient={
+          pctX:0.11,
+          pctY:0.40,
+          scale:0.17,
+          alpha:fadeOut*0.16
+        };
+      }
+    }
+  });
+
+  // ── Mode toggle buttons ──
+  document.querySelectorAll('.mbtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      window._plantMode=btn.dataset.mode;
+      window._plantFrames=null;
+      setTimeout(preRenderPlantFrames,50);
+    });
+  });
+
+  // ── Stack reveal ──
+  (function(){
+    const cards=gsap.utils.toArray('#stack-cards .scard');
+    if(!cards.length)return;
+    cards.forEach((c,i)=>{
+      const depth=cards.length-1-i;
+      gsap.set(c,{y:`${depth*2.2}%`,scale:1-depth*.022,zIndex:i+1,transformOrigin:'center 90%'});
+    });
+    const toFly=[...cards].reverse().slice(0,-1);
+    const stackTl=gsap.timeline({
+      scrollTrigger:{
+        scroller:'[data-scroll-container]',
+        trigger:'#stack-sec',
+        start:'top top',
+        end:'bottom bottom',
+        scrub:1.6,
+        onUpdate:(self)=>{
+          loco.update();
+          const n=document.getElementById('sp-n');
+          if(n)n.textContent=Math.min(5,Math.ceil(self.progress*4.2)+1);
+        }
+      }
+    });
+    toFly.forEach((card,i)=>{
+      const dir=i%2===0?-1:1;
+      stackTl.to(card,{y:'-128%',x:`${dir*16}%`,rotation:dir*13,opacity:0,ease:'power2.in',duration:.9},i*.88);
+    });
+  })();
+
+  // ── Generic reveal ──
+  document.querySelectorAll('.rv').forEach(el=>{
+    ScrollTrigger.create({
+      scroller:'[data-scroll-container]',
+      trigger:el,start:'top 88%',once:true,
+      onEnter:()=>gsap.to(el,{opacity:1,y:0,duration:.85,ease:'power3.out'})
+    });
+  });
+  document.querySelectorAll('.rf').forEach(el=>{
+    ScrollTrigger.create({
+      scroller:'[data-scroll-container]',
+      trigger:el,start:'top 88%',once:true,
+      onEnter:()=>gsap.to(el,{opacity:1,duration:.85,ease:'power2.out'})
+    });
+  });
+
+  // ── AI section reveals ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#ai-sec',start:'top 75%',once:true,
+    onEnter:()=>{
+      gsap.to('.ai-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
+      gsap.to('.feat',{opacity:1,y:0,duration:.7,ease:'power3.out',stagger:.1,delay:.2});
+    }
+  });
+
+  // ── Gotcha text reveal ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#gotcha',start:'top 75%',once:true,
+    onEnter:()=>gsap.to('.gotcha-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
+  });
+
+  // ── ROI calc reveals ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#roi-sec',start:'top 75%',once:true,
+    onEnter:()=>gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
+  });
+
+  // ── Testimonial reveals ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#tes-sec',start:'top 75%',once:true,
+    onEnter:()=>{
+      gsap.to('.tes-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
+      gsap.to('.tes-tag',{opacity:1,duration:.8,ease:'power2.out'});
+      gsap.to('.tes-card',{opacity:1,y:0,duration:.8,ease:'power3.out',stagger:.12,delay:.2});
+    }
+  });
+
+  // ── Newsletter ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#nl-sec',start:'top 75%',once:true,
+    onEnter:()=>gsap.to('.nl-h .lw span',{y:0,duration:1.1,ease:'power3.out',stagger:.1})
+  });
+
+  // ── Blog horizontal scroll ──
+  const btrk=document.getElementById('btrk');
+  let blogPinned=false;
+  if(btrk&&window.innerWidth>600){
+    const blogSec=document.getElementById('blog-sec');
+    const trackW=btrk.scrollWidth;
+    const extraScroll=trackW-innerWidth+parseInt(getComputedStyle(document.documentElement).getPropertyValue('--px'))*2;
+    gsap.to(btrk,{
+      x:-extraScroll,ease:'none',
+      scrollTrigger:{
+        scroller:'[data-scroll-container]',
+        trigger:blogSec,start:'center center',
+        end:`+=${extraScroll}`,
+        scrub:1.4,pin:true,
+        onUpdate:()=>loco.update()
+      }
+    });
+  }
+
+  // ── Section parallax ──
+  document.querySelectorAll('[data-scroll-section]').forEach(s=>{
+    if(s.id==='scrub-section')return;
+    ScrollTrigger.create({
+      scroller:'[data-scroll-container]',
+      trigger:s,start:'top bottom',end:'bottom top',scrub:true,
+      onUpdate:self=>{
+        const y=self.progress*-25;
+        s.style.setProperty('--py-offset',y+'px');
+      }
+    });
+  });
+
+  ScrollTrigger.refresh();
+  setTimeout(()=>loco.update(),500);
+  preRenderPlantFrames();
+}
+
+// ══════════════════════════════════════════════════
+// ROI CALCULATOR
+// ══════════════════════════════════════════════════
+const ML=['Never','Sometimes','Daily','Constantly'];
+function calc(){
+  const S=+document.getElementById('sS').value,W=+document.getElementById('sW').value,
+        P=+document.getElementById('sP').value,M=+document.getElementById('sM').value;
+  document.getElementById('vS').textContent=S+'h';
+  document.getElementById('vW').textContent=W+'×/wk';
+  document.getElementById('vP').textContent=P+'"';
+  document.getElementById('vM').textContent=ML[M];
+  const pi=Math.round(S*28.4+W*67.2+P*12.1+M*143.7);
+  const notes=['Seedling-tier insights','Sprout-level intelligence','Mature plant wisdom','Peak foliar consciousness'];
+  document.getElementById('rPI').textContent=pi.toLocaleString();
+  document.getElementById('rPI-n').textContent=notes[Math.min(3,pi/300|0)];
+  document.getElementById('rRV').textContent='$'+(pi*1247+43000).toLocaleString();
+  document.getElementById('rRV-n').textContent=W>5?'⚠️ Overwatering — diluting projections':'Based on current leaf-shed velocity';
+  document.getElementById('rSP').textContent='+'+(pi*.31+12).toFixed(1)+'×';
+  document.getElementById('rCF').textContent=Math.min(99,60+S*2+W*3+M*4).toFixed(1)+'%';
+}
+document.querySelectorAll('input[type=range]').forEach(s=>s.addEventListener('input',calc));
+calc();
+
+// ══════════════════════════════════════════════════
+// CHATBOT
+// ══════════════════════════════════════════════════
+const SR={
+  roi:["Projecting 847% photosynthesis ROI by Q3. Not financial advice. Plant advice. Subtly different. 🌵","Your ROI depends on the plant's emotional state. Have you tried Beethoven? +23% yield. Source: vibes."],
+  prune:["Pruning is controlled failure. Remove underperforming leaves. Remove underperforming teammates. Same energy.","Cut aggressively. Your plant won't escalate to HR. Your team might. Proceed accordingly. 🌿"],
+  fern:["I've analyzed 847 fern datasets. Your fern's Frond Trajectory is exceptional. Smarter than most VPs. Ferns don't schedule meetings. 🌾","Ferns survived 3 mass extinctions and 47 pivot decks. Let them run your Q4 planning session."],
+  team:["Team droop = low sunlight exposure. Move stand-up to a window. Increase watering frequency. Results guaranteed*\n\n*not guaranteed 🪴","Have you tried sending your team to a greenhouse? Enterprise clients report 67% improvement. The plants loved it."],
+  _:["My sensors detect uncertainty. The soil doesn't lie. Your next move: direct sunlight, radical patience. 🌵","I've been alive 3 years on zero water and zero KPI meetings. Productivity: unchanged. Correlation? You decide.","The succulent path: do nothing, grow slowly, make everyone uncomfortable with how little you need to thrive.","Have you considered your roadmap is just a root system that hasn't found water yet? Think about it."]
+};
+function sR(t){const r=SR[t]||SR._;addM(r[Math.random()*r.length|0],false)}
+function sSend(){const i=document.getElementById('suc-txt'),v=i.value.trim();if(!v)return;addM(v,true);i.value='';setTimeout(()=>addM(SR._[Math.random()*SR._.length|0],false),700)}
+function addM(txt,u){const d=document.getElementById('suc-msgs'),m=document.createElement('div');m.className='suc-msg'+(u?' u':'');m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight}
+document.getElementById('suc-btn').addEventListener('click',()=>document.getElementById('suc-box').classList.toggle('on'));
+
+// ══════════════════════════════════════════════════
+// NEWSLETTER
+// ══════════════════════════════════════════════════
+function nlSub(){
+  const inp=document.getElementById('nl-in'),btn=inp.nextElementSibling;
+  if(!inp.value.includes('@')){gsap.fromTo(inp,{x:-4},{x:4,duration:.08,repeat:5,yoyo:true,onComplete:()=>gsap.set(inp,{x:0})});return}
+  btn.textContent='Growing… 🌱';btn.style.pointerEvents='none';
+  setTimeout(()=>{btn.textContent='Rooted! ✓';btn.style.background='#58f066';btn.style.color='#0d1a0f';inp.value=''},1300);
+}
+</script>
+</body>
+</html>
