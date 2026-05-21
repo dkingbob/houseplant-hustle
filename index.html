@@ -1154,6 +1154,21 @@ footer{
 }
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
 
+/* ─── SECTION DOTS (right) ──────────────── */
+#sec-dots{
+  position:fixed;right:1.8rem;top:50%;transform:translateY(-50%);
+  z-index:850;display:flex;flex-direction:column;gap:.7rem;
+  opacity:0;transition:opacity .6s;
+}
+#sec-dots.vis{opacity:1}
+.sec-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(240,237,230,.15);border:none;cursor:pointer;
+  transition:background .3s,transform .3s;padding:0;
+}
+.sec-dot:hover,.sec-dot.active{background:var(--orange);transform:scale(1.4)}
+@media(max-width:900px){#sec-dots{display:none}}
+
 /* ─── STOCK WIDGET ──────────────────────── */
 #stock-widget{
   position:fixed;top:5.5rem;right:var(--px);z-index:850;
@@ -1802,6 +1817,16 @@ footer{
   <p id="konami-p">Congratulations. Your plant is now technically a unicorn startup. Valuation: $1.2B. The ficus led the Series A. The cactus wants carry.</p>
   <button class="btn" onclick="document.getElementById('konami-overlay').classList.remove('on')">Close (The Orchid Is Watching)</button>
 </div>
+
+<!-- SECTION PROGRESS DOTS (right side) -->
+<nav id="sec-dots">
+  <button class="sec-dot" data-target="#hero" title="Hero"></button>
+  <button class="sec-dot" data-target="#tagline" title="PlantIQ"></button>
+  <button class="sec-dot" data-target="#ai-sec" title="Engine"></button>
+  <button class="sec-dot" data-target="#roi-sec" title="Calculator"></button>
+  <button class="sec-dot" data-target="#cta-sec" title="Join"></button>
+  <button class="sec-dot" data-target="#tes-sec" title="Proof"></button>
+</nav>
 
 <!-- STOCK TICKER WIDGET -->
 <div id="stock-widget">
@@ -2498,6 +2523,7 @@ function startSite(){
   // ── Locomotive Scroll ──
   const locoEl=document.querySelector('[data-scroll-container]');
   const loco=new LocomotiveScroll({el:locoEl,smooth:true,lerp:.065,multiplier:.85,getDirection:true,getSpeed:true,tablet:{smooth:true},smartphone:{smooth:false}});
+  window._loco=loco;
 
   // Proxy ScrollTrigger → Locomotive
   loco.on('scroll',ScrollTrigger.update);
@@ -2578,6 +2604,7 @@ function startSite(){
     const navEl=document.getElementById('nav');
     if(sp){const totalH=locoEl.scrollHeight-innerHeight;sp.style.width=totalH>0?Math.min(100,y/totalH*100)+'%':'0%'}
     if(navEl)navEl.classList.toggle('scrolled',y>80);
+    if(window._secDotsUpdate)window._secDotsUpdate(y);
     const vH=innerHeight;
     const st=scrubSec.offsetTop;
     const sh=scrubSec.offsetHeight;
@@ -3151,6 +3178,29 @@ function nlSub(){
   btn.textContent='Growing… 🌱';btn.style.pointerEvents='none';
   setTimeout(()=>{btn.textContent='Rooted! ✓';btn.style.background='#58f066';btn.style.color='#0d1a0f';inp.value=''},1300);
 }
+
+// ══════════════════════════════════════════════════
+// SECTION DOTS NAV
+// ══════════════════════════════════════════════════
+(function(){
+  const dots=document.querySelectorAll('.sec-dot');
+  const nav=document.getElementById('sec-dots');
+  if(!nav)return;
+  setTimeout(()=>nav.classList.add('vis'),3000);
+  dots.forEach(d=>{
+    d.addEventListener('click',()=>{
+      const t=document.querySelector(d.dataset.target);
+      if(t&&window._loco)window._loco.scrollTo(t,{offset:-80,duration:1400});
+    });
+  });
+  // Update active dot based on scroll
+  const sections=['#hero','#tagline','#ai-sec','#roi-sec','#cta-sec','#tes-sec'].map(s=>document.querySelector(s));
+  window._secDotsUpdate=function(y){
+    let active=0;
+    sections.forEach((s,i)=>{if(s&&s.offsetTop-200<=y)active=i});
+    dots.forEach((d,i)=>d.classList.toggle('active',i===active));
+  };
+})();
 
 // ══════════════════════════════════════════════════
 // STOCK WIDGET — fake HHPL price
