@@ -53,6 +53,11 @@ body{
     radial-gradient(ellipse 130% 70% at 50% -10%, rgba(24,55,26,.75) 0%, transparent 55%),
     radial-gradient(ellipse 70% 50% at 85% 110%, rgba(12,30,14,.6) 0%, transparent 50%),
     var(--black);
+  animation:bgDrift 18s ease-in-out infinite alternate;
+}
+@keyframes bgDrift{
+  from{background-position:0% 0%}
+  to{background-position:100% 100%}
 }
 
 body::before{
@@ -320,7 +325,14 @@ h1.hero-h1{
 .dash{height:1px;background:rgba(240,237,230,.055)}
 
 /* ─── TAGLINE SECTION ─────────────────────── */
-#tagline{padding:20vh var(--px) 16vh}
+#tagline{padding:20vh var(--px) 16vh;position:relative;overflow:hidden}
+.tl-bleed-n{
+  position:absolute;right:-8vw;top:50%;transform:translateY(-50%);
+  font-family:var(--df);font-weight:800;
+  font-size:clamp(12rem,38vw,38vw);line-height:1;
+  color:var(--white);opacity:.025;
+  pointer-events:none;user-select:none;letter-spacing:-.06em;
+}
 .tl-wrap{max-width:1520px;margin:0 auto}
 .tl-top{
   font-family:var(--mf);font-size:.62rem;letter-spacing:.3em;
@@ -1371,6 +1383,7 @@ footer{
 
 <!-- ══ TAGLINE ══ -->
 <section id="tagline" data-scroll-section>
+  <div class="tl-bleed-n" aria-hidden="true">847</div>
   <div class="tl-wrap">
     <div class="dash" style="margin-bottom:6vh"></div>
     <p class="tl-top" data-scroll data-scroll-class="tl-top-in">PlantIQ™ Platform</p>
