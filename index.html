@@ -197,6 +197,15 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
   animation:bk 2.2s ease-in-out infinite;flex-shrink:0;
 }
 .nav-logo em{font-style:normal;color:var(--orange)}
+.nav-logo:hover{animation:logoGlitch 0.35s steps(2,end)}
+@keyframes logoGlitch{
+  0%{clip-path:inset(40% 0 60% 0);transform:translate(-2px,0)}
+  20%{clip-path:inset(20% 0 70% 0);transform:translate(2px,0)}
+  40%{clip-path:inset(0% 0 80% 0);transform:translate(0,0)}
+  60%{clip-path:inset(70% 0 10% 0);transform:translate(-2px,0)}
+  80%{clip-path:inset(50% 0 30% 0);transform:translate(2px,0)}
+  100%{clip-path:none;transform:translate(0,0)}
+}
 .nav-links{display:flex;gap:3rem;list-style:none}
 .nav-links a{
   font-size:.66rem;font-weight:500;text-transform:uppercase;letter-spacing:.2em;
@@ -549,6 +558,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
   position:relative;overflow:hidden;
   background:var(--mid);
   transition:background .3s;
+  transform-style:preserve-3d;will-change:transform;
 }
 .bcard::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
@@ -1117,6 +1127,17 @@ footer{
 }
 #wl-btn.joined::before{display:none}
 .cta-fine{font-family:var(--mf);font-size:.52rem;opacity:.1;margin-top:1.8rem;letter-spacing:.06em}
+.cta-live-row{
+  font-family:var(--mf);font-size:.58rem;letter-spacing:.1em;
+  text-transform:uppercase;opacity:.35;margin-bottom:2rem;
+  display:flex;align-items:center;justify-content:center;gap:.6em;
+}
+.cta-live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);flex-shrink:0;
+  animation:livePulse 1.6s ease-in-out infinite;
+}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
 
 @media(max-width:900px){
   .ai-grid{grid-template-columns:1fr;gap:3rem}
@@ -1417,6 +1438,10 @@ footer{
     <span class="cta-counter-dot"></span>
     <span class="cta-counter-n" id="wl-count">47,238</span>
     <span class="cta-counter-lbl">on waitlist</span>
+  </div>
+  <div class="cta-live-row rv">
+    <span class="cta-live-dot"></span>
+    <span id="cta-live-n">12</span> people viewing this page right now
   </div>
   <div class="rv">
     <button id="wl-btn"><span id="wl-btn-txt">🪴 &nbsp;Join Waitlist — It's Free</span></button>
@@ -2610,6 +2635,19 @@ function startSite(){
     });
   });
 
+  // ── Blog card 3D tilt ──
+  document.querySelectorAll('.bcard').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const dx=(e.clientX-r.left)/r.width-.5;
+      const dy=(e.clientY-r.top)/r.height-.5;
+      gsap.to(card,{rotateX:-dy*10,rotateY:dx*10,scale:1.025,duration:.35,ease:'power2.out',transformPerspective:700});
+    });
+    card.addEventListener('mouseleave',()=>{
+      gsap.to(card,{rotateX:0,rotateY:0,scale:1,duration:.6,ease:'elastic.out(1,.6)',transformPerspective:700});
+    });
+  });
+
   // ── Magnetic buttons ──
   document.querySelectorAll('.btn:not(.ol)').forEach(btn=>{
     btn.addEventListener('mousemove',e=>{
@@ -2878,6 +2916,13 @@ document.getElementById('suc-btn').addEventListener('click',()=>document.getElem
     n+=Math.floor(Math.random()*3)+1;
     if(cnt)cnt.textContent=n.toLocaleString();
   },3400);
+  // Live viewers fluctuation
+  const liveEl=document.getElementById('cta-live-n');
+  if(liveEl){
+    let lv=9+Math.floor(Math.random()*8);
+    liveEl.textContent=lv;
+    setInterval(()=>{lv=Math.max(6,lv+(Math.random()>.5?1:-1)*(Math.floor(Math.random()*3)+1));liveEl.textContent=lv},4800);
+  }
   btn.addEventListener('click',()=>{
     if(joined)return;
     joined=true;n++;
