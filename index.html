@@ -1139,6 +1139,45 @@ footer{
 }
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
 
+/* ─── STOCK WIDGET ──────────────────────── */
+#stock-widget{
+  position:fixed;top:5.5rem;right:var(--px);z-index:850;
+  background:rgba(15,26,16,.88);
+  border:1px solid rgba(240,237,230,.06);
+  border-radius:10px;padding:.65rem 1rem;
+  backdrop-filter:blur(8px);
+  display:none;flex-direction:column;align-items:flex-end;gap:.15rem;
+  cursor:default;
+}
+#stock-widget.vis{display:flex}
+.sw-label{font-family:var(--mf);font-size:.45rem;letter-spacing:.18em;text-transform:uppercase;opacity:.3}
+.sw-price{font-family:var(--df);font-size:.88rem;font-weight:800;letter-spacing:-.02em}
+.sw-change{font-family:var(--mf);font-size:.5rem;color:var(--green);letter-spacing:.06em}
+.sw-change.down{color:#e05858}
+
+/* ─── COOKIE BANNER ─────────────────────── */
+#cookie-banner{
+  position:fixed;bottom:2.8rem;left:50%;transform:translateX(-50%);
+  z-index:1100;display:none;
+  background:rgba(15,26,16,.96);
+  border:1px solid rgba(240,237,230,.08);
+  border-radius:16px;
+  padding:1.4rem 1.8rem;
+  display:flex;align-items:center;gap:2rem;
+  max-width:min(860px,94vw);width:100%;
+  backdrop-filter:blur(14px);
+  box-shadow:0 8px 48px rgba(0,0,0,.5);
+  transition:transform .5s var(--ease-out),opacity .5s;
+}
+#cookie-banner.out{transform:translateX(-50%) translateY(120%);opacity:0;pointer-events:none}
+.cookie-left{display:flex;align-items:flex-start;gap:1.2rem;flex:1}
+.cookie-icon{font-size:1.4rem;flex-shrink:0;margin-top:.1rem}
+.cookie-h{font-family:var(--df);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.35rem}
+.cookie-p{font-family:var(--tf);font-size:.68rem;opacity:.38;line-height:1.55;max-width:42ch}
+.cookie-btns{display:flex;flex-direction:column;gap:.5rem;flex-shrink:0}
+.cookie-deny{background:none;border:none;font-family:var(--mf);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;opacity:.22;cursor:pointer;color:var(--white);transition:opacity .2s;padding:.4em 0}
+.cookie-deny:hover{opacity:.5}
+
 /* ─── BOTTOM TICKER ──────────────────────── */
 #ticker-bar{
   position:fixed;bottom:0;left:0;right:0;z-index:800;
@@ -1716,6 +1755,28 @@ footer{
   <h2 id="konami-h">Secret Growth Protocol<br>Activated</h2>
   <p id="konami-p">Congratulations. Your plant is now technically a unicorn startup. Valuation: $1.2B. The ficus led the Series A. The cactus wants carry.</p>
   <button class="btn" onclick="document.getElementById('konami-overlay').classList.remove('on')">Close (The Orchid Is Watching)</button>
+</div>
+
+<!-- STOCK TICKER WIDGET -->
+<div id="stock-widget">
+  <div class="sw-label">HHPL</div>
+  <div class="sw-price" id="sw-price">$142.77</div>
+  <div class="sw-change" id="sw-change">▲ 0.00%</div>
+</div>
+
+<!-- COOKIE BANNER -->
+<div id="cookie-banner">
+  <div class="cookie-left">
+    <span class="cookie-icon">🍪</span>
+    <div>
+      <div class="cookie-h">We use cookies</div>
+      <div class="cookie-p">Also fertilizer, compost, and your plant's biometric data. By continuing you agree to share your ficus's emotional state with our AI and, separately, with Brenda.</div>
+    </div>
+  </div>
+  <div class="cookie-btns">
+    <button class="btn" id="cookie-accept">Accept All Fronds</button>
+    <button class="cookie-deny" id="cookie-deny">Reject (Betray Brenda)</button>
+  </div>
 </div>
 
 <!-- CHATBOT -->
@@ -3028,6 +3089,42 @@ function nlSub(){
   btn.textContent='Growing… 🌱';btn.style.pointerEvents='none';
   setTimeout(()=>{btn.textContent='Rooted! ✓';btn.style.background='#58f066';btn.style.color='#0d1a0f';inp.value=''},1300);
 }
+
+// ══════════════════════════════════════════════════
+// STOCK WIDGET — fake HHPL price
+// ══════════════════════════════════════════════════
+(function(){
+  const w=document.getElementById('stock-widget');
+  const priceEl=document.getElementById('sw-price');
+  const changeEl=document.getElementById('sw-change');
+  if(!w)return;
+  let price=142.77,open=142.77;
+  setTimeout(()=>w.classList.add('vis'),3200);
+  setInterval(()=>{
+    const delta=(Math.random()-.32)*.85;
+    price=Math.max(120,price+delta);
+    const pct=((price-open)/open*100);
+    priceEl.textContent='$'+price.toFixed(2);
+    changeEl.textContent=(pct>=0?'▲ ':'▼ ')+Math.abs(pct).toFixed(2)+'%';
+    changeEl.className='sw-change'+(pct<0?' down':'');
+  },3000);
+})();
+
+// ══════════════════════════════════════════════════
+// COOKIE BANNER
+// ══════════════════════════════════════════════════
+(function(){
+  const banner=document.getElementById('cookie-banner');
+  if(!banner)return;
+  const dismiss=()=>banner.classList.add('out');
+  document.getElementById('cookie-accept')?.addEventListener('click',dismiss);
+  document.getElementById('cookie-deny')?.addEventListener('click',()=>{
+    const deny=document.getElementById('cookie-deny');
+    if(deny){deny.textContent='Brenda is disappointed.';deny.style.color='var(--orange)';deny.style.opacity='0.6';}
+    setTimeout(dismiss,1800);
+  });
+  setTimeout(()=>banner.style.display='flex',2800);
+})();
 
 // ══════════════════════════════════════════════════
 // HERO WORD ROTATION
