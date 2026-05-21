@@ -247,6 +247,7 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
   opacity:0;transform:translateY(20px);
 }
 .hero-tag::before{content:'';width:22px;height:1px;background:var(--orange);flex-shrink:0}
+.hero-live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:livePulse 1.4s ease-in-out infinite;flex-shrink:0}
 h1.hero-h1{
   font-size:clamp(4.5rem,13vw,13vw);
   line-height:.82;font-weight:800;
@@ -1388,7 +1389,11 @@ footer{
 <section id="hero" data-scroll-section>
   <canvas id="hero-canvas"></canvas>
   <div class="hero-inner inn">
-    <div class="hero-tag" data-scroll data-scroll-speed="-1">PlantIQ™ AI Engine &nbsp;·&nbsp; v3.2 &nbsp;·&nbsp; Now with Leaf Sentiment</div>
+    <div class="hero-tag" data-scroll data-scroll-speed="-1">
+      PlantIQ™ AI Engine &nbsp;·&nbsp; v3.2 &nbsp;·&nbsp; Now with Leaf Sentiment
+      &nbsp;<span class="hero-live-dot"></span>&nbsp;
+      <span id="hero-metric">Chlorophyll: 94.2%</span>
+    </div>
     <h1 class="hero-h1" data-scroll data-scroll-speed="-0.5">
       <span class="lw"><span>MADE FOR LEAVES.</span></span>
       <span class="lw"><span>BUILT FOR</span></span>
@@ -3479,6 +3484,43 @@ function nlSub(){
     setTimeout(dismiss,1800);
   });
   setTimeout(()=>banner.style.display='flex',2800);
+})();
+
+// ══════════════════════════════════════════════════
+// HERO LIVE METRIC ROTATOR
+// ══════════════════════════════════════════════════
+(function(){
+  const el=document.getElementById('hero-metric');
+  if(!el)return;
+  const metrics=[
+    ()=>`Chlorophyll: ${(90+Math.random()*9).toFixed(1)}%`,
+    ()=>`Stem Velocity: ${(1.8+Math.random()*.9).toFixed(2)} mm/h`,
+    ()=>`Leaf Sentiment: BULLISH 🌿`,
+    ()=>`Neural Syncs: ${(14200+Math.floor(Math.random()*800)).toLocaleString()}/ms`,
+    ()=>`Frond Index: ${(Math.random()>.3?'▲ ':'▼ ')}${(Math.random()*4+1).toFixed(2)}`,
+  ];
+  let mi=0;
+  setInterval(()=>{
+    mi=(mi+1)%metrics.length;
+    el.style.opacity='0';
+    setTimeout(()=>{el.textContent=metrics[mi]();el.style.opacity='1'},200);
+  },2800);
+  el.style.transition='opacity .2s';
+})();
+
+// ══════════════════════════════════════════════════
+// PAGE TITLE ROTATION
+// ══════════════════════════════════════════════════
+(function(){
+  const titles=[
+    'HOUSEPLANT HUSTLE — Your Ficus Sees Q4',
+    'HOUSEPLANT HUSTLE — 847% ROI (Source: Gerald)',
+    'HOUSEPLANT HUSTLE — Chlorophyll is the new crypto',
+    'HOUSEPLANT HUSTLE — Made for Leaves. Built for Business.',
+    'HOUSEPLANT HUSTLE — Plants are the new VCs',
+  ];
+  let ti=0;
+  setInterval(()=>{ti=(ti+1)%titles.length;document.title=titles[ti]},5500);
 })();
 
 // ══════════════════════════════════════════════════
