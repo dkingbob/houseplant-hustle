@@ -5,7 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>HOUSEPLANT HUSTLE — The World's Most Unnecessarily Sophisticated Plant Intelligence Platform</title>
 <meta name="description" content="Made for leaves. Built for business. The world's first AI that reads your plant's mind and turns chlorophyll into quarterly projections.">
-<meta name="theme-color" content="#0d1f0f">
+<meta name="theme-color" content="#070e08">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪴</text></svg>">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://houseplant-hustle.vercel.app">
+<meta property="og:title" content="HOUSEPLANT HUSTLE — The World's Most Unnecessarily Sophisticated Plant Intelligence Platform">
+<meta property="og:description" content="Made for leaves. Built for business. The world's first AI that reads your plant's mind and turns chlorophyll into quarterly projections.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="HOUSEPLANT HUSTLE">
+<meta name="twitter:description" content="Made for leaves. Built for business. Your ficus sees Q4 before you do.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -998,6 +1006,22 @@ footer{
   background:var(--green);border-radius:50%;animation:bk 2.2s ease-in-out infinite;
 }
 
+/* ─── SCROLL PROGRESS BAR ───────────────────── */
+#scroll-progress{
+  position:fixed;top:0;left:0;height:2px;width:0%;
+  background:linear-gradient(90deg,var(--orange),rgba(224,120,48,.6));
+  z-index:901;pointer-events:none;
+  box-shadow:0 0 10px rgba(224,120,48,.45);
+}
+
+/* ─── NAV BLUR ON SCROLL ─────────────────────── */
+#nav{transition:background .4s,backdrop-filter .4s}
+#nav.scrolled{
+  background:rgba(5,12,6,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
 /* ─── PRESS MARQUEE ──────────────────────────── */
 #press-sec{
   padding:9vh 0;background:var(--deep);overflow:hidden;
@@ -1114,6 +1138,9 @@ footer{
 </style>
 </head>
 <body>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
 
 <!-- GRAIN -->
 <canvas id="grain"></canvas>
@@ -2348,6 +2375,11 @@ function startSite(){
 
   loco.on('scroll',({scroll})=>{
     const y=scroll.y;
+    // scroll progress bar + nav blur
+    const sp=document.getElementById('scroll-progress');
+    const navEl=document.getElementById('nav');
+    if(sp){const totalH=locoEl.scrollHeight-innerHeight;sp.style.width=totalH>0?Math.min(100,y/totalH*100)+'%':'0%'}
+    if(navEl)navEl.classList.toggle('scrolled',y>80);
     const vH=innerHeight;
     const st=scrubSec.offsetTop;
     const sh=scrubSec.offsetHeight;
@@ -2575,6 +2607,39 @@ function startSite(){
         const y=self.progress*-25;
         s.style.setProperty('--py-offset',y+'px');
       }
+    });
+  });
+
+  // ── Magnetic buttons ──
+  document.querySelectorAll('.btn:not(.ol)').forEach(btn=>{
+    btn.addEventListener('mousemove',e=>{
+      const r=btn.getBoundingClientRect();
+      const dx=e.clientX-(r.left+r.width/2);
+      const dy=e.clientY-(r.top+r.height/2);
+      gsap.to(btn,{x:dx*.28,y:dy*.28,duration:.35,ease:'power2.out'});
+    });
+    btn.addEventListener('mouseleave',()=>{
+      gsap.to(btn,{x:0,y:0,duration:.6,ease:'elastic.out(1,.55)'});
+    });
+  });
+
+  // ── Text scramble on eyebrow labels ──
+  const CHARS='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+  function scrambleTxt(el){
+    const orig=el.textContent;
+    let frame=0;const total=18;
+    const id=setInterval(()=>{
+      el.textContent=orig.split('').map((c,i)=>
+        c===' '?' ':frame/total>i/orig.length?c:CHARS[Math.floor(Math.random()*CHARS.length)]
+      ).join('');
+      if(++frame>total){el.textContent=orig;clearInterval(id)}
+    },38);
+  }
+  document.querySelectorAll('.eyb').forEach(el=>{
+    ScrollTrigger.create({
+      scroller:'[data-scroll-container]',
+      trigger:el,start:'top 88%',once:true,
+      onEnter:()=>scrambleTxt(el)
     });
   });
 
