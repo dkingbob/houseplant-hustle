@@ -582,6 +582,21 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .comp-feat{font-family:var(--tf);font-size:.78rem;opacity:.55}
 .comp-no{opacity:.15}
 
+/* ─── TEAM SECTION ───────────────────────── */
+.team-h{font-size:clamp(3rem,7vw,7vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:5rem}
+.team-h .lw{display:block;overflow:hidden}
+.team-h .lw span{display:block;transform:translateY(105%)}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem}
+.team-card{padding:0;display:flex;flex-direction:column;gap:1rem;border-top:1px solid rgba(240,237,230,.06);padding-top:1.5rem;opacity:0}
+.team-av{font-size:2.2rem;filter:grayscale(30%)}
+.team-name{font-family:var(--df);font-weight:700;font-size:clamp(.82rem,1.05vw,1.1vw);letter-spacing:-.01em;line-height:1.2}
+.team-role{font-family:var(--mf);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);opacity:.75}
+.team-bio{font-family:var(--tf);font-size:.74rem;opacity:.32;line-height:1.65;flex:1}
+.team-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.3rem}
+.team-tags span{font-family:var(--mf);font-size:.46rem;letter-spacing:.1em;text-transform:uppercase;padding:.25em .7em;border:1px solid rgba(240,237,230,.1);opacity:.45;border-radius:100px}
+@media(max-width:900px){.team-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.team-grid{grid-template-columns:1fr}}
+
 /* ─── GOTCHA SECTION ─────────────────────── */
 #gotcha{
   padding:18vh var(--px);text-align:center;
@@ -1627,6 +1642,48 @@ footer{
     <div style="margin-top:3rem;display:flex;gap:1rem;justify-content:center" class="rv">
       <a href="#nl-sec" class="btn">I'm Intrigued</a>
       <a href="#roi-sec" class="btn ol">Calculator Again</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TEAM ══ -->
+<section id="team-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:5vh"></div>
+    <div class="eyb rv">Executive Leadership</div>
+    <h2 class="team-h rv">
+      <span class="lw"><span>Meet The</span></span>
+      <span class="lw"><span>Board.</span></span>
+    </h2>
+    <div class="team-grid rv">
+      <div class="team-card">
+        <div class="team-av">🌵</div>
+        <div class="team-name">Gerald O. Fernsworth III</div>
+        <div class="team-role">Chief Executive Fern · Founder</div>
+        <p class="team-bio">Former McKinsey. Harvard MBA (Honorary, Botanical Division). Has not attended a meeting since 2019. Revenue is up 847%.</p>
+        <div class="team-tags"><span>Visionary</span><span>Drought-Resistant</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-av">🪴</div>
+        <div class="team-name">Brenda von Cactus</div>
+        <div class="team-role">Chief Legal Officer</div>
+        <p class="team-bio">Stanford Law. Does not respond to emails. Responds to watering on Thursdays only. Her NDA has never been challenged twice.</p>
+        <div class="team-tags"><span>Litigation</span><span>Low Maintenance</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-av">🌸</div>
+        <div class="team-name">Patricia Orchidson</div>
+        <div class="team-role">Chief Financial Frond</div>
+        <p class="team-bio">Predicted three recessions from a windowsill. Holds 15% equity. Attends term sheet signings via FaceTime. Nobody laughed. Revenue went up.</p>
+        <div class="team-tags"><span>Revenue</span><span>Needs Indirect Light</span></div>
+      </div>
+      <div class="team-card">
+        <div class="team-av">🌿</div>
+        <div class="team-name">Marcus Monstera</div>
+        <div class="team-role">Head of Growth · Series A</div>
+        <p class="team-bio">Grew 34 new leaves in Q3. Promoted over 14 humans. No complaints filed. He received a standing ovation at the last all-hands. He was not present. He was thriving.</p>
+        <div class="team-tags"><span>Hypergrowth</span><span>Fenestrated Thinking</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2900,6 +2957,16 @@ function startSite(){
     onEnter:()=>gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
   });
 
+  // ── Team section reveals ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#team-sec',start:'top 75%',once:true,
+    onEnter:()=>{
+      gsap.to('.team-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
+      gsap.fromTo('.team-card',{opacity:0,y:24},{opacity:1,y:0,duration:.7,stagger:.1,ease:'power2.out',delay:.2});
+    }
+  });
+
   // ── Pricing section reveals ──
   ScrollTrigger.create({
     scroller:'[data-scroll-container]',
@@ -3348,7 +3415,7 @@ function nlSub(){
   setTimeout(()=>w.classList.add('vis'),3200);
   setInterval(()=>{
     const delta=(Math.random()-.32)*.85;
-    price=Math.max(120,price+delta);
+    price=Math.max(130,price+delta+0.08);
     const pct=((price-open)/open*100);
     priceEl.textContent='$'+price.toFixed(2);
     changeEl.textContent=(pct>=0?'▲ ':'▼ ')+Math.abs(pct).toFixed(2)+'%';
