@@ -522,6 +522,21 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 }
 .roi-m-note{font-family:var(--tf);font-size:.7rem;opacity:.22;margin-top:.45rem}
 
+/* ─── COMPARISON TABLE ───────────────────── */
+.comp-h{font-size:clamp(2.8rem,6vw,6vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:5rem}
+.comp-h .lw{display:block;overflow:hidden}
+.comp-h .lw span{display:block;transform:translateY(105%)}
+.comp-table{width:100%;border-collapse:collapse}
+.comp-head,.comp-row{display:grid;grid-template-columns:2fr 1.3fr 1fr 1fr 1fr;gap:0;align-items:center}
+.comp-head{padding-bottom:1.2rem;border-bottom:1px solid rgba(240,237,230,.06);margin-bottom:.5rem}
+.comp-feat-col{font-family:var(--mf);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;opacity:.22}
+.comp-col{font-family:var(--mf);font-size:.6rem;letter-spacing:.08em;text-align:center;opacity:.4;text-transform:uppercase}
+.comp-col-us{color:var(--green);opacity:.85;font-weight:500}
+.comp-row{padding:.9rem 0;border-bottom:1px solid rgba(240,237,230,.04);transition:background .2s;opacity:0}
+.comp-row:hover{background:rgba(240,237,230,.02)}
+.comp-feat{font-family:var(--tf);font-size:.78rem;opacity:.55}
+.comp-no{opacity:.15}
+
 /* ─── GOTCHA SECTION ─────────────────────── */
 #gotcha{
   padding:18vh var(--px);text-align:center;
@@ -1447,6 +1462,36 @@ footer{
         <div class="roi-m"><div class="roi-m-lbl">Confidence</div><div class="roi-m-val" id="rCF">—</div><div class="roi-m-note">Extremely confident in numbers we invented.</div></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ══ COMPARISON TABLE ══ -->
+<section id="comp-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:5vh"></div>
+    <div class="eyb rv">Competitive Intelligence</div>
+    <h2 class="comp-h rv">
+      <span class="lw"><span>Us vs.</span></span>
+      <span class="lw"><span>Your Current</span></span>
+      <span class="lw"><span>Strategy.</span></span>
+    </h2>
+    <div class="comp-table rv">
+      <div class="comp-head">
+        <div class="comp-feat-col"></div>
+        <div class="comp-col comp-col-us">Houseplant Hustle</div>
+        <div class="comp-col">Spreadsheets</div>
+        <div class="comp-col">Consultants</div>
+        <div class="comp-col">Gut Feeling</div>
+      </div>
+      <div class="comp-row"><div class="comp-feat">Photosynthesis KPI</div><div class="comp-col comp-col-us">✓ Native</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat">Leaf Sentiment Analysis</div><div class="comp-col comp-col-us">✓ Real-time</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col">Sometimes</div></div>
+      <div class="comp-row"><div class="comp-feat">Root Cause Analysis™</div><div class="comp-col comp-col-us">✓ Literally</div><div class="comp-col comp-no">✗</div><div class="comp-col">$240/hr</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat">Q4 Droop Detection</div><div class="comp-col comp-col-us">✓ Automated</div><div class="comp-col">Manual</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat">Chlorophyll Revenue Model</div><div class="comp-col comp-col-us">✓ Patented</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat">Fern Certified</div><div class="comp-col comp-col-us">✓ By Gerald</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat">Monthly Cost</div><div class="comp-col comp-col-us">$0 (waitlist)</div><div class="comp-col">$299</div><div class="comp-col">$18,000</div><div class="comp-col">Free*</div></div>
+    </div>
+    <p class="fine rv" style="text-align:center;margin-top:2rem">* Gut feeling cost: two failed pivots, one emergency board meeting, and a very uncomfortable offsite in Ibiza.</p>
   </div>
 </section>
 
@@ -2711,6 +2756,16 @@ function startSite(){
     scroller:'[data-scroll-container]',
     trigger:'#roi-sec',start:'top 75%',once:true,
     onEnter:()=>gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
+  });
+
+  // ── Comparison table reveals ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#comp-sec',start:'top 75%',once:true,
+    onEnter:()=>{
+      gsap.to('.comp-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
+      gsap.fromTo('.comp-row',{opacity:0,y:16},{opacity:1,y:0,duration:.6,stagger:.07,ease:'power2.out',delay:.3});
+    }
   });
 
   // ── Testimonial carousel reveal ──
