@@ -1669,12 +1669,13 @@ footer{
 <footer data-scroll-section>
   <div class="f-brand">HOUSEPLANT<em>HUSTLE</em></div>
   <ul class="f-links">
-    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Privacy Policy</a></li>
     <li><a href="#" onclick="event.preventDefault();document.getElementById('legal-overlay').classList.add('on')">Terms of Foliage</a></li>
-    <li><a href="#">Ethics</a></li>
-    <li><a href="#">IPO (Initial Plant Offering)</a></li>
+    <li><a href="#">Ethics (Pending)</a></li>
+    <li><a href="#">HHPL: IPO Q3 2026</a></li>
+    <li><a href="#" id="share-link" onclick="event.preventDefault();copyLink()">Share Site ↗</a></li>
   </ul>
-  <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real.</div>
+  <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real. HHPL listed on NASDAQ Greenhouse Exchange. Certified by Gerald (he's a fern).</div>
 </footer>
 
 </div><!-- /loco-container -->
@@ -3138,6 +3139,12 @@ document.getElementById('suc-btn').addEventListener('click',()=>document.getElem
 // ══════════════════════════════════════════════════
 // NEWSLETTER
 // ══════════════════════════════════════════════════
+function copyLink(){
+  navigator.clipboard.writeText('https://houseplant-hustle.vercel.app').then(()=>{
+    const el=document.getElementById('share-link');
+    if(el){const orig=el.textContent;el.textContent='Copied! ✓';el.style.opacity='0.8';setTimeout(()=>{el.textContent=orig;el.style.opacity=''},2000)}
+  }).catch(()=>{});
+}
 function nlSub(){
   const inp=document.getElementById('nl-in'),btn=inp.nextElementSibling;
   if(!inp.value.includes('@')){gsap.fromTo(inp,{x:-4},{x:4,duration:.08,repeat:5,yoyo:true,onComplete:()=>gsap.set(inp,{x:0})});return}
