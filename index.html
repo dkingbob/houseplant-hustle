@@ -920,6 +920,102 @@ footer{
   background:var(--green);border-radius:50%;animation:bk 2.2s ease-in-out infinite;
 }
 
+/* ─── PRESS MARQUEE ──────────────────────────── */
+#press-sec{
+  padding:9vh 0;background:var(--deep);overflow:hidden;
+  border-top:1px solid rgba(240,237,230,.04);
+  border-bottom:1px solid rgba(240,237,230,.04);
+}
+.press-label{
+  font-family:var(--mf);font-size:.56rem;letter-spacing:.3em;
+  text-transform:uppercase;opacity:.16;text-align:center;margin-bottom:3rem;
+}
+.press-track-wrap{overflow:hidden;position:relative}
+.press-track-wrap::before,.press-track-wrap::after{
+  content:'';position:absolute;top:0;bottom:0;width:10%;z-index:1;pointer-events:none;
+}
+.press-track-wrap::before{left:0;background:linear-gradient(90deg,var(--deep),transparent)}
+.press-track-wrap::after{right:0;background:linear-gradient(-90deg,var(--deep),transparent)}
+.press-track{
+  display:flex;gap:6vw;align-items:center;width:max-content;
+  animation:marquee 30s linear infinite;
+  padding:0 3vw;
+}
+.press-track:hover{animation-play-state:paused}
+.press-logo{
+  font-family:var(--df);font-weight:800;font-size:clamp(.9rem,1.3vw,1.3vw);
+  text-transform:uppercase;letter-spacing:-.02em;
+  opacity:.12;transition:opacity .3s;white-space:nowrap;cursor:default;
+}
+.press-logo em{font-style:italic;font-weight:400;letter-spacing:.01em}
+.press-logo:hover{opacity:.48}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ─── SOLD-OUT CTA ────────────────────────────── */
+#cta-sec{
+  padding:22vh var(--px) 18vh;text-align:center;
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 50%, rgba(224,120,48,.055) 0%, transparent 65%),
+    var(--black);
+}
+.cta-launch{
+  font-family:var(--mf);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--orange);opacity:.7;margin-bottom:2.5rem;
+  display:inline-flex;align-items:center;gap:1.4rem;
+}
+.cta-launch::before,.cta-launch::after{content:'';height:1px;width:55px;background:rgba(224,120,48,.28)}
+.cta-h{
+  font-size:clamp(5rem,16vw,16vw);font-weight:800;
+  line-height:.82;letter-spacing:-.055em;text-transform:uppercase;
+  margin-bottom:2rem;overflow:hidden;
+}
+.cta-h .lw{display:block;overflow:hidden}
+.cta-h .lw span{display:block;transform:translateY(105%)}
+.cta-h em{font-style:normal;color:var(--orange)}
+.cta-sub{
+  font-family:var(--tf);font-size:clamp(.85rem,1.1vw,1.1vw);
+  opacity:.32;max-width:46ch;margin:0 auto 3.5rem;line-height:1.72;
+}
+.cta-counter-wrap{
+  display:inline-flex;align-items:center;gap:.8rem;
+  margin-bottom:3rem;
+}
+.cta-counter-dot{
+  width:7px;height:7px;background:var(--orange);
+  border-radius:50%;animation:bk 1.6s ease-in-out infinite;flex-shrink:0;
+}
+.cta-counter-n{
+  font-family:var(--df);font-weight:800;font-size:clamp(1.6rem,2.8vw,2.8vw);
+  color:var(--white);font-variant-numeric:tabular-nums;min-width:7ch;text-align:right;
+}
+.cta-counter-lbl{
+  font-family:var(--mf);font-size:.58rem;letter-spacing:.18em;
+  text-transform:uppercase;opacity:.35;
+}
+#wl-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.7em;
+  font-family:var(--df);font-size:.82rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;
+  padding:1.05em 3.2em;
+  background:rgba(240,237,230,.04);color:rgba(240,237,230,.22);
+  border:1px solid rgba(240,237,230,.09);border-radius:100px;
+  cursor:pointer;transition:all .28s;position:relative;overflow:hidden;
+}
+#wl-btn::before{
+  content:'';position:absolute;inset:0;background:var(--orange);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .38s var(--ease-out);z-index:0;
+}
+#wl-btn:hover::before{transform:scaleX(1)}
+#wl-btn:hover{color:var(--black);border-color:var(--orange)}
+#wl-btn span{position:relative;z-index:1}
+#wl-btn.joined{
+  background:rgba(88,240,102,.07);border-color:rgba(88,240,102,.35);
+  color:var(--green);cursor:default;pointer-events:none;
+}
+#wl-btn.joined::before{display:none}
+.cta-fine{font-family:var(--mf);font-size:.52rem;opacity:.1;margin-top:1.8rem;letter-spacing:.06em}
+
 @media(max-width:900px){
   .ai-grid{grid-template-columns:1fr;gap:3rem}
   .ai-canvas-wrap{margin-right:0}
@@ -1174,6 +1270,52 @@ footer{
       <a href="#nl-sec" class="btn">I'm Intrigued</a>
       <a href="#roi-sec" class="btn ol">Calculator Again</a>
     </div>
+  </div>
+</section>
+
+<!-- ══ PRESS LOGOS ══ -->
+<section id="press-sec" data-scroll-section>
+  <p class="press-label">As Seen In</p>
+  <div class="press-track-wrap">
+    <div class="press-track">
+      <span class="press-logo">Forbes <em>Plant</em></span>
+      <span class="press-logo">Harvard Frond Review</span>
+      <span class="press-logo"><em>The</em> Economist: Leaves</span>
+      <span class="press-logo">MIT Botanical Weekly</span>
+      <span class="press-logo">Wired <em>for Growth</em></span>
+      <span class="press-logo">Nature Disrupted</span>
+      <span class="press-logo">Wall Street Frond</span>
+      <span class="press-logo">TechCrunch <em>Verdure</em></span>
+      <span class="press-logo">Bloomberg <em>Greenery</em></span>
+      <span class="press-logo">Forbes <em>Plant</em></span>
+      <span class="press-logo">Harvard Frond Review</span>
+      <span class="press-logo"><em>The</em> Economist: Leaves</span>
+      <span class="press-logo">MIT Botanical Weekly</span>
+      <span class="press-logo">Wired <em>for Growth</em></span>
+      <span class="press-logo">Nature Disrupted</span>
+      <span class="press-logo">Wall Street Frond</span>
+      <span class="press-logo">TechCrunch <em>Verdure</em></span>
+      <span class="press-logo">Bloomberg <em>Greenery</em></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA / SOLD-OUT ══ -->
+<section id="cta-sec" data-scroll-section>
+  <p class="cta-launch">Launch 001 — Limited Edition</p>
+  <h2 class="cta-h">
+    <span class="lw"><span>SOLD</span></span>
+    <span class="lw"><span><em>OUT.</em></span></span>
+  </h2>
+  <p class="cta-sub rv">Join 47,238 visionary executives already on the waitlist. Your ficus is pre-registered. The orchid has a preferred seat.</p>
+  <div class="cta-counter-wrap rv">
+    <span class="cta-counter-dot"></span>
+    <span class="cta-counter-n" id="wl-count">47,238</span>
+    <span class="cta-counter-lbl">on waitlist</span>
+  </div>
+  <div class="rv">
+    <button id="wl-btn"><span id="wl-btn-txt">🪴 &nbsp;Join Waitlist — It's Free</span></button>
+    <p class="cta-fine">By joining you confirm that plants are valid stakeholders and photosynthesis is a recognised KPI under IFRS S2.</p>
   </div>
 </section>
 
@@ -2197,6 +2339,13 @@ function startSite(){
     onEnter:()=>gsap.to('.gotcha-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
   });
 
+  // ── CTA sold-out heading reveal ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#cta-sec',start:'top 78%',once:true,
+    onEnter:()=>gsap.to('.cta-h .lw span',{y:0,duration:1.15,ease:'power3.out',stagger:.12})
+  });
+
   // ── ROI calc reveals ──
   ScrollTrigger.create({
     scroller:'[data-scroll-container]',
@@ -2407,6 +2556,30 @@ function sR(t){const r=SR[t]||SR._;addM(r[Math.random()*r.length|0],false)}
 function sSend(){const i=document.getElementById('suc-txt'),v=i.value.trim();if(!v)return;addM(v,true);i.value='';setTimeout(()=>addM(SR._[Math.random()*SR._.length|0],false),700)}
 function addM(txt,u){const d=document.getElementById('suc-msgs'),m=document.createElement('div');m.className='suc-msg'+(u?' u':'');m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight}
 document.getElementById('suc-btn').addEventListener('click',()=>document.getElementById('suc-box').classList.toggle('on'));
+
+// ══════════════════════════════════════════════════
+// WAITLIST BUTTON
+// ══════════════════════════════════════════════════
+(function(){
+  let n=47238,joined=false;
+  const btn=document.getElementById('wl-btn');
+  const txt=document.getElementById('wl-btn-txt');
+  const cnt=document.getElementById('wl-count');
+  if(!btn)return;
+  // Organic counter tick — only after joining
+  setInterval(()=>{
+    if(!joined)return;
+    n+=Math.floor(Math.random()*3)+1;
+    if(cnt)cnt.textContent=n.toLocaleString();
+  },3400);
+  btn.addEventListener('click',()=>{
+    if(joined)return;
+    joined=true;n++;
+    btn.classList.add('joined');
+    if(txt)txt.innerHTML='&#10003; &nbsp;You\'re on the list. The fern will contact you.';
+    if(cnt)cnt.textContent=n.toLocaleString();
+  });
+})();
 
 // ══════════════════════════════════════════════════
 // NEWSLETTER
