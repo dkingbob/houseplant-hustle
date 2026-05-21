@@ -786,6 +786,43 @@ footer{
   color:var(--orange);
 }
 
+/* ─── BLUEPRINT OVERLAY ─────────────────────── */
+#bp-wrap{
+  position:fixed;inset:0;z-index:6;
+  background:#020c18;
+  opacity:0;pointer-events:none;
+  transition:opacity .8s var(--ease-out);
+}
+#bp-wrap.vis{opacity:1}
+#bp-cv{position:absolute;inset:0;width:100%;height:100%}
+#bp-tl{
+  position:absolute;top:2rem;left:var(--px);
+  font-family:var(--mf);font-size:.52rem;letter-spacing:.2em;
+  color:rgba(0,220,255,.48);text-transform:uppercase;line-height:1.8;z-index:1;
+}
+#bp-tr{
+  position:absolute;top:2rem;right:var(--px);
+  font-family:var(--mf);font-size:.52rem;letter-spacing:.15em;
+  color:rgba(0,220,255,.38);text-align:right;line-height:1.8;z-index:1;
+}
+#bp-bl{
+  position:absolute;bottom:2.2rem;left:var(--px);
+  font-family:var(--mf);font-size:.52rem;letter-spacing:.15em;
+  text-transform:uppercase;color:rgba(0,220,255,.3);z-index:1;
+}
+#bp-br{
+  position:absolute;bottom:2.2rem;right:var(--px);
+  font-family:var(--mf);font-size:.52rem;letter-spacing:.15em;
+  color:rgba(0,220,255,.3);text-align:right;z-index:1;
+}
+.bp-bar{
+  position:absolute;left:0;right:0;height:1px;
+  background:rgba(0,220,255,.22);
+  box-shadow:0 0 18px 4px rgba(0,220,255,.09);
+  pointer-events:none;z-index:2;
+  transition:top .02s linear;
+}
+
 /* ─── STACK SECTION ──────────────────────── */
 #stack-sec{height:400vh;position:relative;background:var(--black)}
 #stack-sticky{
@@ -986,6 +1023,9 @@ footer{
   </div>
 </section>
 
+<!-- ══ BLUEPRINT ══ -->
+<section id="bp-sec" data-scroll-section style="height:260vh;background:transparent"></section>
+
 <!-- ══ AI ENGINE ══ -->
 <section id="ai-sec" class="sec" data-scroll-section>
   <div class="inn">
@@ -1125,6 +1165,22 @@ footer{
 
 </div><!-- /loco-container -->
 </div><!-- /scroll-wrap -->
+
+<!-- Blueprint holographic overlay -->
+<div id="bp-wrap">
+  <canvas id="bp-cv"></canvas>
+  <div id="bp-tl">
+    BOTANICAL SCHEMATIC / REV.3.1<br>
+    <span style="opacity:.45">HOUSEPLANT HUSTLE ANALYTICAL SUITE</span>
+  </div>
+  <div id="bp-tr">
+    LIVE SCAN / 47Hz<br>
+    <span id="bp-time" style="opacity:.45">00:00:00</span>
+  </div>
+  <div id="bp-bl">PLANTIQ™ ENGINE — ALL FRONDS NOMINAL</div>
+  <div id="bp-br">CONFIDENCE: <span style="color:rgba(0,220,255,.75)">98.7%</span></div>
+  <div class="bp-bar" id="bp-bar"></div>
+</div>
 
 <!-- Fixed plant canvas for scrub -->
 <canvas id="plant-cv"></canvas>
@@ -1462,6 +1518,225 @@ function preRenderPlantFrames(){
 })();
 
 // ══════════════════════════════════════════════════
+// BLUEPRINT — holographic schematic drawing engine
+// ══════════════════════════════════════════════════
+function drawBlueprint(c,W,H,sY,t){
+  c.clearRect(0,0,W,H);
+  c.fillStyle='#020c18';c.fillRect(0,0,W,H);
+
+  // ── Minor grid ──
+  c.save();c.strokeStyle='rgba(0,150,210,.028)';c.lineWidth=.4;
+  for(let x=0;x<W;x+=24){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
+  for(let y=0;y<H;y+=24){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+  // ── Major grid ──
+  c.strokeStyle='rgba(0,170,220,.055)';c.lineWidth=.6;
+  for(let x=0;x<W;x+=120){c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()}
+  for(let y=0;y<H;y+=120){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
+  c.restore();
+
+  // ── Corner brackets ──
+  const bL=52;
+  [[24,24,1,1],[W-24,24,-1,1],[24,H-24,1,-1],[W-24,H-24,-1,-1]].forEach(([x,y,sx,sy])=>{
+    c.strokeStyle='rgba(0,220,255,.38)';c.lineWidth=1.4;
+    c.beginPath();c.moveTo(x+sx*bL,y);c.lineTo(x,y);c.lineTo(x,y+sy*bL);c.stroke();
+    // Small corner dot
+    c.beginPath();c.arc(x,y,2.5,0,6.28);c.fillStyle='rgba(0,220,255,.5)';c.fill();
+  });
+
+  const cx=W*.5,base=H*.78,maxH=H*.55,stemTop=base-maxH;
+  const rev=(py)=>sY>=py;
+  const fade=(py,span=60)=>Math.min(1,Math.max(0,(sY-py)/span));
+
+  // ── Centerline ──
+  c.save();c.globalAlpha=rev(base-maxH*.2)?fade(base-maxH*.2)*.25:.0;
+  c.strokeStyle='rgba(0,220,255,.18)';c.lineWidth=.6;c.setLineDash([6,10]);
+  c.beginPath();c.moveTo(cx,base+10);c.lineTo(cx,stemTop-28);c.stroke();
+  c.setLineDash([]);c.restore();
+
+  // ── Roots ──
+  c.save();c.strokeStyle='rgba(0,200,255,.55)';c.lineWidth=.7;c.setLineDash([3,5]);c.lineCap='round';
+  for(let r=0;r<7;r++){
+    const ang=Math.PI*(r/6)+Math.PI*.05,len=46+r*9;
+    const ex=cx+Math.cos(ang)*len,ey=base+Math.sin(ang)*len*.55;
+    if(rev(ey)){
+      c.globalAlpha=fade(ey);
+      c.beginPath();c.moveTo(cx,base);c.quadraticCurveTo(cx+Math.cos(ang)*len*.3,base+Math.sin(ang)*len*.22,ex,ey);c.stroke();
+      c.setLineDash([]);c.beginPath();c.arc(ex,ey,2.5,0,6.28);c.strokeStyle='rgba(0,220,255,.6)';c.stroke();c.setLineDash([3,5]);
+    }
+  }
+  c.restore();
+
+  // ── Soil line ──
+  if(rev(base+5)){
+    const a=fade(base+5);
+    c.strokeStyle=`rgba(0,200,255,${.3*a})`;c.lineWidth=.8;c.setLineDash([10,5]);
+    c.beginPath();c.moveTo(cx-200,base+8);c.lineTo(cx+200,base+8);c.stroke();c.setLineDash([]);
+    c.font='300 9px "DM Mono",monospace';c.fillStyle=`rgba(0,220,255,${.5*a})`;
+    c.fillText('─── SOIL INTERFACE / Y:0.000 ───',cx-140,base+22);
+  }
+
+  // ── Stem ──
+  c.beginPath();c.moveTo(cx,base);
+  for(let i=1;i<=18;i++){const tt=i/18;c.lineTo(cx+Math.sin(tt*Math.PI*2)*7*(1-tt),base-maxH*tt)}
+  const stemReveal=rev(stemTop)?1:rev(base)?fade(base,maxH):0;
+  c.save();c.globalAlpha=stemReveal*.92;
+  c.strokeStyle='rgba(0,220,255,.82)';c.lineWidth=1.4;c.lineCap='round';c.lineJoin='round';c.stroke();
+  c.restore();
+
+  // ── Leaves ──
+  for(let i=0;i<6;i++){
+    const lt=.15+(i/6)*.75;
+    const sX=cx+Math.sin(lt*Math.PI*2)*7*(1-lt),sY2=base-maxH*lt;
+    const side=i%2===0?1:-1,sz=27+i*14;
+    const ang=side*(Math.PI*.32+lt*.14);
+    if(!rev(sY2))continue;
+    const la=fade(sY2);
+    const pulse=(Math.sin(t*1.8+i*.9)+1)*.5;
+    c.save();c.translate(sX,sY2);c.rotate(ang);c.globalAlpha=la;
+    c.strokeStyle='rgba(0,220,255,.72)';c.lineWidth=.9;
+    c.beginPath();c.moveTo(0,0);
+    c.bezierCurveTo(side*sz*.6,-sz*.25,side*sz*.9,-sz*.55,side*sz*.5,-sz*.9);
+    c.bezierCurveTo(side*sz*.8,-sz*1.1,side*sz*1.05,-sz*.85,side*sz,-sz*.5);
+    c.bezierCurveTo(side*sz*.75,-sz*.25,side*sz*.4,-sz*.05,0,0);
+    c.stroke();
+    // Midrib
+    c.strokeStyle='rgba(0,220,255,.28)';c.lineWidth=.5;
+    c.beginPath();c.moveTo(0,0);c.lineTo(side*sz*.5,-sz*.87);c.stroke();
+    // Vein lines
+    for(let v=1;v<=3;v++){
+      const vt=v*.22;
+      const vx=side*sz*vt*.9,vy=-sz*vt*.88;
+      c.strokeStyle='rgba(0,220,255,.12)';c.lineWidth=.4;
+      c.beginPath();c.moveTo(vx,vy);c.lineTo(vx+side*sz*.14,vy-sz*.12);c.stroke();
+    }
+    c.restore();
+    // Node marker
+    const nr=3.5,np=4+pulse*4.5;
+    c.beginPath();c.arc(sX,sY2,nr,0,6.28);
+    c.strokeStyle=`rgba(0,220,255,${.85*la})`;c.lineWidth=1;c.stroke();
+    c.beginPath();c.arc(sX,sY2,np,0,6.28);
+    c.strokeStyle=`rgba(0,220,255,${.2*pulse*la})`;c.lineWidth=.8;c.stroke();
+    c.beginPath();c.arc(sX,sY2,1.5,0,6.28);c.fillStyle=`rgba(0,220,255,${.9*la})`;c.fill();
+  }
+
+  // ── Apex marker ──
+  if(rev(stemTop+10)){
+    const a=fade(stemTop+10);const pulse=(Math.sin(t*2.4)+1)*.5;
+    c.beginPath();c.arc(cx,stemTop,5,0,6.28);c.strokeStyle=`rgba(0,220,255,${.9*a})`;c.lineWidth=1.2;c.stroke();
+    c.beginPath();c.arc(cx,stemTop,9+pulse*6,0,6.28);c.strokeStyle=`rgba(0,220,255,${.22*pulse*a})`;c.lineWidth=.8;c.stroke();
+    c.font='300 9px "DM Mono",monospace';c.fillStyle=`rgba(0,220,255,${.5*a})`;
+    c.textAlign='center';c.fillText('APEX',cx,stemTop-18);c.textAlign='left';
+  }
+
+  // ── Height dimension (right) ──
+  if(rev(stemTop)){
+    const a=fade(stemTop);const dx=cx+Math.min(W*.38,140);
+    c.strokeStyle=`rgba(0,200,255,${.38*a})`;c.lineWidth=.7;
+    c.beginPath();c.moveTo(dx,base);c.lineTo(dx,stemTop);c.stroke();
+    [[dx,base,1],[dx,stemTop,-1]].forEach(([x,y,d])=>{
+      c.beginPath();c.moveTo(x,y);c.lineTo(x-5,y-d*9);c.moveTo(x,y);c.lineTo(x+5,y-d*9);c.stroke();
+    });
+    c.save();c.translate(dx+14,(base+stemTop)*.5);c.rotate(Math.PI/2);
+    c.font='300 9px "DM Mono",monospace';c.fillStyle=`rgba(0,220,255,${.52*a})`;c.textAlign='center';
+    c.fillText('248 mm',0,0);c.textAlign='left';c.restore();
+    c.strokeStyle=`rgba(0,200,255,${.2*a})`;c.lineWidth=.5;c.setLineDash([4,6]);
+    c.beginPath();c.moveTo(cx,base);c.lineTo(dx,base);
+    c.moveTo(cx,stemTop);c.lineTo(dx,stemTop);c.stroke();c.setLineDash([]);
+  }
+
+  // ── Width dimension (top) ──
+  if(rev(stemTop+30)){
+    const a=fade(stemTop+30);
+    const rx=cx+28+6*14,lx=cx-28-6*14,dy=stemTop-36;
+    c.strokeStyle=`rgba(0,200,255,${.32*a})`;c.lineWidth=.7;
+    c.beginPath();c.moveTo(lx,dy);c.lineTo(rx,dy);c.stroke();
+    [[lx,dy,-1],[rx,dy,1]].forEach(([x,y,d])=>{
+      c.beginPath();c.moveTo(x,y);c.lineTo(x+d*9,y-5);c.moveTo(x,y);c.lineTo(x+d*9,y+5);c.stroke();
+    });
+    c.font='300 9px "DM Mono",monospace';c.fillStyle=`rgba(0,220,255,${.5*a})`;
+    c.textAlign='center';c.fillText('142 mm',cx,dy-10);c.textAlign='left';
+  }
+
+  // ── Data annotations ──
+  const anns=[
+    {x:cx+90, y:base-maxH*.6, lx:cx+32, ly:base-maxH*.6,  txt:'STEM Ø 14.3mm',  at:base-maxH*.55},
+    {x:cx+90, y:base-maxH*.35,lx:cx+28, ly:base-maxH*.35, txt:'NODE ANGLE 32°',  at:base-maxH*.3},
+    {x:cx-130,y:base-maxH*.72,lx:cx-26, ly:base-maxH*.72, txt:'APEX +0.24mm/h',  at:base-maxH*.68},
+    {x:cx-130,y:base+35,      lx:cx-45, ly:base+20,        txt:'ROOT Δ 89mm',    at:base+30},
+    {x:cx+90, y:base-maxH*.85,lx:cx+18, ly:base-maxH*.85, txt:'CHLOROPHYLL 98.1%',at:base-maxH*.82},
+  ];
+  c.font='300 9.5px "DM Mono",monospace';
+  anns.forEach(({x,y,lx,ly,txt,at})=>{
+    if(!rev(at))return;
+    const a=fade(at)*0.8;
+    c.fillStyle=`rgba(0,220,255,${.44*a})`;c.fillText(txt,x,y);
+    c.strokeStyle=`rgba(0,220,255,${.15*a})`;c.lineWidth=.5;c.setLineDash([2,4]);
+    c.beginPath();c.moveTo(x-4,y-3);c.lineTo(lx,ly);c.stroke();c.setLineDash([]);
+    c.beginPath();c.arc(lx,ly,2,0,6.28);c.fillStyle=`rgba(0,220,255,${.35*a})`;c.fill();
+  });
+
+  // ── Cross-hair markers (random structural points) ──
+  [[cx,base-maxH*.22],[cx-18,base-maxH*.5],[cx+15,base-maxH*.72]].forEach(([px,py])=>{
+    if(!rev(py))return;
+    const a=fade(py)*.6;const hs=8;
+    c.strokeStyle=`rgba(0,220,255,${.35*a})`;c.lineWidth=.6;
+    c.beginPath();c.moveTo(px-hs,py);c.lineTo(px+hs,py);c.moveTo(px,py-hs);c.lineTo(px,py+hs);c.stroke();
+    c.beginPath();c.arc(px,py,hs*.6,0,6.28);c.stroke();
+  });
+
+  // ── Coordinate label ──
+  if(rev(H*.2)){
+    c.font='300 8px "DM Mono",monospace';
+    c.fillStyle=`rgba(0,220,255,${.18*fade(H*.2)})`;
+    c.fillText(`X:${(cx/W*100).toFixed(1)}  Y:${((base/H)*100).toFixed(1)}  Z:0.000`,cx-80,H*.5);
+  }
+
+  // ── Scan glow ──
+  if(sY>0&&sY<H){
+    const sg=c.createLinearGradient(0,sY-60,0,sY+60);
+    sg.addColorStop(0,'rgba(0,220,255,0)');
+    sg.addColorStop(.5,'rgba(0,220,255,.07)');
+    sg.addColorStop(1,'rgba(0,220,255,0)');
+    c.fillStyle=sg;c.fillRect(0,sY-60,W,120);
+  }
+
+  // ── Perimeter hash marks ──
+  c.save();c.strokeStyle='rgba(0,200,255,.14)';c.lineWidth=.5;
+  for(let x=60;x<W-60;x+=60){c.beginPath();c.moveTo(x,0);c.lineTo(x,6);c.moveTo(x,H);c.lineTo(x,H-6);c.stroke()}
+  for(let y=60;y<H-60;y+=60){c.beginPath();c.moveTo(0,y);c.lineTo(6,y);c.moveTo(W,y);c.lineTo(W-6,y);c.stroke()}
+  c.restore();
+}
+
+function initBlueprint(loco){
+  const bpWrap=document.getElementById('bp-wrap');
+  const bpCv=document.getElementById('bp-cv');
+  if(!bpCv||!bpWrap)return;
+  const bpCtx=bpCv.getContext('2d');
+  let bpW=0,bpH=0,scanY=0,bpT=0;
+  function bpRs(){bpW=bpCv.width=innerWidth;bpH=bpCv.height=innerHeight}
+  bpRs();addEventListener('resize',bpRs);
+  (function bpLoop(){bpT+=.014;if(bpW)drawBlueprint(bpCtx,bpW,bpH,scanY,bpT);requestAnimationFrame(bpLoop)})();
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#bp-sec',start:'top top',end:'bottom bottom',scrub:1.8,
+    onUpdate:(self)=>{
+      scanY=self.progress*bpH;
+      const b=document.getElementById('bp-bar');if(b)b.style.top=scanY+'px';
+      loco.update();
+    },
+    onEnter:()=>bpWrap.classList.add('vis'),
+    onLeave:()=>bpWrap.classList.remove('vis'),
+    onEnterBack:()=>bpWrap.classList.add('vis'),
+    onLeaveBack:()=>bpWrap.classList.remove('vis'),
+  });
+  (function bpClock(){
+    const e=document.getElementById('bp-time');
+    if(e){const n=new Date;e.textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`}
+    setTimeout(bpClock,1000);
+  })();
+}
+
+// ══════════════════════════════════════════════════
 // STACK CARDS — five-mode plant renderings
 // ══════════════════════════════════════════════════
 window.addEventListener('load',function(){
@@ -1778,6 +2053,8 @@ function startSite(){
       setTimeout(preRenderPlantFrames,50);
     });
   });
+
+  initBlueprint(loco);
 
   // ── Stack reveal ──
   (function(){
