@@ -1248,7 +1248,7 @@ footer{
     <h1 class="hero-h1" data-scroll data-scroll-speed="-0.5">
       <span class="lw"><span>MADE FOR LEAVES.</span></span>
       <span class="lw"><span>BUILT FOR</span></span>
-      <span class="lw"><span class="glitch" style="color:var(--orange)">BUSINESS.</span></span>
+      <span class="lw"><span class="glitch" style="color:var(--orange)" id="hero-rotate">BUSINESS.</span></span>
     </h1>
     <div class="hero-bottom">
       <p class="hero-desc">The world's most unnecessarily sophisticated houseplant analytics platform. Your ficus sees Q4 before you do.</p>
@@ -2878,10 +2878,31 @@ function calc(){
   const notes=['Seedling-tier insights','Sprout-level intelligence','Mature plant wisdom','Peak foliar consciousness'];
   document.getElementById('rPI').textContent=pi.toLocaleString();
   document.getElementById('rPI-n').textContent=notes[Math.min(3,pi/300|0)];
-  document.getElementById('rRV').textContent='$'+(pi*1247+43000).toLocaleString();
+  const rv=pi*1247+43000;
+  const sp=(pi*.31+12).toFixed(1);
+  const cf=Math.min(99,60+S*2+W*3+M*4).toFixed(1);
   document.getElementById('rRV-n').textContent=W>5?'⚠️ Overwatering — diluting projections':'Based on current leaf-shed velocity';
-  document.getElementById('rSP').textContent='+'+(pi*.31+12).toFixed(1)+'×';
-  document.getElementById('rCF').textContent=Math.min(99,60+S*2+W*3+M*4).toFixed(1)+'%';
+  // Animated value updates
+  const flash=el=>{gsap.fromTo(el,{color:'var(--orange)'},{color:'var(--white)',duration:.55,ease:'power2.out'})};
+  ['rPI','rRV','rSP','rCF'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const target=id==='rPI'?pi:id==='rRV'?rv:id==='rSP'?null:null;
+    if(target!==null){
+      const cur=parseFloat(el.textContent.replace(/[^0-9.]/g,''))||0;
+      if(Math.abs((id==='rRV'?rv:pi)-cur)>10){
+        const obj={v:cur};
+        gsap.to(obj,{v:target,duration:.55,ease:'power2.out',onUpdate:()=>{
+          el.textContent=id==='rPI'?Math.round(obj.v).toLocaleString():'$'+Math.round(obj.v).toLocaleString();
+        }});
+      } else {
+        el.textContent=id==='rPI'?pi.toLocaleString():'$'+rv.toLocaleString();
+      }
+    } else {
+      el.textContent=id==='rSP'?`+${sp}×`:`${cf}%`;
+    }
+    flash(el);
+  });
 }
 document.querySelectorAll('input[type=range]').forEach(s=>s.addEventListener('input',calc));
 calc();
@@ -3007,6 +3028,23 @@ function nlSub(){
   btn.textContent='Growing… 🌱';btn.style.pointerEvents='none';
   setTimeout(()=>{btn.textContent='Rooted! ✓';btn.style.background='#58f066';btn.style.color='#0d1a0f';inp.value=''},1300);
 }
+
+// ══════════════════════════════════════════════════
+// HERO WORD ROTATION
+// ══════════════════════════════════════════════════
+(function(){
+  const el=document.getElementById('hero-rotate');
+  if(!el)return;
+  const words=['BUSINESS.','MARKETS.','SYNERGY.','GROWTH.','STRATEGY.','Q4.','CHAOS.'];
+  let idx=0;
+  setInterval(()=>{
+    idx=(idx+1)%words.length;
+    gsap.to(el,{opacity:0,y:-18,duration:.28,ease:'power2.in',onComplete:()=>{
+      el.textContent=words[idx];
+      gsap.fromTo(el,{opacity:0,y:18},{opacity:1,y:0,duration:.38,ease:'power2.out'});
+    }});
+  },2600);
+})();
 </script>
 </body>
 </html>
