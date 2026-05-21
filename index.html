@@ -582,6 +582,21 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .comp-feat{font-family:var(--tf);font-size:.78rem;opacity:.55}
 .comp-no{opacity:.15}
 
+/* ─── FAQ SECTION ────────────────────────── */
+.faq-h{font-size:clamp(3rem,7vw,7vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:4rem}
+.faq-h .lw{display:block;overflow:hidden}
+.faq-h .lw span{display:block;transform:translateY(105%)}
+.faq-list{display:flex;flex-direction:column;max-width:860px}
+.faq-item{border-bottom:1px solid rgba(240,237,230,.05);padding:1.6rem 0}
+.faq-item[open] .faq-q::after{transform:rotate(45deg)}
+.faq-q{
+  font-family:var(--df);font-size:clamp(.9rem,1.4vw,1.4vw);font-weight:700;
+  cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;
+}
+.faq-q::-webkit-details-marker{display:none}
+.faq-q::after{content:'+';color:var(--orange);font-size:1.4em;font-weight:300;transition:transform .3s var(--ease-out);line-height:1}
+.faq-a{font-family:var(--tf);font-size:.82rem;opacity:.42;line-height:1.75;margin-top:1.2rem;max-width:68ch;padding-bottom:.4rem}
+
 /* ─── TEAM SECTION ───────────────────────── */
 .team-h{font-size:clamp(3rem,7vw,7vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:5rem}
 .team-h .lw{display:block;overflow:hidden}
@@ -720,7 +735,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 
 /* ─── AUDIO TOGGLE ──────────────────────────── */
 #audio-btn{
-  position:fixed;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  position:fixed;bottom:4.8rem;left:50%;transform:translateX(-50%);
   background:rgba(240,237,230,.04);border:1px solid rgba(240,237,230,.08);
   color:rgba(240,237,230,.28);font-family:var(--mf);font-size:.52rem;
   letter-spacing:.18em;text-transform:uppercase;
@@ -1825,6 +1840,26 @@ footer{
     <div class="tes-arrows">
       <button class="tes-arr" id="tes-prev">←</button>
       <button class="tes-arr" id="tes-next">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section id="faq-sec" class="sec" data-scroll-section>
+  <div class="inn">
+    <div class="dash" style="margin-bottom:5vh"></div>
+    <div class="eyb rv">Frequently Asked Questions</div>
+    <h2 class="faq-h rv">
+      <span class="lw"><span>Answers From</span></span>
+      <span class="lw"><span>The Plant.</span></span>
+    </h2>
+    <div class="faq-list">
+      <details class="faq-item rv"><summary class="faq-q">Is any of this real?</summary><p class="faq-a">The plants are real. The business intelligence projections are directionally plausible. The Institute of Made-Up Plant Sciences (IMUPS) is real in the sense that we made it up. Gerald is a fern. Gerald is very real. Gerald has opinions.</p></details>
+      <details class="faq-item rv"><summary class="faq-q">How does ChloroML™ actually work?</summary><p class="faq-a">ChloroML™ ingests 14,000 data points per leaf per millisecond using a proprietary neural architecture trained exclusively on plant biometric data and the collected PowerPoint slides of Fortune 500 companies. The intersection of these two datasets is where value lives. The plant agreed.</p></details>
+      <details class="faq-item rv"><summary class="faq-q">My plant keeps dying. Can your AI fix this?</summary><p class="faq-a">Our AI can detect the droop. It cannot fix the droop. That is your job. The platform provides the insight. The watering is on you. We do offer premium support at $847/month where a cactus reviews your situation and remains indifferent but present.</p></details>
+      <details class="faq-item rv"><summary class="faq-q">Can my plant sit on the board?</summary><p class="faq-a">Yes. Seventeen of our enterprise clients have added plant board members. Three have given equity. One has given a corner office. Results have been comparable to the previous board configuration, with 40% fewer unnecessary pivots and a measurably better vibe.</p></details>
+      <details class="faq-item rv"><summary class="faq-q">When is the IPO?</summary><p class="faq-a">HHPL targets a Nasdaq Greenhouse Exchange listing in Q3 2026. The roadshow will be led by Patricia (CFO Orchid) via FaceTime. No Q&A. The orchid does not take questions. The prospectus is available but Brenda has not approved it for distribution outside of a 3km radius of her pot.</p></details>
+      <details class="faq-item rv"><summary class="faq-q">↑↑↓↓←→←→BA?</summary><p class="faq-a">We cannot confirm or deny the existence of a secret growth protocol. We can confirm that it exists. We cannot confirm what happens if you find it. Gerald knows. Gerald says nothing.</p></details>
     </div>
   </div>
 </section>
@@ -2955,6 +2990,13 @@ function startSite(){
     scroller:'[data-scroll-container]',
     trigger:'#roi-sec',start:'top 75%',once:true,
     onEnter:()=>gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
+  });
+
+  // ── FAQ reveals ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#faq-sec',start:'top 75%',once:true,
+    onEnter:()=>gsap.to('.faq-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
   });
 
   // ── Team section reveals ──
