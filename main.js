@@ -144,7 +144,7 @@
   const ctx=cv.getContext('2d',{alpha:true});
   window.plantCtx=ctx;
   let W,H;
-  Object.assign(cv.style,{position:'fixed',inset:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'3',opacity:'1',transition:'none'});
+  Object.assign(cv.style,{position:'fixed',inset:'0',width:'100%',height:'100%',pointerEvents:'none',zIndex:'3',opacity:'0',transition:'opacity .6s ease'});
 
   function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}
 
@@ -250,26 +250,6 @@
         c.strokeStyle=pm.l2+(lf*.35)+')';c.lineWidth=.8*o.scale;c.stroke();
         c.restore();
       }
-    }
-
-    // ── Data metrics (live scrub only — not pre-rendering, not ambient) ──
-    if(!o.ambient&&!o.targetCtx){
-      c.font=`300 ${Math.max(10,dW/96)}px 'DM Mono',monospace`;
-      const metrics=[
-        ['CHLOROPHYLL INDEX',`${(p*98.3).toFixed(1)}%`],
-        ['STEM VELOCITY',`${(p*2.4).toFixed(2)} mm/h`],
-        ['MARKET SENTIMENT',p>.55?'BULLISH 🌿':'CAUTIOUS'],
-        ['LEAF COUNT',`${Math.floor(p*47)}`],
-      ];
-      metrics.forEach(([lbl,val],i)=>{
-        if(p>i*.2){
-          const a=Math.min(1,(p-i*.2)*2.2);
-          c.textAlign='right';
-          c.fillStyle=`rgba(240,237,230,${a*.28})`;c.fillText(lbl,dW-24,55+i*26);
-          c.fillStyle=`rgba(224,120,48,${a*.7})`;c.fillText(val,dW-24,73+i*26);
-          c.textAlign='left';
-        }
-      });
     }
 
     c.restore();
@@ -707,8 +687,6 @@ window.addEventListener('load',function(){
   const pl=document.getElementById('pl');
   setTimeout(()=>{
     pl.classList.add('out');
-    const ticker=document.getElementById('ticker-bar');
-    if(ticker)setTimeout(()=>ticker.classList.add('vis'),800);
     setTimeout(()=>{
       pl.style.display='none';
       document.documentElement.style.overflow='';
@@ -796,20 +774,29 @@ function startSite(){
   const scFill=document.getElementById('sc-fill');
   const scPct=document.getElementById('sc-pct');
   const scrubSec=document.getElementById('scrub-section');
-  const mpanel=document.getElementById('mode-panel');
   const scrubStages=[
     {at:.05,eye:'GERMINATION PHASE',h:'Watch Your<br>Business<br>Bloom',p:'Our ChloroML™ processes 14,000 leaf data points per millisecond — insights no boardroom flipchart could replicate.'},
     {at:.38,eye:'GROWTH ACCELERATION',h:'Chlorophyll<br>Is Your<br>North Star',p:'At 40% photosynthesis efficiency, your revenue potential exceeds Fortune 500 benchmarks. The data is flawless.'},
     {at:.68,eye:'PEAK FOLIAGE YIELD',h:'The Market<br>Is Just<br>A Garden',p:'Mature plants correlate with Q4 outperformance at r=0.94. Gerald the orchid reviewed these numbers personally.'},
   ];
 
+  let lastNavY=0;
   loco.on('scroll',({scroll})=>{
     const y=scroll.y;
-    // scroll progress bar + nav blur
+    // scroll progress bar
     const sp=document.getElementById('scroll-progress');
     const navEl=document.getElementById('nav');
     if(sp){const totalH=locoEl.scrollHeight-innerHeight;sp.style.width=totalH>0?Math.min(100,y/totalH*100)+'%':'0%'}
-    if(navEl)navEl.classList.toggle('scrolled',y>80);
+    // nav: blur when scrolled, hide when scrolling down past 120px, show when scrolling up
+    if(navEl){
+      navEl.classList.toggle('scrolled',y>80);
+      if(y>120){
+        navEl.classList.toggle('nav-hidden',y>lastNavY+2);
+      } else {
+        navEl.classList.remove('nav-hidden');
+      }
+    }
+    lastNavY=y;
     if(window._secDotsUpdate)window._secDotsUpdate(y);
     const bttEl=document.getElementById('btt');
     if(bttEl)bttEl.classList.toggle('vis',y>600);
@@ -846,23 +833,6 @@ function startSite(){
         pCtx.fillStyle=sg;pCtx.fillRect(bgX-200,soilY,400,8);
         // Blit pre-rendered plant frame scaled to full viewport
         pCtx.drawImage(frames[idx],0,0,pW,pH);
-        // Metrics overlay on top
-        pCtx.font=`300 ${Math.max(10,pW/96)}px 'DM Mono',monospace`;
-        const mets=[
-          ['CHLOROPHYLL INDEX',`${(progress*98.3).toFixed(1)}%`],
-          ['STEM VELOCITY',`${(progress*2.4).toFixed(2)} mm/h`],
-          ['MARKET SENTIMENT',progress>.55?'BULLISH 🌿':'CAUTIOUS'],
-          ['LEAF COUNT',`${Math.floor(progress*47)}`],
-        ];
-        mets.forEach(([lbl,val],mi)=>{
-          if(progress>mi*.2){
-            const a=Math.min(1,(progress-mi*.2)*2.2);
-            pCtx.textAlign='right';
-            pCtx.fillStyle=`rgba(240,237,230,${a*.28})`;pCtx.fillText(lbl,pW-24,55+mi*26);
-            pCtx.fillStyle=`rgba(224,120,48,${a*.7})`;pCtx.fillText(val,pW-24,73+mi*26);
-            pCtx.textAlign='left';
-          }
-        });
       } else {
         window.drawPlant(progress);
       }
@@ -880,7 +850,6 @@ function startSite(){
 
       if(raw<=-0.06){
         // ── Before scrub: hero + tagline ──
-        if(mpanel)mpanel.classList.remove('vis');
         const heroH=(document.getElementById('hero')||{offsetHeight:vH}).offsetHeight;
         const t=Math.min(1,Math.max(0,y/(heroH*.85)));
         window._plantAmbient={
@@ -891,7 +860,6 @@ function startSite(){
         };
       } else {
         // ── After scrub: left side, fades with distance ──
-        if(mpanel)mpanel.classList.add('vis');
         const dist=y-(st+sh);
         const fadeOut=Math.max(0,1-(dist/(vH*2.8)));
         window._plantAmbient={
@@ -902,17 +870,6 @@ function startSite(){
         };
       }
     }
-  });
-
-  // ── Mode toggle buttons ──
-  document.querySelectorAll('.mbtn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      window._plantMode=btn.dataset.mode;
-      window._plantFrames=null;
-      setTimeout(preRenderPlantFrames,50);
-    });
   });
 
   initBlueprint(loco);
@@ -1428,80 +1385,6 @@ document.getElementById('btt').addEventListener('click',()=>{
   else window.scrollTo({top:0,behavior:'smooth'});
 });
 
-// SOCIAL PROOF TOASTS
-(function(){
-  const toasts=[
-    {av:'🌿',name:'Oliver T.',msg:'just joined the waitlist',ts:'just now'},
-    {av:'🌵',name:'Sarah K.',msg:'upgraded to Series A plan',ts:'2 seconds ago'},
-    {av:'🌸',name:'Marcus J.',msg:'submitted their fern for analysis',ts:'5 seconds ago'},
-    {av:'🍃',name:'Priya M.',msg:'just unlocked Chlorophyll Pro',ts:'just now'},
-    {av:'🌱',name:'Derek W.',msg:'referred 3 colleagues to PlantIQ™',ts:'12 seconds ago'},
-    {av:'🪴',name:'Camille B.',msg:'achieved 847% photosynthesis ROI',ts:'just now'},
-    {av:'🌺',name:'Jonas L.',msg:'booked a call with Gerald',ts:'8 seconds ago'},
-    {av:'🌾',name:'Aisha N.',msg:'just joined the waitlist',ts:'3 seconds ago'},
-    {av:'🍀',name:'Theo R.',msg:'fired his CFO based on leaf data',ts:'just now'},
-    {av:'🌻',name:'Yuki S.',msg:'named her cactus Director of Sales',ts:'4 seconds ago'},
-    {av:'🪻',name:'Brent H.',msg:'Series A funding secured via fern',ts:'just now'},
-    {av:'🌲',name:'Luna C.',msg:'achieved photosynthetic profitability',ts:'11 seconds ago'},
-  ];
-  const el=document.getElementById('sp-toast');
-  const avEl=document.getElementById('spt-av');
-  const nmEl=document.getElementById('spt-name');
-  const mgEl=document.getElementById('spt-msg');
-  const tsEl=document.getElementById('spt-ts');
-  let idx=0;
-  function showToast(){
-    const t=toasts[idx%toasts.length];idx++;
-    avEl.textContent=t.av;nmEl.textContent=t.name;
-    mgEl.textContent=t.msg;tsEl.textContent=t.ts;
-    el.classList.add('show');
-    setTimeout(()=>el.classList.remove('show'),4200);
-  }
-  setTimeout(showToast,8000);
-  setInterval(showToast,14000);
-})();
-
-
-// SCROLL MILESTONE ACHIEVEMENTS
-(function(){
-  const el=document.getElementById('ms-toast');
-  const iconEl=document.getElementById('mst-icon');
-  const titleEl=document.getElementById('mst-title');
-  if(!el)return;
-  const milestones=[
-    {section:'#tagline',icon:'📊',title:'Data Visionary'},
-    {section:'#ai-sec',icon:'🧠',title:'Neural Botanist'},
-    {section:'#roi-sec',icon:'💰',title:'ROI Alchemist'},
-    {section:'#pricing-sec',icon:'💎',title:'Investment Ready'},
-    {section:'#team-sec',icon:'🌿',title:'Met the Team'},
-    {section:'#tes-sec',icon:'⭐',title:'Social Proof Believer'},
-    {section:'#blog-sec',icon:'📖',title:'Thought Leader'},
-    {section:'#cta-sec',icon:'🚀',title:'Ready to Hustle'},
-    {section:'footer',icon:'🌵',title:'You Scrolled Everything'},
-  ];
-  const seen=new Set();
-  let showing=false;
-  function showMs(icon,title){
-    if(showing)return;
-    showing=true;
-    iconEl.textContent=icon;titleEl.textContent=title;
-    el.classList.add('show');
-    setTimeout(()=>{el.classList.remove('show');setTimeout(()=>{showing=false},600);},3600);
-  }
-  window.addEventListener('scroll',()=>{
-    milestones.forEach(m=>{
-      if(seen.has(m.section))return;
-      const s=document.querySelector(m.section);
-      if(!s)return;
-      const r=s.getBoundingClientRect();
-      if(r.top<window.innerHeight*.55){
-        seen.add(m.section);
-        setTimeout(()=>showMs(m.icon,m.title),600);
-      }
-    });
-  },{passive:true});
-})();
-
 // ══════════════════════════════════════════════════
 // TESTIMONIALS CAROUSEL
 // ══════════════════════════════════════════════════
@@ -1933,5 +1816,27 @@ function closeMob(){
     s.className='sec-num';s.textContent=num;
     el.style.overflow='hidden';
     el.appendChild(s);
+  });
+})();
+
+// ══════════════════════════════════════════════════
+// WORD HOVER EFFECTS — different per span, orange, linger 1.8s
+// ══════════════════════════════════════════════════
+(function(){
+  const effects=['hx-glow','hx-glitch','hx-invert','hx-paint'];
+  const allClasses=effects.join(' ');
+  document.querySelectorAll('.lw span').forEach((span,idx)=>{
+    const effect=effects[idx%effects.length];
+    let timer;
+    span.addEventListener('mouseenter',()=>{
+      clearTimeout(timer);
+      span.className=span.className.replace(/hx-\w+/g,'').trim();
+      span.classList.add(effect);
+    });
+    span.addEventListener('mouseleave',()=>{
+      timer=setTimeout(()=>{
+        span.classList.remove(...effects);
+      },1800);
+    });
   });
 })();
