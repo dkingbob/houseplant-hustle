@@ -1,9 +1,9 @@
 ﻿:root{
-  --black:#0c1610;
-  --deep:#080f09;
-  --mid:#121e13;
-  --lift:#1a2e1c;
-  --surface:#101d11;
+  --black:#172118;
+  --deep:#111b12;
+  --mid:#1c2a1d;
+  --lift:#243a26;
+  --surface:#1a2c1b;
   --white:#f0ede6;
   --orange:#e07830;
   --green:#58f066;
@@ -27,8 +27,9 @@ html{
 body{
   overflow:hidden;
   background:
-    radial-gradient(ellipse 130% 70% at 50% -10%, rgba(24,55,26,.75) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 50% at 85% 110%, rgba(12,30,14,.6) 0%, transparent 50%),
+    radial-gradient(ellipse 130% 70% at 50% -10%, rgba(32,68,34,.9) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 50% at 85% 110%, rgba(24,50,26,.7) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 10% 60%, rgba(28,55,30,.5) 0%, transparent 45%),
     var(--black);
   animation:bgDrift 18s ease-in-out infinite alternate;
 }
@@ -358,28 +359,7 @@ h1.hero-h1{
   letter-spacing:-.04em;
 }
 
-/* ─── SECTION DIVIDERS ───────────────────── */
-/* diagonal wedge at bottom of tagline, matches body bg below */
-#tagline::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;
-  height:80px;pointer-events:none;z-index:2;
-  background:var(--black);
-  clip-path:polygon(0 100%,100% 20%,100% 100%);
-}
-/* angled top on team-sec — black triangle over the fade-in edge */
-#team-sec::before{
-  content:'';position:absolute;top:0;left:0;right:0;
-  height:70px;pointer-events:none;z-index:2;
-  background:var(--black);
-  clip-path:polygon(0 0,100% 0,0 100%);
-}
-/* diagonal top on nl-sec */
-#nl-sec::before{
-  content:'';position:absolute;top:0;left:0;right:0;
-  height:60px;pointer-events:none;z-index:2;
-  background:var(--black);
-  clip-path:polygon(0 0,100% 100%,0 100%);
-}
+/* ─── SECTION DIVIDERS — subtle gradient fades only ─── */
 
 /* ─── TAGLINE SECTION ─────────────────────── */
 #tagline{padding:20vh var(--px) 16vh;position:relative;overflow:hidden;background:var(--black)}
@@ -461,9 +441,9 @@ h1.hero-h1{
   text-transform:uppercase;color:var(--orange);margin-bottom:1.5rem;
 }
 .scrub-h{
-  font-size:clamp(2.4rem,5.5vw,5.5vw);font-weight:800;
-  text-transform:uppercase;letter-spacing:-.04em;
-  line-height:.86;margin-bottom:0;
+  font-size:clamp(1.4rem,2.6vw,2.6vw);font-weight:800;
+  text-transform:uppercase;letter-spacing:-.03em;
+  line-height:.88;margin-bottom:0;
 }
 .scrub-p{
   font-size:clamp(.78rem,.95vw,.95vw);
@@ -491,8 +471,8 @@ h1.hero-h1{
 #ai-sec{
   padding:14vh var(--px);
   background:
-    radial-gradient(ellipse 110% 60% at 25% 50%, rgba(18,42,20,.85) 0%, transparent 55%),
-    var(--mid);
+    radial-gradient(ellipse 110% 60% at 25% 50%, rgba(24,54,26,.65) 0%, transparent 55%),
+    var(--black);
 }
 .ai-grid{
   display:grid;grid-template-columns:1fr 1fr;
@@ -1188,96 +1168,46 @@ footer{
 .stack-prog-sep{font-family:var(--mf);font-size:.5rem;opacity:.14}
 .stack-prog-t{font-family:var(--mf);font-size:.5rem;letter-spacing:.12em;opacity:.14}
 
-/* ─── 3D VIEWER ──────────────────────────────── */
-#viewer-sec{
-  padding:18vh var(--px);
-  background:
-    radial-gradient(ellipse 100% 60% at 80% 50%, rgba(14,36,16,.7) 0%, transparent 55%),
-    var(--deep);
-}
-#viewer-grid{
-  display:grid;grid-template-columns:1fr 1.1fr;
-  gap:5vw;align-items:center;max-width:1520px;margin:0 auto;
-}
-.viewer-h{
-  font-size:clamp(3rem,7vw,7vw);
-  line-height:.83;font-weight:800;
-  text-transform:uppercase;letter-spacing:-.04em;
-  margin-bottom:1.5rem;overflow:hidden;
-}
-.viewer-h .lw{display:block;overflow:hidden}
-.viewer-h .lw span{display:block;transform:translateY(105%)}
-.viewer-desc{
-  font-family:var(--tf);font-size:clamp(.82rem,1.05vw,1.05vw);
-  opacity:.35;max-width:36ch;line-height:1.72;margin-bottom:2.5rem;
-}
-.viewer-stats{display:flex;gap:3rem}
-.vstat-n{
-  font-size:clamp(1.6rem,2.8vw,2.8vw);font-weight:800;
-  color:var(--orange);display:block;line-height:1;
-}
-.vstat-l{
-  font-family:var(--mf);font-size:.53rem;letter-spacing:.16em;
-  text-transform:uppercase;opacity:.22;margin-top:.4rem;display:block;
-}
-#viewer-wrap{
-  aspect-ratio:1;border-radius:16px;overflow:hidden;
-  cursor:grab;position:relative;
-  background:radial-gradient(ellipse 80% 80% at 50% 60%, rgba(12,30,14,.95) 0%, #020b03 100%);
-  box-shadow:0 0 100px rgba(0,0,0,.55),inset 0 0 40px rgba(0,0,0,.3);
-}
-#viewer-wrap:active{cursor:grabbing}
-#viewer-cv{width:100%;height:100%;display:block}
-#viewer-hint{
-  position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);
-  font-family:var(--mf);font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(240,237,230,.22);pointer-events:none;transition:opacity .6s;white-space:nowrap;
-}
-#viewer-hint.hidden{opacity:0}
-#viewer-pulse{
-  position:absolute;top:1.2rem;right:1.5rem;width:8px;height:8px;
-  background:var(--green);border-radius:50%;animation:bk 2.2s ease-in-out infinite;
-}
+/* 3D viewer removed */
 
 /* ─── WORD HOVER EFFECTS ──────────────────────── */
-/* Base: smooth color + shadow transition on individual word spans */
-.lw span{transition:color .3s ease,text-shadow .3s ease}
+/* Base: 1.3s fade back after orange trail */
+.lw span{transition:color 1.3s ease;display:inline-block}
 
-/* Effect A: orange glow — stays via JS class */
-.hx-glow{
-  color:var(--orange)!important;
-  text-shadow:0 0 55px rgba(224,120,48,.85),0 0 110px rgba(224,120,48,.35)!important;
-}
-/* Effect B: glitch distortion */
+/* Orange trail — instant on, 1.3s fade off */
+.hx-trail{color:var(--orange)!important;transition:color 0s!important}
+
+/* Glitch distortion */
 @keyframes hxGlitch{
   0%{transform:translateX(0) skewX(0deg)}
-  15%{transform:translateX(-4px) skewX(-12deg);color:var(--orange)}
-  30%{transform:translateX(3px) skewX(8deg)}
-  50%{transform:translateX(-2px) skewX(-4deg);color:var(--orange)}
-  70%{transform:translateX(1px) skewX(2deg)}
+  15%{transform:translateX(-5px) skewX(-14deg);color:var(--orange)}
+  35%{transform:translateX(4px) skewX(10deg)}
+  55%{transform:translateX(-3px) skewX(-6deg);color:var(--orange)}
+  75%{transform:translateX(2px) skewX(3deg)}
   100%{transform:translateX(0) skewX(0deg);color:var(--orange)}
 }
-.hx-glitch{animation:hxGlitch .4s steps(3,end) forwards;color:var(--orange)!important}
+.hx-glitch{animation:hxGlitch .45s steps(4,end) forwards;color:var(--orange)!important}
 
-/* Effect C: invert flash */
+/* Invert flash */
 @keyframes hxInvert{
   0%{filter:invert(0) brightness(1)}
-  20%{filter:invert(1) hue-rotate(30deg) brightness(1.4)}
-  55%{filter:invert(0) brightness(1.2)}
+  25%{filter:invert(1) hue-rotate(30deg) brightness(1.5)}
+  60%{filter:invert(0) brightness(1.2)}
   100%{filter:invert(0) brightness(1);color:var(--orange)}
 }
 .hx-invert{animation:hxInvert .5s ease forwards;color:var(--orange)!important}
 
-/* Effect D: paint stroke — outline only */
-.hx-paint{
-  -webkit-text-stroke:2px var(--orange)!important;
-  color:transparent!important;
-  text-shadow:none!important;
-}
+/* Paint stroke — outline only */
+.hx-paint{-webkit-text-stroke:2px var(--orange)!important;color:transparent!important;text-shadow:none!important;}
+
+/* Water — JS drives per-char via GSAP, CSS just marks the chars */
+.hx-water-char{display:inline-block}
+
+/* Rubber — JS drives skewX/scaleX via GSAP */
 
 /* will-change on key animated elements */
 .rv,.rf,.feat,.team-card,.price-card,.comp-row,.bcard,
-.lw span,#hero-canvas,#plant-cv,#stack-sticky,.scard{
+.lw span,#hero-canvas,#plant-cv,#stack-sticky,.scard,.hx-water-char{
   will-change:transform,opacity;
 }
 
@@ -1594,7 +1524,6 @@ footer{
   #stack-sticky{grid-template-columns:1fr}
   .stack-txt{display:none}
   .stack-prog{display:none}
-  #viewer-grid{grid-template-columns:1fr}
   /* comparison table → horizontal scroll on mobile */
   #comp-sec{overflow-x:auto}
   .comp-table{min-width:640px}

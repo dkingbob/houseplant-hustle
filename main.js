@@ -873,9 +873,8 @@ function startSite(){
   });
 
   initBlueprint(loco);
-  initViewer();
 
-  // ── Stack reveal ──
+  // ── Stack reveal — driven by Locomotive scroll position ──
   (function(){
     const cards=gsap.utils.toArray('#stack-cards .scard');
     if(!cards.length)return;
@@ -884,25 +883,27 @@ function startSite(){
       gsap.set(c,{y:`${depth*2.2}%`,scale:1-depth*.022,zIndex:i+1,transformOrigin:'center 90%'});
     });
     const toFly=[...cards].reverse().slice(0,-1);
-    const stackTl=gsap.timeline({
-      scrollTrigger:{
-        scroller:'[data-scroll-container]',
-        trigger:'#stack-sec',
-        start:'top top',
-        end:'bottom bottom',
-        pin:'#stack-sticky',
-        pinSpacing:false,
-        scrub:1.8,
-        onUpdate:(self)=>{
-          loco.update();
-          const n=document.getElementById('sp-n');
-          if(n)n.textContent=Math.min(5,Math.ceil(self.progress*4.2)+1);
-        }
-      }
-    });
-    toFly.forEach((card,i)=>{
-      const dir=i%2===0?-1:1;
-      stackTl.to(card,{y:'-128%',x:`${dir*16}%`,rotation:dir*13,opacity:0,ease:'power2.in',duration:.9},i*.88);
+    const sec=document.getElementById('stack-sec');
+    let lastProg=-1;
+    loco.on('scroll',({scroll})=>{
+      if(!sec)return;
+      const secTop=sec.offsetTop;
+      const secScrollable=sec.offsetHeight-innerHeight;
+      if(secScrollable<=0)return;
+      const prog=Math.max(0,Math.min(1,(scroll.y-secTop)/secScrollable));
+      if(Math.abs(prog-lastProg)<0.001)return;
+      lastProg=prog;
+      const n=document.getElementById('sp-n');
+      if(n)n.textContent=Math.min(5,Math.ceil(prog*4.2)+1);
+      toFly.forEach((card,i)=>{
+        const cardProg=Math.max(0,Math.min(1,(prog-(i/toFly.length))*toFly.length));
+        const dir=i%2===0?-1:1;
+        const eased=cardProg<0.5?2*cardProg*cardProg:(1-Math.pow(-2*cardProg+2,2)/2);
+        gsap.set(card,{
+          y:`${-128*eased}%`,x:`${dir*16*eased}%`,
+          rotation:dir*13*eased,opacity:1-eased
+        });
+      });
     });
   })();
 
@@ -1154,117 +1155,6 @@ function startSite(){
   preRenderPlantFrames();
 }
 
-// ══════════════════════════════════════════════════
-// 3D VIEWER — Three.js procedural plant
-// ══════════════════════════════════════════════════
-function initViewer(){
-  if(!window.THREE)return;
-  const T=window.THREE;
-  const cv=document.getElementById('viewer-cv');
-  const wrap=document.getElementById('viewer-wrap');
-  if(!cv||!wrap)return;
-
-  const scene=new T.Scene();
-  scene.fog=new T.FogExp2(0x020903,.08);
-  let W=wrap.offsetWidth||480,H=wrap.offsetHeight||W;
-  const cam=new T.PerspectiveCamera(42,W/Math.max(H,1),.1,50);
-  cam.position.set(0,1.2,5.5);cam.lookAt(0,1,0);
-
-  const renderer=new T.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
-  renderer.setSize(W,H);
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  renderer.toneMapping=T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.1;
-
-  scene.add(new T.AmbientLight(0x1c3f22,.9));
-  const sun=new T.DirectionalLight(0xaaffcc,1.2);sun.position.set(2,5,3);scene.add(sun);
-  const fill=new T.DirectionalLight(0x3355ff,.25);fill.position.set(-3,2,-2);scene.add(fill);
-  const ptL=new T.PointLight(0x58f066,.75,10);ptL.position.set(0,.2,0);scene.add(ptL);
-
-  const root=new T.Group();scene.add(root);
-
-  // Pot + soil
-  const pot=new T.Mesh(new T.CylinderGeometry(.52,.4,.68,18),new T.MeshStandardMaterial({color:0x7a3d18,roughness:.88,metalness:.04}));
-  pot.position.y=-.34;root.add(pot);
-  const soil=new T.Mesh(new T.CylinderGeometry(.5,.5,.04,18),new T.MeshStandardMaterial({color:0x2a180a,roughness:.96}));
-  soil.position.y=.02;root.add(soil);
-
-  // Stem
-  const spts=[];
-  for(let i=0;i<=14;i++){const t=i/14;spts.push(new T.Vector3(Math.sin(t*Math.PI*1.4)*.1*(1-t),t*2.2,Math.cos(t*Math.PI*.9)*.06*(1-t)))}
-  const scurve=new T.CatmullRomCurve3(spts);
-  root.add(new T.Mesh(new T.TubeGeometry(scurve,20,.056,7,false),new T.MeshStandardMaterial({color:0x285c1e,roughness:.72,metalness:.08})));
-
-  // Leaves — simple elliptical ShapeGeometry
-  const leafMat=new T.MeshStandardMaterial({color:0x2e7e34,roughness:.62,metalness:.06,side:T.DoubleSide});
-  const leaves=[],leafZ=[];
-  for(let i=0;i<6;i++){
-    const t=.18+(i/6)*.7,side=i%2===0?1:-1;
-    const sp=scurve.getPointAt(t);
-    const lW=.14+i*.055,lH=.38+i*.09;
-    const shape=new T.Shape();
-    shape.moveTo(0,0);shape.quadraticCurveTo(lW,lH*.5,0,lH);shape.quadraticCurveTo(-lW,lH*.5,0,0);
-    const lf=new T.Mesh(new T.ShapeGeometry(shape,6),leafMat);
-    lf.position.copy(sp);
-    lf.rotation.y=side*(Math.PI*.42+i*.2);
-    lf.rotation.x=-.38+t*.28;
-    lf.rotation.z=side*.12;
-    leaves.push(lf);leafZ.push(lf.rotation.z);
-    root.add(lf);
-  }
-
-  // Roots
-  for(let r=0;r<5;r++){
-    const ang=r/5*Math.PI*2;
-    const rpts=[new T.Vector3(0,0,0)];
-    for(let i=1;i<=5;i++){const t=i/5;rpts.push(new T.Vector3(Math.cos(ang)*t*.35,-(t*.28),Math.sin(ang)*t*.35))}
-    root.add(new T.Mesh(new T.TubeGeometry(new T.CatmullRomCurve3(rpts),6,.014,4,false),new T.MeshStandardMaterial({color:0x4a2e0e,roughness:.9,transparent:true,opacity:.48})));
-  }
-
-  root.position.y=-1.1;
-
-  // Drag to rotate
-  let tY=0,tX=0,rY=0,rX=0,drag=false,x0=0,y0=0,rY0=0,rX0=0,autoR=true;
-  const gp=e=>(e.touches?e.touches[0]:e);
-  const dn=e=>{drag=true;autoR=false;clearTimeout(window._vT);const p=gp(e);x0=p.clientX;y0=p.clientY;rY0=tY;rX0=tX};
-  const mv=e=>{if(!drag)return;const p=gp(e);tY=rY0+(p.clientX-x0)*.009;tX=Math.max(-.42,Math.min(.42,rX0+(p.clientY-y0)*.006));const h=document.getElementById('viewer-hint');if(h)h.classList.add('hidden')};
-  const up=()=>{if(!drag)return;drag=false;window._vT=setTimeout(()=>autoR=true,2200)};
-  wrap.addEventListener('mousedown',dn);
-  wrap.addEventListener('touchstart',dn,{passive:true});
-  addEventListener('mousemove',mv);addEventListener('touchmove',mv,{passive:true});
-  addEventListener('mouseup',up);addEventListener('touchend',up);
-
-  // Scroll to zoom
-  let tZ=5.5,cZ=5.5;
-  wrap.addEventListener('wheel',e=>{e.preventDefault();tZ=Math.max(3,Math.min(8,tZ+e.deltaY*.012))},{passive:false});
-
-  // Render loop with leaf sway
-  let ft=0;
-  (function loop(){
-    requestAnimationFrame(loop);ft+=.02;
-    leaves.forEach((l,i)=>l.rotation.z=leafZ[i]+Math.sin(ft+i*.85)*.055);
-    if(autoR)tY+=.007;
-    rY+=(tY-rY)*.075;rX+=(tX-rX)*.075;
-    root.rotation.y=rY;root.rotation.x=rX;
-    cZ+=(tZ-cZ)*.09;cam.position.z=cZ;
-    renderer.render(scene,cam);
-  })();
-
-  // Handle container resize
-  const ro=new ResizeObserver(()=>{
-    const nW=wrap.offsetWidth,nH=wrap.offsetHeight||nW;
-    if(!nW)return;
-    renderer.setSize(nW,nH);cam.aspect=nW/Math.max(nH,1);cam.updateProjectionMatrix();
-  });
-  ro.observe(wrap);
-
-  // Heading scroll reveal
-  ScrollTrigger.create({
-    scroller:'[data-scroll-container]',trigger:'#viewer-sec',start:'top 75%',end:'top 20%',
-    onEnter:()=>gsap.to('.viewer-h .lw span',{y:0,duration:1.4,ease:'power3.out',stagger:.1}),
-    onLeaveBack:()=>gsap.to('.viewer-h .lw span',{y:'105%',duration:.5,ease:'power2.in',stagger:.04})
-  });
-}
 
 // ══════════════════════════════════════════════════
 // ROI CALCULATOR
@@ -1820,23 +1710,107 @@ function closeMob(){
 })();
 
 // ══════════════════════════════════════════════════
-// WORD HOVER EFFECTS — different per span, orange, linger 1.8s
+// WORD HOVER EFFECTS
+// — Global orange trail: every .lw span turns orange on touch, fades 1.3s
+// — Section effects: one effect per heading group (water/rubber/glitch/invert/paint)
 // ══════════════════════════════════════════════════
 (function(){
-  const effects=['hx-glow','hx-glitch','hx-invert','hx-paint'];
-  const allClasses=effects.join(' ');
-  document.querySelectorAll('.lw span').forEach((span,idx)=>{
-    const effect=effects[idx%effects.length];
-    let timer;
+  // ── Global orange trail (replaces glow, no blur) ──
+  document.querySelectorAll('.lw span').forEach(span=>{
     span.addEventListener('mouseenter',()=>{
-      clearTimeout(timer);
-      span.className=span.className.replace(/hx-\w+/g,'').trim();
-      span.classList.add(effect);
+      span.classList.add('hx-trail');
+      clearTimeout(span._tt);
     });
     span.addEventListener('mouseleave',()=>{
-      timer=setTimeout(()=>{
-        span.classList.remove(...effects);
-      },1800);
+      clearTimeout(span._tt);
+      span._tt=setTimeout(()=>span.classList.remove('hx-trail'),80);
     });
+  });
+
+  // ── Per-section heading effects — one effect per heading, all words share it ──
+  const map=[
+    {sel:'.hero-h1',   fx:'water'},
+    {sel:'.tl-h',      fx:'rubber'},
+    {sel:'.stack-h',   fx:'glitch'},
+    {sel:'.scrub-h',   fx:'water'},
+    {sel:'.ai-h',      fx:'paint'},
+    {sel:'.roi-head h2',fx:'rubber'},
+    {sel:'.pricing-h', fx:'invert'},
+    {sel:'.comp-h',    fx:'glitch'},
+    {sel:'.gotcha-h',  fx:'paint'},
+    {sel:'.team-h',    fx:'water'},
+    {sel:'.cta-h',     fx:'rubber'},
+    {sel:'.tes-h',     fx:'glitch'},
+    {sel:'.faq-h',     fx:'paint'},
+    {sel:'.nl-h',      fx:'invert'},
+  ];
+
+  map.forEach(({sel,fx})=>{
+    const heading=document.querySelector(sel);
+    if(!heading)return;
+    const spans=Array.from(heading.querySelectorAll('.lw span'));
+    if(!spans.length)return;
+
+    if(fx==='water'){
+      // Word-level wave: staggered scaleY pulse — no clipping issues
+      spans.forEach(span=>{
+        span.addEventListener('mouseenter',()=>{
+          gsap.to(spans,{
+            scaleX:1.08,scaleY:1.12,
+            duration:.2,ease:'sine.out',stagger:.08,
+            transformOrigin:'center center',
+            onComplete(){
+              gsap.to(spans,{scaleX:1,scaleY:1,duration:.75,ease:'elastic.out(1,.38)',stagger:.05,transformOrigin:'center center'});
+            }
+          });
+        });
+      });
+    }
+
+    if(fx==='rubber'){
+      spans.forEach(span=>{
+        span.style.transformOrigin='center center';
+        span.addEventListener('mousemove',e=>{
+          const r=span.getBoundingClientRect();
+          const rel=Math.max(-1,Math.min(1,(e.clientX-(r.left+r.width/2))/(r.width*.5)));
+          gsap.to(span,{skewX:rel*18,scaleX:1+Math.abs(rel)*.32,duration:.18,ease:'power2.out'});
+        });
+        span.addEventListener('mouseleave',()=>{
+          gsap.to(span,{skewX:0,scaleX:1,duration:.9,ease:'elastic.out(1,.32)'});
+        });
+      });
+    }
+
+    if(fx==='glitch'){
+      spans.forEach(span=>{
+        span.addEventListener('mouseenter',()=>{
+          span.classList.remove('hx-glitch');
+          void span.offsetWidth; // reflow to restart animation
+          span.classList.add('hx-glitch');
+          setTimeout(()=>span.classList.remove('hx-glitch'),500);
+        });
+      });
+    }
+
+    if(fx==='invert'){
+      spans.forEach(span=>{
+        span.addEventListener('mouseenter',()=>{
+          span.classList.remove('hx-invert');
+          void span.offsetWidth;
+          span.classList.add('hx-invert');
+          setTimeout(()=>span.classList.remove('hx-invert'),600);
+        });
+      });
+    }
+
+    if(fx==='paint'){
+      spans.forEach(span=>{
+        span.addEventListener('mouseenter',()=>{
+          span.classList.add('hx-paint');
+          clearTimeout(span._pt);
+          span._pt=setTimeout(()=>span.classList.remove('hx-paint'),1400);
+        });
+      });
+    }
   });
 })();

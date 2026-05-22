@@ -150,7 +150,7 @@
 
 <!-- ══ STACK REVEAL ══ -->
 <section id="stack-sec" data-scroll-section>
-  <div id="stack-sticky">
+  <div id="stack-sticky" data-scroll data-scroll-sticky data-scroll-target="#stack-sec">
     <div class="stack-txt">
       <div class="eyb">Multi-Spectrum Analysis</div>
       <h2 class="stack-h">
@@ -204,30 +204,6 @@
   </div>
 </section>
 
-<!-- ══ 3D PLANT VIEWER ══ -->
-<section id="viewer-sec" class="sec" data-scroll-section>
-  <div id="viewer-grid">
-    <div>
-      <div class="eyb rv">3D Botanical Model</div>
-      <h2 class="viewer-h">
-        <span class="lw"><span>Inspect</span></span>
-        <span class="lw"><span>Every</span></span>
-        <span class="lw"><span>Angle.</span></span>
-      </h2>
-      <p class="viewer-desc rv">Full volumetric reconstruction of your plant's biometric signature. Drag to rotate. Scroll to zoom. Stare until you feel something.</p>
-      <div class="viewer-stats rv">
-        <div><span class="vstat-n">6</span><span class="vstat-l">Leaf Nodes</span></div>
-        <div><span class="vstat-n">248mm</span><span class="vstat-l">Stem Height</span></div>
-        <div><span class="vstat-n">A+</span><span class="vstat-l">Posture Grade</span></div>
-      </div>
-    </div>
-    <div id="viewer-wrap">
-      <canvas id="viewer-cv"></canvas>
-      <div id="viewer-hint">Drag to rotate</div>
-      <div id="viewer-pulse"></div>
-    </div>
-  </div>
-</section>
 
 <!-- ══ ROI CALCULATOR (LIGHT) ══ -->
 <section id="roi-sec" class="sec" data-scroll-section>
@@ -855,7 +831,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="main.js"></script>
 </body>
 </html>
