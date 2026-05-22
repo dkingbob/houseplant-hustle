@@ -913,6 +913,33 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 }
 #legal-close:hover{color:var(--white)}
 
+/* ─── KEYBOARD SHORTCUTS OVERLAY ──────────────── */
+#kb-overlay{
+  position:fixed;inset:0;z-index:3200;
+  background:rgba(5,12,6,.88);backdrop-filter:blur(14px);
+  display:none;align-items:center;justify-content:center;padding:var(--px);
+}
+#kb-overlay.on{display:flex;animation:kfIn .2s ease-out forwards}
+.kb-box{
+  background:var(--mid);border:1px solid rgba(240,237,230,.08);
+  border-radius:18px;padding:2.5rem;max-width:420px;width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,.5);
+}
+.kb-title{font-family:var(--df);font-size:1rem;font-weight:800;letter-spacing:-.02em;margin-bottom:1.6rem}
+.kb-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem 0;border-bottom:1px solid rgba(240,237,230,.04);
+}
+.kb-row:last-child{border:none}
+.kb-desc{font-family:var(--tf);font-size:.74rem;opacity:.4}
+.kb-key{
+  font-family:var(--mf);font-size:.54rem;letter-spacing:.08em;
+  background:rgba(240,237,230,.06);border:1px solid rgba(240,237,230,.12);
+  border-radius:6px;padding:.25em .7em;color:rgba(240,237,230,.6);
+  white-space:nowrap;
+}
+.kb-close-hint{font-family:var(--mf);font-size:.48rem;opacity:.2;letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-top:1.5rem}
+
 /* ─── GERALD CERTIFICATE ─────────────────────── */
 #gerald-cert{
   position:fixed;inset:0;z-index:3100;
@@ -2528,6 +2555,20 @@ footer{
     <div style="margin-top:2rem">
       <button class="btn" onclick="document.getElementById('gerald-cert').classList.remove('on')">I Accept Gerald's Endorsement</button>
     </div>
+  </div>
+</div>
+
+<!-- KEYBOARD SHORTCUTS OVERLAY -->
+<div id="kb-overlay" onclick="this.classList.remove('on')">
+  <div class="kb-box" onclick="event.stopPropagation()">
+    <div class="kb-title">Keyboard Shortcuts 🌿</div>
+    <div class="kb-row"><span class="kb-desc">Open Succy™ AI chat</span><span class="kb-key">/ or C</span></div>
+    <div class="kb-row"><span class="kb-desc">Back to top</span><span class="kb-key">T</span></div>
+    <div class="kb-row"><span class="kb-desc">Jump to Pricing</span><span class="kb-key">P</span></div>
+    <div class="kb-row"><span class="kb-desc">Show/hide shortcuts</span><span class="kb-key">?</span></div>
+    <div class="kb-row"><span class="kb-desc">Secret growth protocol</span><span class="kb-key">↑↑↓↓←→←→BA</span></div>
+    <div class="kb-row"><span class="kb-desc">Close any overlay</span><span class="kb-key">Esc</span></div>
+    <div class="kb-close-hint">Press Esc or click outside to close</div>
   </div>
 </div>
 
@@ -4364,10 +4405,26 @@ function nlSub(){
       document.getElementById('suc-box').classList.add('on');
       setTimeout(()=>document.getElementById('suc-txt')?.focus(),80);
     }
-    // Escape → close chatbot/legal
+    // '?' → show keyboard shortcuts overlay
+    if(e.key==='?'){
+      e.preventDefault();
+      document.getElementById('kb-overlay').classList.toggle('on');
+    }
+    // 't' → back to top
+    if(e.key==='t'){
+      if(window._loco)window._loco.scrollTo(0,{duration:1200,easing:[.16,1,.3,1]});
+      else window.scrollTo({top:0,behavior:'smooth'});
+    }
+    // 'p' → go to pricing
+    if(e.key==='p'){
+      if(window._loco)window._loco.scrollTo('#pricing-sec',{duration:900,easing:[.16,1,.3,1]});
+    }
+    // Escape → close chatbot/legal/cert/kb
     if(e.key==='Escape'){
       document.getElementById('suc-box').classList.remove('on');
       document.getElementById('legal-overlay').classList.remove('on');
+      document.getElementById('gerald-cert')?.classList.remove('on');
+      document.getElementById('kb-overlay')?.classList.remove('on');
     }
   });
 })();
