@@ -1,160 +1,183 @@
 # Houseplant Hustle — Progress Checkpoint
 
+---
+
+## Project Rules (apply to all groups)
+1. **PERFORMANCE** — Buttery smooth scroll. Zero lag. rAF properly, no layout thrashing, lazy load where possible. #1 priority.
+2. **ORGANIZATION** — Split into multiple files. Separate CSS / JS / assets.
+3. **NO LIMITS** — No line count limits. If a feature needs 500 lines, write 500.
+4. **CLEAN CODE** — Comment clearly. Sensible file/function names. Maintainable.
+5. **BEAUTIFUL CODE** — Readable, elegant, consistent formatting. Meaningful variable names.
+
+---
+
+## STATUS OVERVIEW
+
+| Group | Topic | Status |
+|-------|-------|--------|
+| 1 | Bug Fixes & Cleanup | ✅ DONE |
+| 2 | Animation Fixes | ✅ DONE |
+| 3 | Mode Buttons & Hologram | ⬜ NEXT |
+| 4 | 3D Plant Asset (.glb) | ⬜ PENDING |
+| 5 | File Organization | ✅ DONE |
+| 6 | Storyboard / Scroll Narrative | ⬜ PENDING |
+| 7 | Interactive Details | ⬜ PENDING |
+| 8 | Endless Loop | ⬜ PENDING |
+| 9 | Cool JS Integrations | ⬜ PENDING |
+| 10 | Audio | ⬜ PENDING |
+
+---
+
+## WHERE WE ARE RIGHT NOW
+
+**Completed through**: GROUP 2 feedback round 3 (all animation + UX fixes).
+**Next up**: GROUP 3 — Mode Buttons & Hologram (waiting for user's updated prompt).
+
+---
+
+## GROUP 1: BUG FIXES & CLEANUP — ✅ DONE (2026-05-22)
+- [x] Remove fake stock ticker — HTML, CSS, JS removed
+- [x] Remove Succy AI cactus chatbot — HTML, CSS, JS removed
+- [x] Remove orange debug text — hero metric rotator, market alert all removed
+- [x] Remove hero-glow (mouse-following green band)
+- [x] Hide native cursor — `cursor:none` on all elements
+- [x] Fix starting text cut off — hero padding increased to 8vh
+- [x] Hero reveal — cinematic timing (1.6s duration, 0.2 stagger)
+- [x] Nav z-index bumped to 9000 — always on top
+- [x] Cursor visual artifacts fixed — now orange ring/dot, no mix-blend-mode
+- [x] ROI section color blend — gradient overlays at section edges
+
+---
+
+## GROUP 2: ANIMATION FIXES — ✅ DONE (2026-05-22)
+
+### Round 1 fixes
+- [x] Scrub overlay → 3-column grid (left text | plant center | right heading)
+- [x] Stat counter re-animation threshold: 85% → 65% (fires earlier on scroll back)
+- [x] Slower scroll speed: multiplier .9→.65, lerp .08→.065
+- [x] Section edge blending via gradient backgrounds (no visible page boundaries)
+- [x] Palette lightened from near-black to readable green
+
+### Round 2 fixes
+- [x] Word hover: one effect per heading section, different effects per section (not mixed per word)
+- [x] Water effect — wave pulse across words on hover
+- [x] Rubber effect — elastic skew/scale on mouse move
+- [x] Orange trail — mouse leaves orange color on words for 1.3s, no blur/glow
+- [x] Remove 3D viewer (Three.js) — looked bad, taken out entirely
+- [x] Fix stack card animation — replaced broken GSAP pin with Locomotive scroll event
+- [x] Fix text overflow ("Chlorophyll Is Your North Star") — font-size reduced for 3-column layout
+- [x] Remove clip-path section dividers — were causing visible hard edges
+
+### Round 3 fixes (2026-05-22)
+- [x] **Plant canvas opacity bug** — plant was always opacity:0, never shown; fixed in scrub block + ambient loop
+- [x] **Stack cards y-offset bug** — cards snapped wrong at start; now blend from stacked position to fly-out
+- [x] **Blog horizontal scroll** — was broken (GSAP pin:true incompatible with Locomotive Scroll); replaced with loco.on('scroll') event + data-scroll-sticky wrapper
+- [x] **Paint hover re-trigger** — forced remove+reflow before re-adding class so re-entering same word always fires
+- [x] **Rubber drag** — mousedown to start drag, stretch follows cursor, mouseup snaps back with elastic spring
+- [x] **Effect hints** — small label injected below each interactive heading (e.g. "↑ hover & drag — stretch")
+- [x] **Invert flash** — brief mix-blend-mode:difference white overlay fires as user scrolls past hero
+- [x] **Brighter background** — CSS vars bumped: `--black:#1e2e20`, `--deep:#172518`, `--mid:#223326`, `--lift:#2c4430`
+- [x] **Ambient plant always present** — alpha raised, fadeout extended to 9 viewport-heights post-scrub
+- [x] **roi-output palette** — replaced hardcoded `#0d1a0f` with `var(--deep)` for consistency
+
+---
+
+## GROUP 3: MODE BUTTONS & HOLOGRAM — ⬜ NEXT
+
+**Waiting for user's updated GROUP 3 prompt before starting.**
+
+Original brief:
+- [ ] Replace plain text "Analysis Mode / Standard / Thermal / X-Ray / Wire" with interactive UI buttons
+- [ ] Buttons must work and switch views in-scene
+- [ ] Hologram style: glowing cyan/blue wireframe, measurement callouts, grid dots, subtle flicker
+- [ ] Hologram not static — lines pulse, numbers refresh
+
+---
+
+## GROUP 4: 3D PLANT ASSET — ⬜ PENDING
+
+- [ ] Replace current canvas plant with proper 3D `.glb` plant + terracotta pot
+- [ ] Viewport-locked persistent 3D hero object — stays in frame entire scroll
+- [ ] High quality, not blurry
+- [ ] Plant must not appear before its intended reveal moment
+- **Note**: User has a `.glb` file ready to share — just send the file path
+
+---
+
+## GROUP 5: FILE ORGANIZATION — ✅ DONE (2026-05-22)
+- [x] Split single `index.html` (4870 lines) into `index.html` / `styles.css` / `main.js`
+- [x] All functionality identical
+- [x] Vercel deployment confirmed working
+- Current line counts: `index.html` ~835, `styles.css` ~1540, `main.js` ~1883
+
+---
+
+## GROUP 6: STORYBOARD — SCROLL NARRATIVE — ⬜ PENDING
+- [ ] Phase 1: Desk top-down view, scattered items, plant center
+- [ ] Phase 2: Camera tilts top-view → front-view, desk items fade out
+- [ ] Phase 3: Front view pot + plant, info text on side
+- [ ] Phase 4: Pot becomes transparent, soil + roots visible
+- [ ] Phase 5: Soil falls downward, roots exposed, particles drift
+- [ ] Phase 6: Blue holographic scan grid sweeps plant, data points appear
+- [ ] Phase 7: Soil particles reform into word/message
+- [ ] Phase 8: Mode toggles active (Thermal, X-Ray, Wireframe), glitch effects, satirical data
+- [ ] Phase 9: Clean hero shot, free click+drag rotation
+- [ ] Brighter vibrant colors throughout
+- [ ] Mouse-driven tilt feels meaningful because of the desk scene
+
+---
+
+## GROUP 7: INTERACTIVE DETAILS — ⬜ PENDING
+- [ ] Leaves react to hover/touch — bend or sway
+- [ ] Post-scan: mouse vertical movement over hologram triggers scanning animation + sci-fi sound
+- [ ] Side text annotations with lines pointing to plant parts
+- [ ] Hover on annotation → text glows + corresponding leaf moves
+
+---
+
+## GROUP 8: ENDLESS LOOP — ⬜ PENDING
+- [ ] After free rotation at bottom, transition back to Phase 1
+- [ ] Phase 1 scroll-locked — cannot scroll backwards from start
+- [ ] Infinite loop feel
+
+---
+
+## GROUP 9: COOL JS INTEGRATION — ⬜ PENDING (snippets to be provided by user)
+- [ ] Virtual scroll + marquee scrub (smooth lerped scroll with horizontal marquee)
+- [ ] Per-word scroll-color text reveal (each word changes color individually as you scroll)
+- [ ] Circle-scale + text-slide on scroll (circle grows 0→25x while text slides)
+- [ ] Spiral `.glb` asset as portal transition between phases (asset downloaded)
+
+---
+
+## GROUP 10: AUDIO — ⬜ PENDING
+- [ ] Scroll-synced sound effects per phase
+- [ ] Crossfade between sounds using Howler.js
+- [ ] Mute toggle button
+
+---
+
 ## Repo & Deploy
 - GitHub: https://github.com/dkingbob/houseplant-hustle (branch: **master**)
 - Live: https://houseplant-hustle.vercel.app
-- Single file: `index.html` (~210KB, all CSS/JS inline)
-- Deploy command: `npx vercel --prod` from project root
-- Git push: `git push origin master` (NOT main)
-
----
-
-## What's Built
-
-### Core Sections (top → bottom)
-1. Preloader — countdown % with cinematic clip-path wipe exit
-2. Hero — massive rotating word (BUILT FOR BUSINESS/MARKETS/etc), particle canvas, live metric tag
-3. Tagline — 3 animated stat counters (847%, 12K, 47Y), bleed "847" bg number
-4. Scroll Scrub — 320vh, 120 pre-rendered plant frames, 4 visual modes
-5. Stack Reveal — 400vh pin, 5 mode cards peel off
-6. Blueprint — holographic canvas overlay
-7. AI Engine — particle canvas + feature list
-8. 3D Viewer — Three.js procedural plant, drag/zoom
-9. ROI Calculator — 4 sliders, animated GSAP counter outputs + **Gerald's Approval meter**
-10. Comparison Table — Us vs Spreadsheets vs Consultants vs Gut Feeling (with **tooltips**)
-11. Pricing — Seed $0 / Series A $847 / Enterprise (Talk to Gerald) + **Brenda's Notes**
-12. Gotcha — satirical reveal ("we got your attention")
-13. **[REEL BAND]** — orange skewed marquee with satirical tech text
-14. Team — Gerald, Brenda, Patricia, Marcus, **Vera Aloevera (VP Engineering)** — 5 cards
-15. Press Logos — infinite marquee with **color-tinted hover glow**
-16. CTA / Sold-Out — waitlist button, live viewer count, countdown timer, **referral code on join**
-17. Blog — horizontal scroll, **5 cards** with 3D tilt
-18. Testimonials — carousel with dots/arrows, auto-advance (5 slides)
-19. FAQ — **8 satirical accordion items**
-20. **[REEL REVERSE]** — dark reverse-direction marquee before newsletter
-21. Newsletter — email input with animated confirm + confetti
-22. Footer — share link, IPO teaser, Gerald certified badge, **Plant of the Day**, **Gerald Certificate modal**
-
-### Fixed UI Elements
-- Scroll progress bar (top, 2px orange gradient)
-- Nav blur + compression on scroll + **Gerald's watching timer** (desktop, fades in after 5s)
-- Section dots nav (right side, 6 dots)
-- HHPL fake stock widget (top-right, **with SVG sparkline chart**, trends up biased)
-- Cookie banner ("Accept All Fronds" / "Reject (Betray Brenda)")
-- Bottom news ticker (scrolling satirical headlines — **14 unique headlines**)
-- Audio button (ambient drone, Web Audio API)
-- Chatbot — Succy AI (🌵, with witty responses, **typing indicator**, **unprompted notification at 35s**, **green notification dot**)
-- Custom cursor with ring + orange particle trail
-- Legal modal (Terms of Foliage, Brenda approved)
-- Konami code easter egg (↑↑↓↓←→←→BA)
-- Back-to-top button (appears after 600px scroll, smooth loco scroll)
-- Social proof toasts (rotate through 8 fake join/upgrade notifications, every 14s)
-- **Scroll milestone achievement toasts** (appear as user reaches new sections, top-right)
-- **HHPL market alert notification** (fires at 60s, left side, orange)
-- **Mobile hamburger menu** (CSS clip-path reveal, 6 links)
-- **Custom scrollbar** (green-tinted, webkit only)
-
-### Interactions
-- Magnetic GSAP elastic buttons
-- Text scramble on eyebrow labels (.eyb)
-- Blog card 3D perspective tilt
-- Nav logo glitch on hover
-- Hero word rotation every 2.6s
-- Hero live metric rotator (Chlorophyll%, Stem Velocity, etc.)
-- Page title cycles through **9 satirical headlines** + tab-hide message
-- Konami first-key hint toast
-- Confetti burst (emoji particles) on waitlist join click
-- Team card hover — emoji glow + bio opacity up
-- Pricing card hover — lift + shadow
-- FAQ open/close — smooth padding transition
-- **Comparison table row hover** — green left border + background
-- **Tooltip system** (`[data-tip]` attr) — comparison table feature labels
-- **Press logo hover** — color-tinted glow (6 rotating colors)
-- **Gerald Approval meter** in ROI output — progress bar with Gerald verdicts
-- **Keyboard shortcuts overlay** (press `?`) — shows all shortcuts
-  - `/` or `c` → open Succy AI
-  - `t` → back to top
-  - `p` → go to pricing
-  - `?` → show shortcuts
-  - `↑↑↓↓←→←→BA` → Konami Easter egg
-  - `Esc` → close all overlays
-- **Gerald Certificate modal** (click Gerald Certified™ badge in footer)
-- **Plant of the Day** in footer (rotates by day of week — 7 plants)
-- **CTA button pulsing glow animation**
-
----
-
-## What's Working
-Everything deployed and confirmed live. Last significant deploy: session 2026-05-22.
-
-### Additions This Extended Session (in order)
-1. Mobile hamburger menu JS toggle + `closeMob()` + hide desktop CTA on mobile
-2. Press logo color-tinted hover glow (6 cycling colors)
-3. Scroll milestone achievement toasts (top-right, fires per section)
-4. Custom scrollbar (webkit, green-tinted)
-5. More satirical ticker headlines (7 new ones, 14 total)
-6. Gerald's Approval meter in ROI calculator (progress bar + verdicts)
-7. HHPL Stock widget — SVG sparkline + "NYSE" label + market cap label
-8. Plant of the Day footer feature (7 plants, day-of-week rotation)
-9. 2 more FAQ items (Brenda cookies + enterprise pricing)
-10. Succy AI typing indicator (animated dots, `showTyping()`)
-11. Comparison table tooltips (`[data-tip]` CSS system)
-12. CTA waitlist button pulsing glow animation
-13. 5th blog card (snake plant $47M case study)
-14. Gerald Certificate modal (click Gerald Certified™ badge)
-15. Nav "Gerald is watching" time-on-site timer (desktop, after 5s)
-16. 5th team member — Vera Aloevera (VP Engineering)
-17. HHPL Market Alert notification (fires at 60s, left side)
-18. Keyboard shortcuts overlay (press `?`)
-19. More keyboard shortcuts: `t` (top), `p` (pricing), `?` (shortcuts)
-20. All overlays close on `Esc` (chatbot, legal, cert, kb, konami)
-21. Brenda's Notes micro-copy on each pricing card
-22. Referral code on waitlist join (PLANT-XXXXXX)
-23. Tab visibility title trick ("Come back! Gerald is concerned.")
-24. 4 more page titles in rotation
-25. Succy AI unprompted notification at 35s (if chatbox closed)
-26. Green notification dot on Succy button when message waiting
-
----
-
-## What's NOT Done Yet
-- **User feedback** — user said they have "a lot" — still not collected
-- Asymmetric section layouts (from original plan) — partially skipped
-- Mobile QA on a real device — browser emulation only so far
+- Files: `index.html` / `styles.css` / `main.js` (3 separate files)
+- Deploy: `npx vercel --prod` from project root
+- Push: `git push origin master` (NOT main)
 
 ---
 
 ## Key Technical Context
-- Locomotive Scroll 4.1.4 + GSAP ScrollTrigger proxy pattern
-- `window._loco` — exposed loco instance (for nav dots scroll-to)
-- `window._plantFrames` — pre-rendered 120 canvas frames for scrub
-- Three.js r128 UMD via CDN for 3D viewer
-- CSS vars: `--black:#070e08`, `--deep:#050c06`, `--mid:#0f1a10`, `--lift:#1a2e1c`, `--surface:#0c1a0d`, `--orange:#e07830`, `--green:#58f066`
-- `.rv` class = "reveal" — elements start at `opacity:0,y:30` and are animated in by ScrollTrigger batch
-- `[data-tip]` CSS tooltip system — `::after` pseudo-element with `attr(data-tip)` content
-- `#ms-toast` — scroll milestone toast, top-right, green-tinted border
-- `#mkt-alert` — market alert, left, orange-tinted border
-- `#kb-overlay` — keyboard shortcuts overlay, `?` key toggle
-- `#gerald-cert` — Gerald certificate modal, click badge to open
-- `#nav-timer` / `#nav-timer-val` — Gerald's watching timer in nav
-- `#sw-spark` / `sw-spark-line` — SVG sparkline in stock widget
-- `.roi-gerald` / `#rGA-fill` — Gerald approval meter in ROI
-- `.suc-typing` — typing indicator (3 animated dots)
-- `#suc-btn.has-notif` — adds green notification dot
-- `.price-brenda` — Brenda's note micro-copy in pricing cards
-- `.mob-link` / `#mob-menu` / `#ham` — mobile hamburger menu
-- `closeMob()` — global function to close mobile menu
-- `#kb-overlay` — keyboard shortcuts modal
-
-## Line Count Reference (approximate)
-- Total lines: ~4200+
-- CSS: lines 1–~1720 (closing `</style>`)
-- HTML body: ~line 1725
-- JavaScript: around line ~3050 (inside `<script>`)
-- Gerald approval meter: immediately after `calc()` function
-- Scroll milestones JS: after social proof toasts JS
-- Market alert JS: before scroll milestones JS
-- Keyboard handler: near end of script (~line 4350)
-- Time-on-site timer: near end of script
-- Plant of the Day: near end of script
-- Mobile hamburger: last section before `</script>`
+- Locomotive Scroll 4.1.4 + GSAP 3.12.5 ScrollTrigger proxy pattern
+- All ScrollTriggers need `scroller:'[data-scroll-container]'`
+- `window._loco` — exposed Locomotive instance
+- `window._plantFrames` — 120 pre-rendered canvas frames for scrub
+- `window._plantScrubMode` / `window._plantAmbient` — plant canvas state flags
+- CSS vars: `--black:#1e2e20`, `--deep:#172518`, `--mid:#223326`, `--lift:#2c4430`, `--surface:#1f3022`, `--orange:#e07830`, `--green:#58f066`
+- `.rv` / `.rf` — reveal classes, start `opacity:0,y:40`, animated by ScrollTrigger
+- `.lw span` — line-wrap word spans, animated with `translateY(105%)` reveal
+- `#blog-sticky` — Locomotive sticky wrapper for horizontal blog scroll
+- `#stack-sticky` — Locomotive sticky wrapper for stack card reveal
+- Stack + blog scroll: driven by `loco.on('scroll', ...)` with manual progress calc
+- Rubber drag: `_rbActive` per-section closure, global window mousemove/mouseup
+- `#inv-flash` — fixed invert overlay for section transition flash
+- `.fx-hint` — small hint label injected below interactive headings
