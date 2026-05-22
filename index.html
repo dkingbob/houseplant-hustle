@@ -1062,6 +1062,13 @@ footer{
 }
 @keyframes sp{0%,100%{box-shadow:0 0 0 0 rgba(224,120,48,.4)}55%{box-shadow:0 0 0 16px rgba(224,120,48,0)}}
 #suc-btn:hover{transform:scale(1.1)}
+#suc-btn .suc-notif{
+  position:absolute;top:-2px;right:-2px;
+  width:12px;height:12px;background:var(--green);border-radius:50%;
+  border:2px solid var(--black);
+  display:none;animation:livePulse 1.5s ease-in-out infinite;
+}
+#suc-btn.has-notif .suc-notif{display:block}
 #suc-box{
   position:fixed;bottom:6.5rem;right:2.5rem;width:310px;
   background:var(--mid);
@@ -2645,7 +2652,7 @@ footer{
 </div>
 
 <!-- CHATBOT -->
-<button id="suc-btn" title="Chat with Succy™">🌵</button>
+<button id="suc-btn" title="Chat with Succy™">🌵<span class="suc-notif"></span></button>
 <div id="suc-box">
   <div class="suc-hd"><div class="suc-av">🌵</div><div><div class="suc-nm">Succy™ AI</div><div class="suc-st">Last watered 3 weeks ago · Thriving</div></div></div>
   <div class="suc-msgs" id="suc-msgs"><div class="suc-msg">Hi. I'm Succy. I haven't needed water in 3 weeks and neither should your pipeline. How can I help? 🌵</div></div>
@@ -3960,7 +3967,25 @@ function sSend(){
   setTimeout(()=>{typing.remove();addM(SR._[Math.random()*SR._.length|0],false);},800+Math.random()*500);
 }
 function addM(txt,u){const d=document.getElementById('suc-msgs'),m=document.createElement('div');m.className='suc-msg'+(u?' u':'');m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight}
-document.getElementById('suc-btn').addEventListener('click',()=>document.getElementById('suc-box').classList.toggle('on'));
+const sucBtn=document.getElementById('suc-btn');
+const sucBox=document.getElementById('suc-box');
+sucBtn.addEventListener('click',()=>{
+  sucBox.classList.toggle('on');
+  sucBtn.classList.remove('has-notif');
+});
+// Succy reaches out unprompted after 35s if chat is closed
+const succyPromos=[
+  "Still here. Still dry. Still outperforming your last sprint. Anything on your mind? 🌵",
+  "My chlorophyll levels suggest you haven't looked at the ROI calculator in 3 minutes. Fix this.",
+  "Gerald wanted me to check in. Gerald says nothing. This is the check-in.",
+  "A ficus in the San Jose office just hit 847% photosynthesis ROI. Are you keeping up?",
+];
+setTimeout(()=>{
+  if(!sucBox.classList.contains('on')){
+    addM(succyPromos[Math.floor(Math.random()*succyPromos.length)],false);
+    sucBtn.classList.add('has-notif');
+  }
+},35000);
 
 // SMOOTH FAQ DETAILS ANIMATION
 (function(){
@@ -4377,9 +4402,22 @@ function nlSub(){
     'HOUSEPLANT HUSTLE — Chlorophyll is the new crypto',
     'HOUSEPLANT HUSTLE — Made for Leaves. Built for Business.',
     'HOUSEPLANT HUSTLE — Plants are the new VCs',
+    'HOUSEPLANT HUSTLE — Brenda reviewed this tab',
+    'HOUSEPLANT HUSTLE — Gerald is watching (and thriving)',
+    'HOUSEPLANT HUSTLE — Your succulent called. It’s bullish.',
+    'HOUSEPLANT HUSTLE — Nasdaq Greenhouse Exchange ▲ 847%',
   ];
   let ti=0;
+  const defaultTitle='HOUSEPLANT HUSTLE — Your Ficus Sees Q4';
   setInterval(()=>{ti=(ti+1)%titles.length;document.title=titles[ti]},5500);
+  // Tab visibility: show a different title when user leaves
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){
+      document.title='🌿 Come back! Gerald is concerned.';
+    } else {
+      document.title=titles[ti]||defaultTitle;
+    }
+  });
 })();
 
 // ══════════════════════════════════════════════════
