@@ -674,6 +674,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .price-feats li{font-family:var(--mf);font-size:.56rem;letter-spacing:.06em;opacity:.55}
 .price-feats li:first-child,.price-feats li:nth-child(2),.price-feats li:nth-child(3){opacity:.75}
 .price-no{opacity:.2!important;text-decoration:line-through}
+.price-brenda{font-family:var(--tf);font-size:.6rem;opacity:.15;line-height:1.5;margin-top:1.2rem;font-style:italic}
 @media(max-width:900px){.pricing-grid{grid-template-columns:1fr}.price-card-featured{margin-top:0;padding-top:4.3rem}}
 
 /* ─── TOOLTIP SYSTEM ─────────────────────── */
@@ -1979,6 +1980,7 @@ footer{
           <li class="price-no">✗ Board seat (plant)</li>
         </ul>
         <button class="btn" style="width:100%;text-align:center">Start Growing</button>
+        <p class="price-brenda">Brenda's Note: Free tier is free. No catch. This is the catch: Brenda is watching.</p>
       </div>
       <div class="price-card price-card-featured">
         <div class="price-badge">Most Popular With Orchids</div>
@@ -1994,6 +1996,7 @@ footer{
           <li>✓ Plant board seat</li>
         </ul>
         <button class="btn" style="width:100%;text-align:center">Scale Your Flora</button>
+        <p class="price-brenda">Brenda's Note: $847 is non-negotiable. Gerald set the price. Gerald does not negotiate. The number is the number.</p>
       </div>
       <div class="price-card">
         <div class="price-tier">Enterprise</div>
@@ -2008,6 +2011,7 @@ footer{
           <li>✓ Gerald attends your offsite</li>
         </ul>
         <button class="btn ol" style="width:100%;text-align:center">Contact a Frond</button>
+        <p class="price-brenda">Brenda's Note: Brenda reviews all enterprise contracts. Brenda requires 14 business days minimum. Brenda is a cactus. She has time.</p>
       </div>
     </div>
   </div>
@@ -4178,7 +4182,8 @@ document.getElementById('btt').addEventListener('click',()=>{
     if(joined)return;
     joined=true;n++;
     btn.classList.add('joined');
-    if(txt)txt.innerHTML='&#10003; &nbsp;You\'re on the list. The fern will contact you.';
+    const refCode='PLANT-'+Math.random().toString(36).slice(2,8).toUpperCase();
+    if(txt)txt.innerHTML=`&#10003; &nbsp;You\'re on the list. The fern will contact you. Code: <strong>${refCode}</strong>`;
     if(cnt)cnt.textContent=n.toLocaleString();
     // confetti burst
     const emojis=['🌿','🌵','🌱','🍃','🌸','✦','✧'];
