@@ -2553,6 +2553,14 @@ footer{
     <span class="ticker-dot">●</span>
     <span>SERIES B INVESTORS DEMAND MEETING WITH FERN — FERN DECLINES, STILL THRIVING</span>
     <span class="ticker-dot">●</span>
+    <span>VERA ALOEVERA NAMED BEST VP ENGINEERING — NO DOWNTIME SINCE 2019, ZERO INCIDENTS</span>
+    <span class="ticker-dot">●</span>
+    <span>PLANT BOARD MEMBER RETURNS 847% — DOES NOT KNOW WHAT EQUITY IS, STILL THRIVING</span>
+    <span class="ticker-dot">●</span>
+    <span>CHLOROPHYLL SENTIMENT INDEX HITS RECORD HIGH — BULL RUN OR OVERWATERING? EXPERTS DIVIDED</span>
+    <span class="ticker-dot">●</span>
+    <span>MARCUS FROM PRODUCT GREW A THIRD FROND — TEAM CELEBRATES, PRODUCT ROADMAP UNCHANGED</span>
+    <span class="ticker-dot">●</span>
     <span>FERN PREDICTS RATE HIKE WITH 98.7% ACCURACY — ANALYSTS BAFFLED</span>
     <span class="ticker-dot">●</span>
     <span>ORCHID JOINS BOARD OF DIRECTORS — REFUSES TO ATTEND MONDAY MEETINGS</span>
@@ -2580,6 +2588,14 @@ footer{
     <span>PATRICIA THE ORCHID RESIGNS FROM CFO ROLE — CITES INADEQUATE SUNLIGHT AT DESK</span>
     <span class="ticker-dot">●</span>
     <span>SERIES B INVESTORS DEMAND MEETING WITH FERN — FERN DECLINES, STILL THRIVING</span>
+    <span class="ticker-dot">●</span>
+    <span>VERA ALOEVERA NAMED BEST VP ENGINEERING — NO DOWNTIME SINCE 2019, ZERO INCIDENTS</span>
+    <span class="ticker-dot">●</span>
+    <span>PLANT BOARD MEMBER RETURNS 847% — DOES NOT KNOW WHAT EQUITY IS, STILL THRIVING</span>
+    <span class="ticker-dot">●</span>
+    <span>CHLOROPHYLL SENTIMENT INDEX HITS RECORD HIGH — BULL RUN OR OVERWATERING? EXPERTS DIVIDED</span>
+    <span class="ticker-dot">●</span>
+    <span>MARCUS FROM PRODUCT GREW A THIRD FROND — TEAM CELEBRATES, PRODUCT ROADMAP UNCHANGED</span>
     <span class="ticker-dot">●</span>
   </div></div>
 </div>
@@ -4357,12 +4373,14 @@ document.getElementById('btt').addEventListener('click',()=>{
   const txt=document.getElementById('wl-btn-txt');
   const cnt=document.getElementById('wl-count');
   if(!btn)return;
-  // Organic counter tick — only after joining
+  // Organic counter tick — fires always (others joining constantly)
   setInterval(()=>{
-    if(!joined)return;
     n+=Math.floor(Math.random()*3)+1;
-    if(cnt)cnt.textContent=n.toLocaleString();
-  },3400);
+    if(cnt){
+      cnt.textContent=n.toLocaleString();
+      gsap.fromTo(cnt,{scale:1.16,color:'#f7d060'},{scale:1,color:'',duration:.45,ease:'elastic.out(1,.55)'});
+    }
+  },5500);
   // Live viewers fluctuation
   const liveEl=document.getElementById('cta-live-n');
   if(liveEl){
@@ -4586,6 +4604,8 @@ function nlSub(){
     'HOUSEPLANT HUSTLE — Your Ficus Sees Q4',
     'HOUSEPLANT HUSTLE — 847% ROI (Source: Gerald)',
     'HOUSEPLANT HUSTLE — Chlorophyll is the new crypto',
+    'HOUSEPLANT HUSTLE — The plant said buy.',
+    'HOUSEPLANT HUSTLE — Brenda approved this title.',
     'HOUSEPLANT HUSTLE — Made for Leaves. Built for Business.',
     'HOUSEPLANT HUSTLE — Plants are the new VCs',
     'HOUSEPLANT HUSTLE — Brenda reviewed this tab',
