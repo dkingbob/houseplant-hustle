@@ -286,6 +286,135 @@
   rs();addEventListener('resize',rs);
 })();
 
+// ══════════════════════════════════════════════════
+// SKETCH LAYER SYSTEM — drafting table concept art
+// Behind the plant: 3 offset semi-transparent pencil sketches.
+// Hover proximity: fuses to green + glow.
+// GROUP 4: apply same effect to the .glb 3D plant viewer when added.
+// ══════════════════════════════════════════════════
+(function(){
+  const configs=[
+    {id:'sk0',offX:-28,offY:18, scale:.94,alpha:.085,seed:31},
+    {id:'sk1',offX:22, offY:-24,scale:.97,alpha:.065,seed:77},
+    {id:'sk2',offX:9,  offY:36, scale:.89,alpha:.052,seed:19},
+  ];
+
+  // Create canvas elements behind plant canvas (z:2)
+  const skCvs=configs.map(cfg=>{
+    const cv=document.createElement('canvas');
+    cv.id=cfg.id;cv.className='sketch-cv';
+    cv._cfg=cfg;cv._shown=false;
+    document.body.appendChild(cv);
+    return cv;
+  });
+  window._sketchCvs=skCvs;
+
+  function drawSketch(cv){
+    const cfg=cv._cfg;
+    const W=cv.width=innerWidth, H=cv.height=innerHeight;
+    const ctx=cv.getContext('2d');
+    ctx.clearRect(0,0,W,H);
+    const CX=W*.5+cfg.offX, BASE=H*.82+cfg.offY, MAXH=H*.62*cfg.scale;
+    const A=cfg.alpha;
+    let s=cfg.seed;
+    function jr(mag){s=((s*1664525)+1013904223)>>>0;return((s/0xffffffff)-.5)*2*mag;}
+    ctx.lineCap='round';ctx.lineJoin='round';
+
+    // ── Stem (3 rough passes) ──
+    for(let pass=0;pass<3;pass++){
+      ctx.beginPath();ctx.moveTo(CX+jr(5),BASE);
+      for(let i=1;i<=16;i++){
+        const t=i/16;
+        ctx.lineTo(CX+Math.sin(t*Math.PI*2)*13*(1-t)+jr(8),BASE-MAXH*t+jr(5));
+      }
+      ctx.strokeStyle=`rgba(162,120,68,${A*.88})`;
+      ctx.lineWidth=.6+(s&3)*.18;ctx.stroke();
+    }
+
+    // ── Leaves (rough bezier outlines, 2 passes each) ──
+    for(let i=0;i<6;i++){
+      const lt=.15+(i/6)*.73;
+      const sX=CX+Math.sin(lt*Math.PI*2)*13*(1-lt), sY=BASE-MAXH*lt;
+      const side=i%2===0?1:-1, sz=(24+i*14)*cfg.scale;
+      const ang=side*(Math.PI*.32+lt*.14);
+      ctx.save();ctx.translate(sX+jr(8),sY+jr(8));ctx.rotate(ang+jr(.09));
+      for(let pass=0;pass<2;pass++){
+        ctx.beginPath();ctx.moveTo(jr(3),jr(3));
+        ctx.bezierCurveTo(side*sz*.6+jr(8),-sz*.26+jr(7),side*sz*.9+jr(7),-sz*.56+jr(7),side*sz*.5+jr(6),-sz*.9+jr(6));
+        ctx.bezierCurveTo(side*sz*.82+jr(7),-sz*1.1+jr(6),side*sz*1.04+jr(6),-sz*.84+jr(6),side*sz+jr(5),-sz*.5+jr(5));
+        ctx.bezierCurveTo(side*sz*.74+jr(5),-sz*.24+jr(5),side*sz*.38+jr(4),jr(4),jr(3),jr(3));
+        ctx.strokeStyle=`rgba(162,120,68,${A*.62})`;
+        ctx.lineWidth=.5+(s&3)*.13;ctx.stroke();
+      }
+      // Midrib
+      ctx.beginPath();ctx.moveTo(jr(2),jr(2));ctx.lineTo(side*sz*.5+jr(3),-sz*.86+jr(3));
+      ctx.strokeStyle=`rgba(162,120,68,${A*.42})`;ctx.lineWidth=.32;ctx.stroke();
+      // Hatching on every 3rd leaf for texture
+      if(i%3===0){
+        for(let h=1;h<5;h++){
+          const ht=h/6;
+          ctx.beginPath();ctx.moveTo(jr(2),-sz*ht+jr(2));ctx.lineTo(side*sz*(.3+ht*.5)+jr(4),-sz*ht*1.05+jr(4));
+          ctx.strokeStyle=`rgba(162,120,68,${A*.26})`;ctx.lineWidth=.28;ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
+    // ── Pot outline ──
+    const pW=36*cfg.scale, pH=52*cfg.scale;
+    ctx.beginPath();
+    ctx.moveTo(CX-pW+jr(5),BASE+jr(3));
+    ctx.bezierCurveTo(CX-pW*1.2+jr(5),BASE+pH*.5+jr(4),CX-pW*.8+jr(4),BASE+pH*.9+jr(4),CX-pW*.65+jr(4),BASE+pH+jr(3));
+    ctx.lineTo(CX+pW*.65+jr(4),BASE+pH+jr(3));
+    ctx.bezierCurveTo(CX+pW*.8+jr(4),BASE+pH*.9+jr(4),CX+pW*1.2+jr(5),BASE+pH*.5+jr(4),CX+pW+jr(5),BASE+jr(3));
+    ctx.strokeStyle=`rgba(162,120,68,${A*.55})`;ctx.lineWidth=.82;ctx.stroke();
+    // Rim ellipse
+    ctx.beginPath();ctx.ellipse(CX+jr(4),BASE+jr(3),pW+jr(3),7*cfg.scale+jr(2),jr(.04),0,Math.PI*2);
+    ctx.strokeStyle=`rgba(162,120,68,${A*.38})`;ctx.lineWidth=.55;ctx.stroke();
+
+    // ── Dimension annotations (first sketch only — drafting table feel) ──
+    if(cfg.id==='sk0'){
+      ctx.setLineDash([3,6]);ctx.lineWidth=.42;
+      ctx.strokeStyle=`rgba(162,120,68,${A*.36})`;
+      // Vertical height dimension
+      ctx.beginPath();ctx.moveTo(CX+94,BASE-MAXH+jr(4));ctx.lineTo(CX+94,BASE+jr(4));ctx.stroke();
+      ctx.beginPath();ctx.moveTo(CX+88,BASE-MAXH+jr(4));ctx.lineTo(CX+66,BASE-MAXH+jr(4));ctx.stroke();
+      ctx.beginPath();ctx.moveTo(CX+88,BASE+jr(4));ctx.lineTo(CX+66,BASE+jr(4));ctx.stroke();
+      // Horizontal callout
+      ctx.beginPath();ctx.moveTo(CX-82,H*.34+jr(3));ctx.lineTo(CX-56,H*.34+jr(3));ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font=`italic 8px "DM Mono",monospace`;
+      ctx.fillStyle=`rgba(162,120,68,${A*.4})`;
+      ctx.fillText('h max',CX+98,BASE-MAXH*.5);
+      ctx.fillText('Ø stem',CX-116,H*.343);
+    }
+  }
+
+  // Draw all sketches initially
+  skCvs.forEach(drawSketch);
+  // Redraw on resize
+  addEventListener('resize',()=>{clearTimeout(window._skRT);window._skRT=setTimeout(()=>skCvs.forEach(drawSketch),220);});
+
+  // ── Hover: mouse proximity → fuse to green + glow ──
+  let _hov=false;
+  document.addEventListener('mousemove',e=>{
+    if(!window._plantScrubMode)return;
+    const dist=Math.hypot(e.clientX-innerWidth*.5,e.clientY-innerHeight*.5);
+    const near=dist<Math.min(innerWidth,innerHeight)*.38;
+    if(near===_hov)return;
+    _hov=near;
+    skCvs.forEach((cv,i)=>{
+      if(near){
+        cv.classList.add('sk-glow');
+        gsap.to(cv,{y:-(5+i*3),duration:.65,ease:'power2.out'});
+      } else {
+        cv.classList.remove('sk-glow');
+        gsap.to(cv,{y:0,duration:1.1,ease:'elastic.out(1,.38)'});
+      }
+    });
+  });
+})();
+
 // Pre-render 120 plant frames at 65% resolution for frame-perfect scrub
 function preRenderPlantFrames(){
   const FRAMES=120;
@@ -852,9 +981,13 @@ function startSite(){
       document.getElementById('sc-eye').textContent=activeStage.eye;
       document.getElementById('sc-h').innerHTML=activeStage.h;
       document.getElementById('sc-p').textContent=activeStage.p;
+      // Show sketch layers during scrub
+      window._sketchCvs?.forEach((cv,i)=>{if(!cv._shown){cv._shown=true;gsap.to(cv,{opacity:1,delay:i*.14,duration:.95,ease:'power2.out'});}});
     } else {
       window._plantScrubMode=false;
       scrubOv.style.opacity='0';scMeter.style.opacity='0';
+      // Hide sketch layers outside scrub
+      window._sketchCvs?.forEach(cv=>{cv._shown=false;cv.classList.remove('sk-glow');gsap.to(cv,{opacity:0,duration:.6,ease:'power2.in'});});
 
       if(raw<=-0.06){
         // ── Before scrub: hero + tagline ──

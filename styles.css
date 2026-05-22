@@ -421,6 +421,28 @@ h1.hero-h1{
 
 /* ─── SCRUB SECTION ──────────────────────── */
 #scrub-section{height:320vh;position:relative;background:var(--black)}
+
+/* ─── SKETCH LAYERS — drafting table concept art ─── */
+/* z:2 = behind main plant (z:3), above bg (z:1) */
+.sketch-cv{
+  position:fixed;inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  z-index:2;
+  opacity:0;
+  transition:opacity .9s ease, filter .7s ease;
+  will-change:transform,opacity,filter;
+}
+/* Hover: brown pencil lines fuse → vibrant green + soft glow */
+.sketch-cv.sk-glow{
+  filter:
+    hue-rotate(95deg)
+    saturate(2.6)
+    brightness(1.5)
+    drop-shadow(0 0 24px rgba(88,240,102,.58))
+    drop-shadow(0 0 8px rgba(88,240,102,.4));
+}
+
 #plant-cv{
   position:fixed;inset:0;width:100%;height:100%;
   pointer-events:none;z-index:3;
@@ -1232,7 +1254,7 @@ footer{
 
 /* will-change on key animated elements */
 .rv,.rf,.feat,.team-card,.price-card,.comp-row,.bcard,
-.lw span,#hero-canvas,#plant-cv,#stack-sticky,.scard,.hx-water-char{
+.lw span,#hero-canvas,#plant-cv,#stack-sticky,.scard,.hx-water-char,.sketch-cv{
   will-change:transform,opacity;
 }
 
