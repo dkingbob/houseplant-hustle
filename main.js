@@ -270,8 +270,15 @@
     ambT+=.007;
     if(window._plantAmbient&&!window._plantScrubMode){
       const a=window._plantAmbient;
-      const p=0.62+Math.sin(ambT)*.09; // gentle breathing
-      window.drawPlant(p,{ambient:true,pctX:a.pctX,pctY:a.pctY,scale:a.scale,alpha:a.alpha});
+      if(a.alpha>0){
+        cv.style.opacity='1';
+        const p=0.62+Math.sin(ambT)*.09;
+        window.drawPlant(p,{ambient:true,pctX:a.pctX,pctY:a.pctY,scale:a.scale,alpha:a.alpha});
+      } else {
+        cv.style.opacity='0';
+      }
+    } else if(!window._plantScrubMode){
+      cv.style.opacity='0';
     }
     requestAnimationFrame(ambLoop);
   })();
@@ -810,6 +817,7 @@ function startSite(){
     if(inScrub&&progress>0&&progress<1){
       // ── Full scrub takeover ──
       window._plantScrubMode=true;window._plantAmbient=null;
+      plantCv.style.opacity='1';
       scrubOv.style.opacity='1';scMeter.style.opacity='1';
 
       const frames=window._plantFrames;
@@ -855,18 +863,18 @@ function startSite(){
         window._plantAmbient={
           pctX:0.86-t*0.15,
           pctY:0.42,
-          scale:0.2+t*0.07,
-          alpha:t*0.24
+          scale:0.22+t*0.08,
+          alpha:t*0.36
         };
       } else {
-        // ── After scrub: left side, fades with distance ──
+        // ── After scrub: right side, very slow fade ──
         const dist=y-(st+sh);
-        const fadeOut=Math.max(0,1-(dist/(vH*2.8)));
+        const fadeOut=Math.max(0,1-(dist/(vH*9)));
         window._plantAmbient={
-          pctX:0.11,
-          pctY:0.40,
-          scale:0.17,
-          alpha:fadeOut*0.16
+          pctX:0.88,
+          pctY:0.38,
+          scale:0.18,
+          alpha:fadeOut*0.28+0.04
         };
       }
     }
@@ -899,8 +907,9 @@ function startSite(){
         const cardProg=Math.max(0,Math.min(1,(prog-(i/toFly.length))*toFly.length));
         const dir=i%2===0?-1:1;
         const eased=cardProg<0.5?2*cardProg*cardProg:(1-Math.pow(-2*cardProg+2,2)/2);
+        const initY=i*2.2; // matches gsap.set depth offset above
         gsap.set(card,{
-          y:`${-128*eased}%`,x:`${dir*16*eased}%`,
+          y:`${initY+(-128-initY)*eased}%`,x:`${dir*16*eased}%`,
           rotation:dir*13*eased,opacity:1-eased
         });
       });
@@ -1054,27 +1063,34 @@ function startSite(){
     onLeaveBack:()=>gsap.to('.nl-h .lw span',{y:'105%',duration:.5,ease:'power2.in',stagger:.04})
   });
 
-  // ── Blog horizontal scroll ──
+  // ── Blog horizontal scroll (Locomotive-driven, no GSAP pin) ──
   const btrk=document.getElementById('btrk');
-  let blogPinned=false;
   if(btrk&&window.innerWidth>600){
     const blogSec=document.getElementById('blog-sec');
-    const trackW=btrk.scrollWidth;
-    const extraScroll=trackW-innerWidth+parseInt(getComputedStyle(document.documentElement).getPropertyValue('--px'))*2;
-    gsap.to(btrk,{
-      x:-extraScroll,ease:'none',
-      scrollTrigger:{
-        scroller:'[data-scroll-container]',
-        trigger:blogSec,start:'center center',
-        end:`+=${extraScroll}`,
-        scrub:1.4,pin:true,
-        onUpdate:(self)=>{
-          loco.update();
-          const pf=document.getElementById('blog-prog-fill');
-          if(pf)pf.style.width=(self.progress*100)+'%';
-        }
-      }
-    });
+    setTimeout(()=>{
+      // Measure actual px padding from a DOM element
+      const tmpEl=document.createElement('div');
+      tmpEl.style.cssText='position:absolute;width:var(--px);visibility:hidden';
+      document.body.appendChild(tmpEl);
+      const px=tmpEl.offsetWidth||80;
+      document.body.removeChild(tmpEl);
+      const trackW=btrk.scrollWidth;
+      const extraScroll=Math.max(0,trackW-innerWidth+px*2);
+      if(extraScroll<=0)return;
+      // Expand section to give scroll room
+      blogSec.style.height=`calc(100vh + ${extraScroll}px)`;
+      loco.update();
+      loco.on('scroll',({scroll})=>{
+        const secTop=blogSec.offsetTop;
+        const secH=blogSec.offsetHeight;
+        const scrollRoom=secH-innerHeight;
+        if(scrollRoom<=0)return;
+        const prog=Math.max(0,Math.min(1,(scroll.y-secTop)/scrollRoom));
+        gsap.set(btrk,{x:-prog*extraScroll});
+        const pf=document.getElementById('blog-prog-fill');
+        if(pf)pf.style.width=(prog*100)+'%';
+      });
+    },700);
   }
 
   // ── Section parallax ──
@@ -1768,16 +1784,41 @@ function closeMob(){
     }
 
     if(fx==='rubber'){
+      let _rbActive=null;
       spans.forEach(span=>{
         span.style.transformOrigin='center center';
+        span.style.cursor='grab';
+        // Hover: light skew based on mouse position
         span.addEventListener('mousemove',e=>{
+          if(_rbActive&&_rbActive.span!==span)return;
+          if(_rbActive)return; // dragging — skip hover
           const r=span.getBoundingClientRect();
           const rel=Math.max(-1,Math.min(1,(e.clientX-(r.left+r.width/2))/(r.width*.5)));
-          gsap.to(span,{skewX:rel*18,scaleX:1+Math.abs(rel)*.32,duration:.18,ease:'power2.out'});
+          gsap.to(span,{skewX:rel*14,scaleX:1+Math.abs(rel)*.22,duration:.18,ease:'power2.out'});
         });
         span.addEventListener('mouseleave',()=>{
+          if(_rbActive&&_rbActive.span===span)return;
           gsap.to(span,{skewX:0,scaleX:1,duration:.9,ease:'elastic.out(1,.32)'});
         });
+        // Drag: mousedown starts drag
+        span.addEventListener('mousedown',e=>{
+          e.preventDefault();
+          span.style.cursor='grabbing';
+          _rbActive={span,startX:e.clientX};
+        });
+      });
+      // Global drag tracking for rubber spans
+      window.addEventListener('mousemove',e=>{
+        if(!_rbActive)return;
+        const dx=e.clientX-_rbActive.startX;
+        const rel=Math.max(-2.2,Math.min(2.2,dx/55));
+        gsap.to(_rbActive.span,{skewX:rel*26,scaleX:1+Math.abs(rel)*.45,duration:.05,ease:'none'});
+      });
+      window.addEventListener('mouseup',()=>{
+        if(!_rbActive)return;
+        _rbActive.span.style.cursor='grab';
+        gsap.to(_rbActive.span,{skewX:0,scaleX:1,duration:1.2,ease:'elastic.out(1,.26)'});
+        _rbActive=null;
       });
     }
 
@@ -1806,11 +1847,41 @@ function closeMob(){
     if(fx==='paint'){
       spans.forEach(span=>{
         span.addEventListener('mouseenter',()=>{
+          span.classList.remove('hx-paint');
+          void span.offsetWidth; // force reflow so re-enter always triggers
           span.classList.add('hx-paint');
           clearTimeout(span._pt);
           span._pt=setTimeout(()=>span.classList.remove('hx-paint'),1400);
         });
       });
     }
+
+    // Inject hint label below heading
+    const hintLabels={water:'↑ hover — wave',rubber:'↑ hover & drag — stretch',glitch:'↑ hover — glitch',invert:'↑ hover — invert',paint:'↑ hover — paint'};
+    const hint=document.createElement('span');
+    hint.className='fx-hint';
+    hint.textContent=hintLabels[fx]||'↑ hover to interact';
+    heading.after(hint);
   });
+
+  // ── Invert flash on hero exit ──
+  (function(){
+    const flash=document.getElementById('inv-flash');
+    if(!flash)return;
+    let fired=false;
+    ScrollTrigger.create({
+      scroller:'[data-scroll-container]',
+      trigger:'#hero',
+      start:'bottom 60%',
+      onEnter:()=>{
+        if(fired)return;
+        fired=true;
+        flash.style.animation='none';
+        flash.style.opacity='0';
+        void flash.offsetWidth;
+        flash.style.animation='invFlash .55s ease-out forwards';
+        setTimeout(()=>{fired=false;},2200);
+      }
+    });
+  })();
 })();

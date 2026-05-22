@@ -1,9 +1,9 @@
 ﻿:root{
-  --black:#172118;
-  --deep:#111b12;
-  --mid:#1c2a1d;
-  --lift:#243a26;
-  --surface:#1a2c1b;
+  --black:#1e2e20;
+  --deep:#172518;
+  --mid:#223326;
+  --lift:#2c4430;
+  --surface:#1f3022;
   --white:#f0ede6;
   --orange:#e07830;
   --green:#58f066;
@@ -27,9 +27,9 @@ html{
 body{
   overflow:hidden;
   background:
-    radial-gradient(ellipse 130% 70% at 50% -10%, rgba(32,68,34,.9) 0%, transparent 55%),
-    radial-gradient(ellipse 80% 50% at 85% 110%, rgba(24,50,26,.7) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 10% 60%, rgba(28,55,30,.5) 0%, transparent 45%),
+    radial-gradient(ellipse 130% 70% at 50% -10%, rgba(42,90,46,1) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 50% at 85% 110%, rgba(34,66,38,.8) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 10% 60%, rgba(38,74,42,.6) 0%, transparent 45%),
     var(--black);
   animation:bgDrift 18s ease-in-out infinite alternate;
 }
@@ -576,7 +576,7 @@ input[type=range]::-webkit-slider-thumb{
 }
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .roi-output{
-  background:#0d1a0f;color:var(--white);
+  background:var(--deep);color:var(--white);
   padding:4rem;position:relative;
   margin-right:calc(-1 * var(--px));
 }
@@ -759,9 +759,13 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 
 /* ─── BLOG ────────────────────────────────── */
 #blog-sec{
-  overflow:hidden;
-  padding:14vh 0;
+  overflow:visible;
+  padding:0;
   background:var(--black);
+}
+#blog-sticky{
+  padding:14vh 0 8vh;
+  width:100%;
 }
 .blog-header{
   display:flex;justify-content:space-between;align-items:flex-end;
@@ -1203,7 +1207,28 @@ footer{
 /* Water — JS drives per-char via GSAP, CSS just marks the chars */
 .hx-water-char{display:inline-block}
 
-/* Rubber — JS drives skewX/scaleX via GSAP */
+/* Rubber — JS drives skewX/scaleX via GSAP, mousedown for drag */
+
+/* Effect hint labels */
+.fx-hint{
+  display:block;margin-top:.55rem;
+  font-family:var(--mf);font-size:.42rem;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(240,237,230,.22);
+  pointer-events:none;user-select:none;
+}
+
+/* Full-screen invert flash for section transitions */
+#inv-flash{
+  position:fixed;inset:0;z-index:9500;
+  pointer-events:none;opacity:0;
+  background:var(--white);
+  mix-blend-mode:difference;
+}
+@keyframes invFlash{
+  0%{opacity:0}
+  25%{opacity:.9}
+  100%{opacity:0}
+}
 
 /* will-change on key animated elements */
 .rv,.rf,.feat,.team-card,.price-card,.comp-row,.bcard,
