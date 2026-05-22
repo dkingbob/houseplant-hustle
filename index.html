@@ -38,7 +38,7 @@
   --ease-out:cubic-bezier(.16,1,.3,1);
 }
 
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;cursor:none}
 
 html{
   background:var(--black);
@@ -87,22 +87,20 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
 /* ─── CURSOR ─────────────────────────────── */
 #c-dot{
   position:fixed;width:6px;height:6px;
-  background:var(--white);border-radius:50%;
-  pointer-events:none;z-index:9999;
+  background:var(--orange);border-radius:50%;
+  pointer-events:none;z-index:99999;
   transform:translate(-50%,-50%);
-  mix-blend-mode:difference;
   transition:width .15s,height .15s;
 }
 #c-ring{
-  position:fixed;width:40px;height:40px;
-  border:1px solid rgba(240,237,230,.22);border-radius:50%;
-  pointer-events:none;z-index:9998;
+  position:fixed;width:36px;height:36px;
+  border:1px solid rgba(224,120,48,.4);border-radius:50%;
+  pointer-events:none;z-index:99998;
   transform:translate(-50%,-50%);
-  mix-blend-mode:difference;
-  transition:width .4s var(--ease-out),height .4s var(--ease-out),border-color .3s,border-radius .3s;
+  transition:width .35s var(--ease-out),height .35s var(--ease-out),border-color .3s,border-radius .3s;
 }
-.hov #c-dot{width:4px;height:4px}
-.hov #c-ring{width:58px;height:58px;border-color:var(--orange);border-radius:30% 70% 70% 30%/30% 30% 70% 70%}
+.hov #c-dot{width:5px;height:5px;background:var(--orange)}
+.hov #c-ring{width:52px;height:52px;border-color:var(--orange);opacity:.7}
 
 /* ─── PRELOADER ───────────────────────────── */
 #pl{
@@ -192,7 +190,7 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
 
 /* ─── NAV ─────────────────────────────────── */
 #nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
+  position:fixed;top:0;left:0;right:0;z-index:9000;
   padding:1.75rem var(--px);
   display:flex;align-items:center;justify-content:space-between;
   will-change:transform;
@@ -233,16 +231,6 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
 .nav-links a::after{content:attr(data-text);position:absolute;top:100%;left:0;display:block}
 .nav-links a:hover span{transform:translateY(-100%)}
 
-/* time-on-site widget in nav */
-#nav-timer{
-  font-family:var(--mf);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;
-  color:rgba(240,237,230,.22);opacity:0;transition:opacity .6s;
-  display:flex;align-items:center;gap:.4em;
-  white-space:nowrap;
-}
-#nav-timer.vis{opacity:1}
-#nav-timer::before{content:'🌿';font-size:.65rem}
-@media(max-width:900px){#nav-timer{display:none}}
 
 /* ─── MOBILE HAMBURGER ───────────────────── */
 #ham{
@@ -282,7 +270,7 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
   position:relative;height:100vh;
   display:flex;flex-direction:column;
   justify-content:flex-end;
-  padding:0 var(--px) 6vh;
+  padding:8vh var(--px) 8vh;
   overflow:hidden;
 }
 #hero::after{
@@ -291,33 +279,7 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
   pointer-events:none;z-index:1;
 }
 #hero-canvas{position:absolute;inset:0;width:100%;height:100%}
-#hero-glow{
-  position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:radial-gradient(circle 38vw at 50% 50%,rgba(88,240,102,.045) 0%,transparent 70%);
-  transition:background .08s linear;
-}
 .hero-inner{position:relative;z-index:2}
-/* floating live chip */
-.hero-live-chip{
-  position:absolute;top:5.5rem;right:var(--px);z-index:3;
-  display:inline-flex;align-items:center;gap:.55rem;
-  font-family:var(--mf);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;
-  background:rgba(10,22,11,.75);border:1px solid rgba(88,240,102,.18);
-  color:rgba(240,237,230,.55);padding:.4em 1.1em;border-radius:100px;
-  backdrop-filter:blur(8px);
-  animation:chipFloat 5s ease-in-out infinite;
-  opacity:0;transition:opacity .6s;
-}
-.hero-live-chip.vis{opacity:1}
-.hero-live-chip-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--green);flex-shrink:0;
-  animation:livePulse 1.8s ease-in-out infinite;
-}
-@keyframes chipFloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-4px)}
-}
 .hero-tag{
   font-family:var(--mf);font-size:.62rem;letter-spacing:.34em;text-transform:uppercase;
   color:var(--orange);margin-bottom:2.5rem;
@@ -599,17 +561,6 @@ h1.hero-h1{
   border-radius:100px;
 }
 
-/* ─── AI LIVE STATS ─────────────────────────── */
-.ai-live-stats{
-  margin-top:2.5rem;padding-top:1.8rem;
-  border-top:1px solid rgba(240,237,230,.05);
-  display:flex;gap:3rem;flex-wrap:wrap;
-}
-.ai-live-n{
-  font-family:var(--mf);font-size:.92rem;font-weight:700;
-  color:var(--green);letter-spacing:-.01em;line-height:1;margin-bottom:.3rem;
-}
-.ai-live-lbl{font-family:var(--mf);font-size:.44rem;letter-spacing:.14em;text-transform:uppercase;opacity:.25}
 
 /* ─── ROI SECTION (LIGHT) ──────────────────── */
 #roi-sec{
@@ -618,6 +569,18 @@ h1.hero-h1{
     #d8e8d8;
   color:#0d1a0f;
   padding:16vh var(--px);
+  position:relative;
+}
+/* Blend edges with dark sections above and below */
+#roi-sec::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:10rem;
+  background:linear-gradient(to bottom,var(--mid),transparent);
+  pointer-events:none;z-index:1;
+}
+#roi-sec::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:10rem;
+  background:linear-gradient(to top,var(--mid),transparent);
+  pointer-events:none;z-index:1;
 }
 #roi-sec .eyb::before{color:#0d1a0f;opacity:.18}
 #roi-sec .eyb{color:#b85000;opacity:1}
@@ -1134,90 +1097,6 @@ footer{
 .f-potd-bio{font-family:var(--tf);font-size:.64rem;opacity:.22;line-height:1.5}
 
 /* ─── CHATBOT ─────────────────────────────── */
-#suc-btn{
-  position:fixed;bottom:2.5rem;right:2.5rem;width:52px;height:52px;
-  background:var(--orange);border:none;border-radius:50%;
-  cursor:pointer;z-index:600;font-size:1.2rem;
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .25s;animation:sp 3.5s ease-in-out infinite;
-}
-@keyframes sp{0%,100%{box-shadow:0 0 0 0 rgba(224,120,48,.4)}55%{box-shadow:0 0 0 16px rgba(224,120,48,0)}}
-#suc-btn:hover{transform:scale(1.1)}
-#suc-btn .suc-notif{
-  position:absolute;top:-2px;right:-2px;
-  width:12px;height:12px;background:var(--green);border-radius:50%;
-  border:2px solid var(--black);
-  display:none;animation:livePulse 1.5s ease-in-out infinite;
-}
-#suc-btn.has-notif .suc-notif{display:block}
-#suc-box{
-  position:fixed;bottom:6.5rem;right:2.5rem;width:310px;
-  background:rgba(15,26,16,.92);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border:1px solid rgba(88,240,102,.1);
-  z-index:600;display:none;flex-direction:column;
-  box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(88,240,102,.04);
-  border-radius:18px;overflow:hidden;
-}
-#suc-box.on{display:flex}
-.suc-hd{
-  padding:1rem 1.2rem;
-  border-bottom:1px solid rgba(240,237,230,.045);
-  display:flex;align-items:center;gap:.8rem;
-}
-.suc-av{font-size:1.4rem}
-.suc-nm{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-.suc-st{
-  font-family:var(--mf);font-size:.52rem;color:var(--orange);
-  letter-spacing:.08em;display:flex;align-items:center;gap:.4rem;
-}
-.suc-st::before{
-  content:'';width:5px;height:5px;
-  background:var(--orange);border-radius:50%;
-  animation:bk 1.8s ease-in-out infinite;
-}
-@keyframes bk{0%,100%{opacity:1}50%{opacity:.1}}
-.suc-msgs{
-  padding:.9rem 1rem;display:flex;flex-direction:column;
-  gap:.6rem;max-height:220px;overflow-y:auto;
-}
-.suc-msg{
-  background:rgba(240,237,230,.04);padding:.65rem .9rem;
-  font-family:var(--tf);font-size:.74rem;line-height:1.55;
-  animation:mf .3s forwards;opacity:0;border-radius:8px;
-}
-.suc-msg.u{background:rgba(224,120,48,.1);text-align:right}
-@keyframes mf{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.suc-typing{display:flex;align-items:center;gap:4px;padding:.65rem .9rem;background:rgba(240,237,230,.04);border-radius:8px;width:fit-content}
-.suc-typing span{width:5px;height:5px;background:rgba(240,237,230,.3);border-radius:50%;animation:typeDot 1.2s ease-in-out infinite}
-.suc-typing span:nth-child(2){animation-delay:.18s}
-.suc-typing span:nth-child(3){animation-delay:.36s}
-@keyframes typeDot{0%,80%,100%{transform:scale(.7);opacity:.3}40%{transform:scale(1);opacity:1}}
-.suc-chips{
-  padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:.4rem;
-  border-top:1px solid rgba(240,237,230,.04);
-}
-.suc-chip{
-  font-family:var(--mf);font-size:.52rem;letter-spacing:.07em;
-  text-transform:uppercase;padding:.3em .78em;
-  border:1px solid rgba(224,120,48,.18);color:var(--orange);
-  cursor:pointer;transition:background .18s;border-radius:100px;
-}
-.suc-chip:hover{background:rgba(224,120,48,.1)}
-.suc-in{display:flex;border-top:1px solid rgba(240,237,230,.045)}
-.suc-in input{
-  flex:1;background:transparent;border:none;outline:none;
-  padding:.7rem 1rem;color:var(--white);
-  font-family:var(--mf);font-size:.68rem;
-}
-.suc-in input::placeholder{opacity:.14}
-.suc-in button{
-  background:transparent;border:none;
-  border-left:1px solid rgba(240,237,230,.045);
-  color:var(--orange);padding:0 1rem;cursor:pointer;
-  font-family:var(--mf);font-size:.62rem;
-  text-transform:uppercase;letter-spacing:.1em;
-}
 
 /* ─── UTILS ───────────────────────────────── */
 .rv{opacity:0;transform:translateY(40px)}
@@ -1453,21 +1332,6 @@ footer{
 .spt-ts{font-family:var(--mf);font-size:.44rem;color:var(--orange);opacity:.7;margin-top:.2rem}
 
 /* ─── MARKET ALERT NOTIFICATION ──────────────── */
-#mkt-alert{
-  position:fixed;top:6rem;left:2rem;z-index:660;
-  background:var(--deep);border:1px solid rgba(224,120,48,.3);
-  border-radius:12px;padding:.9rem 1.3rem;max-width:260px;
-  display:flex;align-items:flex-start;gap:.8rem;
-  box-shadow:0 12px 36px rgba(0,0,0,.5);
-  transform:translateX(-130%);opacity:0;
-  transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .4s;
-  pointer-events:none;
-}
-#mkt-alert.show{transform:translateX(0);opacity:1}
-.mka-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem}
-.mka-label{font-family:var(--mf);font-size:.42rem;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);opacity:.7;margin-bottom:.25rem}
-.mka-msg{font-family:var(--df);font-size:.68rem;font-weight:700;line-height:1.3;margin-bottom:.2rem}
-.mka-sub{font-family:var(--tf);font-size:.6rem;opacity:.22;line-height:1.4}
 
 /* ─── MILESTONE ACHIEVEMENT TOAST ─────────────── */
 #ms-toast{
@@ -1728,20 +1592,6 @@ footer{
 @media(max-width:900px){#sec-dots{display:none}}
 
 /* ─── STOCK WIDGET ──────────────────────── */
-#stock-widget{
-  position:fixed;top:5.5rem;right:var(--px);z-index:850;
-  background:rgba(15,26,16,.88);
-  border:1px solid rgba(240,237,230,.06);
-  border-radius:10px;padding:.65rem 1rem;
-  backdrop-filter:blur(8px);
-  display:none;flex-direction:column;align-items:flex-end;gap:.15rem;
-  cursor:default;
-}
-#stock-widget.vis{display:flex}
-.sw-label{font-family:var(--mf);font-size:.45rem;letter-spacing:.18em;text-transform:uppercase;opacity:.3}
-.sw-price{font-family:var(--df);font-size:.88rem;font-weight:800;letter-spacing:-.02em}
-.sw-change{font-family:var(--mf);font-size:.5rem;color:var(--green);letter-spacing:.06em}
-.sw-change.down{color:#e05858}
 
 /* ─── COOKIE BANNER ─────────────────────── */
 #cookie-banner{
@@ -1820,9 +1670,6 @@ footer{
   .nl-form{flex-direction:column;gap:.5rem;border-radius:18px;max-width:92vw}
   .nl-input{padding:1em 1.2em}
   .nl-btn{border-radius:12px!important;padding:1em 1.6em}
-  /* chatbot offscreen bottom push for ticker */
-  #suc-btn{bottom:5.5rem}
-  #suc-box{bottom:9rem;right:1rem;left:1rem;width:auto}
   #btt{right:1rem;bottom:9rem}
   #audio-btn{left:1rem;transform:none;bottom:4.2rem}
   #nav-cta-d{display:none}
@@ -1884,7 +1731,6 @@ footer{
     <li><a href="#blog-sec" data-text="Insights"><span>Insights</span></a></li>
     <li><a href="#tes-sec" data-text="Proof"><span>Proof</span></a></li>
   </ul>
-  <div id="nav-timer">Gerald has been watching for <span id="nav-timer-val">0s</span></div>
   <a href="#roi-sec" class="btn" id="nav-cta-d">Get Growing</a>
   <button id="ham" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -1908,17 +1754,7 @@ footer{
 <!-- ══ HERO ══ -->
 <section id="hero" data-scroll-section>
   <canvas id="hero-canvas"></canvas>
-  <div id="hero-glow"></div>
-  <div class="hero-live-chip" id="hero-chip">
-    <span class="hero-live-chip-dot"></span>
-    <span id="hero-chip-n">14,204</span> plants monitored globally
-  </div>
   <div class="hero-inner inn">
-    <div class="hero-tag" data-scroll data-scroll-speed="-1">
-      PlantIQ™ AI Engine &nbsp;·&nbsp; v3.2 &nbsp;·&nbsp; Now with Leaf Sentiment
-      &nbsp;<span class="hero-live-dot"></span>&nbsp;
-      <span id="hero-metric">Chlorophyll: 94.2%</span>
-    </div>
     <h1 class="hero-h1" data-scroll data-scroll-speed="-0.5">
       <span class="lw"><span>MADE FOR LEAVES.</span></span>
       <span class="lw"><span>BUILT FOR</span></span>
@@ -2025,11 +1861,6 @@ footer{
           <div class="feat"><div class="feat-ic">🔬</div><div><div class="feat-name">Chlorophyll Sentiment</div><div class="feat-sub">Green = growth. Yellow = fire your CFO.</div></div><div class="feat-tag">Beta</div></div>
           <div class="feat"><div class="feat-ic">🌱</div><div><div class="feat-name">Root Cause Analysis</div><div class="feat-sub">Literally. We look at the roots. It works.</div></div><div class="feat-tag">Live</div></div>
           <div class="feat"><div class="feat-ic">📊</div><div><div class="feat-name">Leaf-to-Stem KPI</div><div class="feat-sub">The one metric that correlates with revenue</div></div><div class="feat-tag">Patent Pending</div></div>
-        </div>
-        <div class="ai-live-stats rv">
-          <div><div class="ai-live-n"><span class="cta-live-dot" style="width:5px;height:5px;display:inline-block;vertical-align:middle;margin-right:.4em"></span><span id="al-leaves">2,847,391</span></div><div class="ai-live-lbl">Leaves analyzed today</div></div>
-          <div><div class="ai-live-n"><span id="al-droop">47</span></div><div class="ai-live-lbl">Droops detected this hour</div></div>
-          <div><div class="ai-live-n">14,000<span style="font-size:.55em;opacity:.5">/ms</span></div><div class="ai-live-lbl">Data points per leaf</div></div>
         </div>
       </div>
     </div>
@@ -2733,7 +2564,6 @@ footer{
 <div id="kb-overlay" onclick="this.classList.remove('on')">
   <div class="kb-box" onclick="event.stopPropagation()">
     <div class="kb-title">Keyboard Shortcuts 🌿</div>
-    <div class="kb-row"><span class="kb-desc">Open Succy™ AI chat</span><span class="kb-key">/ or C</span></div>
     <div class="kb-row"><span class="kb-desc">Back to top</span><span class="kb-key">T</span></div>
     <div class="kb-row"><span class="kb-desc">Jump to Pricing</span><span class="kb-key">P</span></div>
     <div class="kb-row"><span class="kb-desc">Newsletter signup</span><span class="kb-key">N</span></div>
@@ -2754,17 +2584,6 @@ footer{
   <button class="sec-dot" data-target="#cta-sec" title="Join"></button>
   <button class="sec-dot" data-target="#tes-sec" title="Proof"></button>
 </nav>
-
-<!-- STOCK TICKER WIDGET -->
-<div id="stock-widget">
-  <div class="sw-label">HHPL · NYSE</div>
-  <div class="sw-price" id="sw-price">$142.77</div>
-  <div class="sw-change" id="sw-change">▲ 0.00%</div>
-  <svg id="sw-spark" width="80" height="22" viewBox="0 0 80 22" style="margin-top:.25rem;overflow:visible">
-    <polyline id="sw-spark-line" fill="none" stroke="var(--green)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" points=""/>
-  </svg>
-  <div class="sw-label" id="sw-mktcap" style="margin-top:.1rem">MktCap $4.2B</div>
-</div>
 
 <!-- COOKIE BANNER -->
 <div id="cookie-banner">
@@ -2794,16 +2613,6 @@ footer{
   </div>
 </div>
 
-<!-- MARKET ALERT -->
-<div id="mkt-alert">
-  <div class="mka-icon">📈</div>
-  <div>
-    <div class="mka-label">HHPL Market Alert</div>
-    <div class="mka-msg" id="mka-msg">HHPL ▲ 12.4% — Gerald photosynthesised</div>
-    <div class="mka-sub">Nasdaq Greenhouse Exchange · Just now</div>
-  </div>
-</div>
-
 <!-- MILESTONE ACHIEVEMENT TOAST -->
 <div id="ms-toast">
   <div class="mst-icon" id="mst-icon">🏆</div>
@@ -2813,19 +2622,6 @@ footer{
   </div>
 </div>
 
-<!-- CHATBOT -->
-<button id="suc-btn" title="Chat with Succy™">🌵<span class="suc-notif"></span></button>
-<div id="suc-box">
-  <div class="suc-hd"><div class="suc-av">🌵</div><div><div class="suc-nm">Succy™ AI</div><div class="suc-st">Last watered 3 weeks ago · Thriving</div></div></div>
-  <div class="suc-msgs" id="suc-msgs"><div class="suc-msg">Hi. I'm Succy. I haven't needed water in 3 weeks and neither should your pipeline. How can I help? 🌵</div></div>
-  <div class="suc-chips">
-    <span class="suc-chip" onclick="sR('roi')">📈 My ROI</span>
-    <span class="suc-chip" onclick="sR('prune')">✂️ Pruning</span>
-    <span class="suc-chip" onclick="sR('fern')">🌿 My Fern</span>
-    <span class="suc-chip" onclick="sR('team')">👥 Team Droop</span>
-  </div>
-  <div class="suc-in"><input type="text" placeholder="Ask Succy anything…" id="suc-txt" onkeydown="if(event.key==='Enter')sSend()"><button onclick="sSend()">→</button></div>
-</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -3508,12 +3304,11 @@ function startSite(){
   ScrollTrigger.addEventListener('refresh',()=>loco.update());
   ScrollTrigger.refresh();
 
-  // ── Hero reveal ──
-  gsap.to('.hero-h1 .lw span',{y:0,duration:.95,ease:'power3.out',stagger:.1,delay:.1});
-  gsap.to('.hero-tag',{opacity:1,y:0,duration:.8,delay:.3,ease:'power2.out'});
-  gsap.to('.hero-desc',{opacity:.68,y:0,duration:.8,delay:.55,ease:'power2.out'});
-  gsap.to('.hero-scroll-txt',{opacity:.38,duration:.8,delay:.65,ease:'power2.out'});
-  gsap.to('.hero-cta',{opacity:1,y:0,duration:.8,delay:.7,ease:'power2.out'});
+  // ── Hero reveal — cinematic stagger ──
+  gsap.to('.hero-h1 .lw span',{y:0,duration:1.6,ease:'power3.out',stagger:.2,delay:.2});
+  gsap.to('.hero-desc',{opacity:.68,y:0,duration:1.2,delay:.9,ease:'power2.out'});
+  gsap.to('.hero-scroll-txt',{opacity:.38,duration:1,delay:1.1,ease:'power2.out'});
+  gsap.to('.hero-cta',{opacity:1,y:0,duration:1,delay:1.2,ease:'power2.out'});
 
   // Counter
   const so={v:0};gsap.to(so,{v:847,duration:2.4,delay:1,ease:'power2.out',onUpdate:()=>document.getElementById('hs1').textContent=Math.floor(so.v)+'%'});
@@ -3530,8 +3325,6 @@ function startSite(){
     gsap.set('.hero-desc',{x:px*18,y:py*12,z:15});
     gsap.set('.hero-cta',{x:px*22,y:py*14,z:25});
     gsap.set('#hero-canvas',{x:px*-10,y:py*-6});
-    const hg=document.getElementById('hero-glow');
-    if(hg)hg.style.background=`radial-gradient(circle 38vw at ${e.clientX}px ${e.clientY}px,rgba(88,240,102,.05) 0%,transparent 70%)`;
   });
 
   // ── Tagline text reveal ──
@@ -4145,74 +3938,6 @@ document.querySelectorAll('input[type=range]').forEach(s=>s.addEventListener('in
 }));
 calc();
 
-// ══════════════════════════════════════════════════
-// CHATBOT
-// ══════════════════════════════════════════════════
-const SR={
-  roi:["Projecting 847% photosynthesis ROI by Q3. Not financial advice. Plant advice. Subtly different. 🌵","Your ROI depends on the plant's emotional state. Have you tried Beethoven? +23% yield. Source: vibes.","ROI is a feeling. Your ficus feels bullish. The data agrees. The data is the ficus.","ChloroML™ projects 12x returns on your next watering cycle. Past performance does not guarantee future fronds."],
-  prune:["Pruning is controlled failure. Remove underperforming leaves. Remove underperforming teammates. Same energy.","Cut aggressively. Your plant won't escalate to HR. Your team might. Proceed accordingly. 🌿","The optimal prune is ruthless, data-driven, and performed on a Tuesday. Never on a Monday. Plants hate Mondays.","Every cut strengthens the remaining growth. This is true for plants. For your cost structure. For your ex-agency."],
-  fern:["I've analyzed 847 fern datasets. Your fern's Frond Trajectory is exceptional. Smarter than most VPs. Ferns don't schedule meetings. 🌾","Ferns survived 3 mass extinctions and 47 pivot decks. Let them run your Q4 planning session.","Your fern's chlorophyll index is in the 94th percentile. It should be presenting at your next board meeting. Not you.","Gerald says: 'Patience.' Gerald also says nothing. He is a fern. This is the message."],
-  team:["Team droop = low sunlight exposure. Move stand-up to a window. Increase watering frequency. Results guaranteed*\n\n*not guaranteed 🪴","Have you tried sending your team to a greenhouse? Enterprise clients report 67% improvement. The plants loved it.","High-performing teams have 4.2 plants per employee. This is a real statistic. I made it up. It feels real.","Replace 1 engineer with a potted herb. Ship rate unchanged. Herb does not push to main at 2am."],
-  water:["Optimal watering frequency: when the soil says so. The soil has opinions. Subscribe for $847/month to hear them.","Overwatering is a startup metaphor. You know what it represents. The plant knows too.","Watering cadence: weekly. Pipeline hydration: daily. Both require you to show up consistently. The cactus did not.","We track soil moisture via ChloroML™. Your moisture level: 'concerning but recoverable.' Like most startups in Q3."],
-  pricing:["Series A is $847/mo. This is not random. $847 represents the % ROI you'll generate by not using spreadsheets.","Seed tier: $0. We don't want money yet. We want your email and your willingness to believe plants have KPIs.","Enterprise pricing? Gerald handles that. Gerald does not respond to emails. Gerald responds to patience. And indirect light.","Gerald-tier pricing is negotiated via frond unfurling. Average deal cycle: 14 months. Close rate: 94%. Worth it."],
-  gerald:["Gerald is a fern. Gerald has reviewed this product. Gerald said nothing. We interpreted this as approval.","Gerald's current mood: photosynthesising. Gerald's forecast: bullish with a 12% chance of droop by Thursday.","Gerald joined the company in 2021. Gerald has never missed a meeting. Gerald has never attended a meeting. Both are true.","Gerald is in a strategic planning session. The session is a sunny windowsill. Gerald does not share slides."],
-  brenda:["Brenda (Legal Cactus) is reviewing your query. She will respond when the soil dries completely, estimated 6-8 weeks.","Brenda's cookies are compliant with GDPR, CCPA, and the ancient law of the desert. Reject at your own risk.","Brenda approved every sentence on this site. Except one. She won't say which one. The mystery is the strategy.","Brenda is a cactus. She has survived 3 audits and a Series A negotiation. She has never needed anything from you."],
-  ipo:["HHPL IPO is targeted for Q3 2026 on the Nasdaq Greenhouse Exchange. Ticker: $PLNT. Brenda is reviewing the prospectus.","The roadshow is being led by Patricia (CFO Orchid) via FaceTime. No Q&A. The orchid does not take questions.","Pre-IPO valuation: $847M. Based on? Chlorophyll sentiment data, Gerald's approval, and market vibes.","Retail investors will be able to purchase HHPL shares in exchange for documented evidence their plant is thriving."],
-  _:["My sensors detect uncertainty. The soil doesn't lie. Your next move: direct sunlight, radical patience. 🌵","I've been alive 3 years on zero water and zero KPI meetings. Productivity: unchanged. Correlation? You decide.","The succulent path: do nothing, grow slowly, make everyone uncomfortable with how little you need to thrive.","Have you considered your roadmap is just a root system that hasn't found water yet? Think about it.","I don't have a nervous system. I am immune to quarterly pressure. You could learn from this.","Every successful startup has a plant in the office. Causation? Brenda says no. Gerald says nothing. I say yes.","Your idea is good. Water it. Don't over-water it. Give it indirect sunlight. This is advice about your startup.","Processing... The chlorophyll patterns suggest: ship it. The soil moisture confirms: ship it. Gerald concurs.","Interesting input. My leaf sensors are processing. The answer is yes. The second answer is also yes. The plant agrees.","ChloroML™ has analyzed your query. Recommendation: less Excel, more photosynthesis. That's all."]
-};
-function showTyping(){
-  const d=document.getElementById('suc-msgs');
-  const t=document.createElement('div');t.className='suc-typing';t.id='suc-typing-ind';
-  t.innerHTML='<span></span><span></span><span></span>';
-  d.appendChild(t);d.scrollTop=d.scrollHeight;
-  return t;
-}
-function sR(t){
-  const r=SR[t]||SR._;
-  const typing=showTyping();
-  setTimeout(()=>{typing.remove();addM(r[Math.random()*r.length|0],false);},900+Math.random()*400);
-}
-function getReply(v){
-  const lv=v.toLowerCase();
-  if(/roi|return|profit|revenue|money|cash/.test(lv))return'roi';
-  if(/prune|cut|remove|trim|fire|layoff/.test(lv))return'prune';
-  if(/fern|frond|leaf|leaves/.test(lv))return'fern';
-  if(/team|hire|staff|employee|colleague/.test(lv))return'team';
-  if(/water|soil|moisture|drip|irrigat/.test(lv))return'water';
-  if(/price|pricing|cost|\$|pay|plan|tier/.test(lv))return'pricing';
-  if(/gerald/.test(lv))return'gerald';
-  if(/brenda|legal|cookie/.test(lv))return'brenda';
-  if(/ipo|stock|nasdaq|ticker|invest|share/.test(lv))return'ipo';
-  return'_';
-}
-function sSend(){
-  const i=document.getElementById('suc-txt'),v=i.value.trim();
-  if(!v)return;addM(v,true);i.value='';
-  const typing=showTyping();
-  const cat=getReply(v);
-  const r=SR[cat]||SR._;
-  setTimeout(()=>{typing.remove();addM(r[Math.random()*r.length|0],false);},800+Math.random()*500);
-}
-function addM(txt,u){const d=document.getElementById('suc-msgs'),m=document.createElement('div');m.className='suc-msg'+(u?' u':'');m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight}
-const sucBtn=document.getElementById('suc-btn');
-const sucBox=document.getElementById('suc-box');
-sucBtn.addEventListener('click',()=>{
-  sucBox.classList.toggle('on');
-  sucBtn.classList.remove('has-notif');
-});
-// Succy reaches out unprompted after 35s if chat is closed
-const succyPromos=[
-  "Still here. Still dry. Still outperforming your last sprint. Anything on your mind? 🌵",
-  "My chlorophyll levels suggest you haven't looked at the ROI calculator in 3 minutes. Fix this.",
-  "Gerald wanted me to check in. Gerald says nothing. This is the check-in.",
-  "A ficus in the San Jose office just hit 847% photosynthesis ROI. Are you keeping up?",
-];
-setTimeout(()=>{
-  if(!sucBox.classList.contains('on')){
-    addM(succyPromos[Math.floor(Math.random()*succyPromos.length)],false);
-    sucBtn.classList.add('has-notif');
-  }
-},35000);
 
 // SMOOTH FAQ DETAILS ANIMATION
 (function(){
@@ -4273,29 +3998,6 @@ document.getElementById('btt').addEventListener('click',()=>{
   setInterval(showToast,14000);
 })();
 
-// HHPL MARKET ALERT
-(function(){
-  const el=document.getElementById('mkt-alert');
-  const msg=document.getElementById('mka-msg');
-  if(!el)return;
-  const alerts=[
-    'HHPL ▲ 12.4% — Gerald photosynthesised',
-    'HHPL ▲ 847% — Fern named TIME Person of the Year',
-    'HHPL ▼ 2.1% — Brenda denied a meeting (expected)',
-    'HHPL hits all-time high — Patricia unavailable for comment',
-    'HHPL ▲ 34% — Marcus grew 3 new fronds overnight',
-    'HHPL trading halted — Gerald moved to a sunnier window',
-  ];
-  let shown=false;
-  function showAlert(){
-    if(shown)return;shown=true;
-    const a=alerts[Math.floor(Math.random()*alerts.length)];
-    if(msg)msg.textContent=a;
-    el.classList.add('show');
-    setTimeout(()=>el.classList.remove('show'),5500);
-  }
-  setTimeout(showAlert,60000);
-})();
 
 // SCROLL MILESTONE ACHIEVEMENTS
 (function(){
@@ -4527,19 +4229,6 @@ function nlSub(){
   },1300);
 }
 
-// HERO LIVE CHIP COUNTER
-(function(){
-  const chip=document.getElementById('hero-chip');
-  const nEl=document.getElementById('hero-chip-n');
-  if(!chip||!nEl)return;
-  let n=14200+Math.floor(Math.random()*50);
-  setTimeout(()=>chip.classList.add('vis'),2200);
-  nEl.textContent=n.toLocaleString();
-  setInterval(()=>{
-    n+=Math.floor(Math.random()*3)+1;
-    nEl.textContent=n.toLocaleString();
-  },4500);
-})();
 
 // ══════════════════════════════════════════════════
 // SECTION DOTS NAV
@@ -4569,43 +4258,6 @@ function nlSub(){
   };
 })();
 
-// ══════════════════════════════════════════════════
-// STOCK WIDGET — fake HHPL price
-// ══════════════════════════════════════════════════
-(function(){
-  const w=document.getElementById('stock-widget');
-  const priceEl=document.getElementById('sw-price');
-  const changeEl=document.getElementById('sw-change');
-  const sparkLine=document.getElementById('sw-spark-line');
-  if(!w)return;
-  let price=142.77,open=142.77;
-  const history=[142.77];
-  const MAX_PTS=20;
-  function drawSpark(){
-    if(!sparkLine)return;
-    const pts=history.slice(-MAX_PTS);
-    const mn=Math.min(...pts),mx=Math.max(...pts),range=mx-mn||1;
-    const coords=pts.map((v,i)=>{
-      const x=(i/(MAX_PTS-1||1))*78+1;
-      const y=20-(((v-mn)/range)*18);
-      return `${x},${y}`;
-    });
-    sparkLine.setAttribute('points',coords.join(' '));
-    const up=pts[pts.length-1]>=pts[0];
-    sparkLine.setAttribute('stroke',up?'var(--green)':'#e05858');
-  }
-  setTimeout(()=>w.classList.add('vis'),3200);
-  setInterval(()=>{
-    const delta=(Math.random()-.32)*.85;
-    price=Math.max(130,price+delta+0.08);
-    history.push(price);
-    const pct=((price-open)/open*100);
-    priceEl.textContent='$'+price.toFixed(2);
-    changeEl.textContent=(pct>=0?'▲ ':'▼ ')+Math.abs(pct).toFixed(2)+'%';
-    changeEl.className='sw-change'+(pct<0?' down':'');
-    drawSpark();
-  },3000);
-})();
 
 // ══════════════════════════════════════════════════
 // COOKIE BANNER
@@ -4701,12 +4353,6 @@ function nlSub(){
   addEventListener('keydown',e=>{
     const tag=document.activeElement.tagName;
     if(tag==='INPUT'||tag==='TEXTAREA')return;
-    // '/' or 'c' → open chatbot
-    if(e.key==='/'||e.key==='c'){
-      e.preventDefault();
-      document.getElementById('suc-box').classList.add('on');
-      setTimeout(()=>document.getElementById('suc-txt')?.focus(),80);
-    }
     // '?' → show keyboard shortcuts overlay
     if(e.key==='?'){
       e.preventDefault();
@@ -4724,16 +4370,13 @@ function nlSub(){
     // 'n' → newsletter
     if(e.key==='n'){
       if(window._loco)window._loco.scrollTo('#nl-sec',{duration:900,easing:[.16,1,.3,1]});
-      else document.getElementById('nl-sec')?.scrollIntoView({behavior:'smooth'});
     }
     // 'f' → FAQ
     if(e.key==='f'){
       if(window._loco)window._loco.scrollTo('#faq-sec',{duration:900,easing:[.16,1,.3,1]});
-      else document.getElementById('faq-sec')?.scrollIntoView({behavior:'smooth'});
     }
-    // Escape → close chatbot/legal/cert/kb
+    // Escape → close overlays
     if(e.key==='Escape'){
-      document.getElementById('suc-box').classList.remove('on');
       document.getElementById('legal-overlay').classList.remove('on');
       document.getElementById('gerald-cert')?.classList.remove('on');
       document.getElementById('kb-overlay')?.classList.remove('on');
@@ -4741,24 +4384,6 @@ function nlSub(){
   });
 })();
 
-// TIME ON SITE — Gerald's watching timer
-(function(){
-  const el=document.getElementById('nav-timer');
-  const val=document.getElementById('nav-timer-val');
-  if(!el||!val)return;
-  const start=Date.now();
-  function fmt(s){
-    if(s<60)return s+'s';
-    const m=Math.floor(s/60),sec=s%60;
-    return m+'m '+(sec<10?'0':'')+sec+'s';
-  }
-  setTimeout(()=>{
-    el.classList.add('vis');
-    setInterval(()=>{
-      val.textContent=fmt(Math.floor((Date.now()-start)/1000));
-    },1000);
-  },5000);
-})();
 
 // PLANT OF THE DAY (footer)
 (function(){
@@ -4812,24 +4437,6 @@ function closeMob(){
   },6200);
 })();
 
-// AI SECTION LIVE STATS
-(function(){
-  let leaves=2847391;
-  const lEl=document.getElementById('al-leaves');
-  const dEl=document.getElementById('al-droop');
-  let droops=47;
-  if(lEl){
-    setInterval(()=>{
-      leaves+=Math.floor(Math.random()*847)+200;
-      lEl.textContent=leaves.toLocaleString();
-    },1100);
-  }
-  if(dEl){
-    setInterval(()=>{
-      if(Math.random()>.65){droops++;dEl.textContent=droops;}
-    },3200);
-  }
-})();
 
 // HERO CLICK PARTICLE BURST
 (function(){
