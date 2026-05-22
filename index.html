@@ -964,6 +964,15 @@ footer{
   border:1px solid rgba(88,240,102,.18);border-radius:100px;
   padding:.28em 1em;
 }
+.f-potd{
+  margin-top:2rem;padding:1.2rem 1.5rem;
+  border:1px solid rgba(240,237,230,.05);border-radius:12px;
+  display:flex;align-items:center;gap:1.2rem;max-width:420px;
+}
+.f-potd-icon{font-size:2.2rem;flex-shrink:0;line-height:1}
+.f-potd-label{font-family:var(--mf);font-size:.44rem;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);opacity:.6;margin-bottom:.3rem}
+.f-potd-name{font-family:var(--df);font-size:.88rem;font-weight:800;margin-bottom:.2rem}
+.f-potd-bio{font-family:var(--tf);font-size:.64rem;opacity:.22;line-height:1.5}
 
 /* ─── CHATBOT ─────────────────────────────── */
 #suc-btn{
@@ -2257,6 +2266,14 @@ footer{
     <li><a href="#">HHPL: IPO Q3 2026</a></li>
     <li><a href="#" id="share-link" onclick="event.preventDefault();copyLink()">Share Site ↗</a></li>
   </ul>
+  <div class="f-potd">
+    <div class="f-potd-icon" id="f-potd-icon">🌿</div>
+    <div>
+      <div class="f-potd-label">Plant of the Day</div>
+      <div class="f-potd-name" id="f-potd-name">The Golden Pothos</div>
+      <div class="f-potd-bio" id="f-potd-bio">Trails indefinitely. Surpassed its KPIs in Q2 2024. Currently managing a small team of cuttings.</div>
+    </div>
+  </div>
   <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real. HHPL listed on NASDAQ Greenhouse Exchange. Certified by Gerald (he's a fern). This is satire.</div>
 </footer>
 
@@ -2425,9 +2442,13 @@ footer{
 
 <!-- STOCK TICKER WIDGET -->
 <div id="stock-widget">
-  <div class="sw-label">HHPL</div>
+  <div class="sw-label">HHPL · NYSE</div>
   <div class="sw-price" id="sw-price">$142.77</div>
   <div class="sw-change" id="sw-change">▲ 0.00%</div>
+  <svg id="sw-spark" width="80" height="22" viewBox="0 0 80 22" style="margin-top:.25rem;overflow:visible">
+    <polyline id="sw-spark-line" fill="none" stroke="var(--green)" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" points=""/>
+  </svg>
+  <div class="sw-label" id="sw-mktcap" style="margin-top:.1rem">MktCap $4.2B</div>
 </div>
 
 <!-- COOKIE BANNER -->
@@ -4080,16 +4101,34 @@ function nlSub(){
   const w=document.getElementById('stock-widget');
   const priceEl=document.getElementById('sw-price');
   const changeEl=document.getElementById('sw-change');
+  const sparkLine=document.getElementById('sw-spark-line');
   if(!w)return;
   let price=142.77,open=142.77;
+  const history=[142.77];
+  const MAX_PTS=20;
+  function drawSpark(){
+    if(!sparkLine)return;
+    const pts=history.slice(-MAX_PTS);
+    const mn=Math.min(...pts),mx=Math.max(...pts),range=mx-mn||1;
+    const coords=pts.map((v,i)=>{
+      const x=(i/(MAX_PTS-1||1))*78+1;
+      const y=20-(((v-mn)/range)*18);
+      return `${x},${y}`;
+    });
+    sparkLine.setAttribute('points',coords.join(' '));
+    const up=pts[pts.length-1]>=pts[0];
+    sparkLine.setAttribute('stroke',up?'var(--green)':'#e05858');
+  }
   setTimeout(()=>w.classList.add('vis'),3200);
   setInterval(()=>{
     const delta=(Math.random()-.32)*.85;
     price=Math.max(130,price+delta+0.08);
+    history.push(price);
     const pct=((price-open)/open*100);
     priceEl.textContent='$'+price.toFixed(2);
     changeEl.textContent=(pct>=0?'▲ ':'▼ ')+Math.abs(pct).toFixed(2)+'%';
     changeEl.className='sw-change'+(pct<0?' down':'');
+    drawSpark();
   },3000);
 })();
 
@@ -4180,6 +4219,27 @@ function nlSub(){
       document.getElementById('legal-overlay').classList.remove('on');
     }
   });
+})();
+
+// PLANT OF THE DAY (footer)
+(function(){
+  const plants=[
+    {icon:'🌿',name:'The Golden Pothos',bio:'Trails indefinitely. Surpassed its KPIs in Q2 2024. Currently managing a small team of cuttings.'},
+    {icon:'🌵',name:'The Desert Barrel Cactus',bio:'Cash-flow positive since 1987. Has not required watering since the last board meeting. Thriving.'},
+    {icon:'🪴',name:'The Monstera Deliciosa',bio:'Certified fiduciary. Fenestrated leaves indicate exceptional risk appetite. Raised $2.3M on vibes.'},
+    {icon:'🌱',name:'The Snake Plant',bio:'Works nights. Never complains. Air quality improved 340% since joining the team. Ask about equity.'},
+    {icon:'🌺',name:'The Peace Lily',bio:'Chief Morale Officer. Droops visibly when budgets are cut. Considered a leading indicator.'},
+    {icon:'🍃',name:'The Fiddle Leaf Fig',bio:'High-maintenance. Difficult to relocate. Used to a corner office. Will not accept a cubicle.'},
+    {icon:'🌾',name:'The Bamboo Palm',bio:'Grew 847% in 14 months. Refused acquisition offer from IKEA. Currently in stealth mode.'},
+  ];
+  const day=new Date().getDay();
+  const p=plants[day%plants.length];
+  const icon=document.getElementById('f-potd-icon');
+  const name=document.getElementById('f-potd-name');
+  const bio=document.getElementById('f-potd-bio');
+  if(icon)icon.textContent=p.icon;
+  if(name)name.textContent=p.name;
+  if(bio)bio.textContent=p.bio;
 })();
 
 // MOBILE HAMBURGER MENU
