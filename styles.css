@@ -241,7 +241,7 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
 .mob-link:hover{opacity:1;color:var(--orange)}
 
 /* ─── LOCO SCROLL CONTAINER ───────────────── */
-#scroll-wrap{position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden}
+#scroll-wrap{position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:2}
 
 /* ─── HERO ─────────────────────────────────── */
 #hero{
@@ -1603,11 +1603,18 @@ footer{
   position:relative;width:100vw;height:100vh;overflow:hidden;
 }
 
-/* ── Three.js canvas — full bleed ── */
+/* ── Three.js canvas — fixed, always behind everything ── */
 #story-3d-cv{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  display:block;
+  position:fixed;inset:0;
+  width:100vw;height:100vh;
+  z-index:1;display:block;
+}
+
+/* ── Story overlay — fixed above scroll content ── */
+#story-overlay{
+  position:fixed;inset:0;
+  z-index:5;pointer-events:none;
+  transition:opacity .6s ease;
 }
 
 /* ── Phase number badge ── */

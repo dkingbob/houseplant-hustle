@@ -1229,11 +1229,12 @@ function startSite(){
 
   // ── 3D Storyboard scroll driver ──
   (function(){
-    const storySec=document.getElementById('story-sec');
-    if(!storySec)return;
+    if(!document.getElementById('story-spacer'))return;
 
+    const STORY_ROOM=900*window.innerHeight-window.innerHeight;
     let _stPhase=0;
     const _scanLine=document.getElementById('story-scan-line');
+    const _overlay=document.getElementById('story-overlay');
 
     function updateStoryPhase(phase,prog){
       if(phase!==_stPhase){
@@ -1258,16 +1259,17 @@ function startSite(){
       // Progress bar
       const fill=document.getElementById('story-prog-fill');
       if(fill)fill.style.width=(prog*100)+'%';
+
+      // Fade overlay out once story section is fully scrolled past
+      if(_overlay){
+        _overlay.style.opacity=prog>=1?'0':'1';
+      }
     }
 
     function attachStoryScroll(){
       if(!window._viewer3d)return;
       loco.on('scroll',({scroll})=>{
-        const secTop=storySec.offsetTop;
-        const secH=storySec.offsetHeight;
-        const scrollRoom=secH-innerHeight;
-        if(scrollRoom<=0||scroll.y<secTop-innerHeight||scroll.y>secTop+secH+innerHeight)return;
-        const prog=Math.max(0,Math.min(1,(scroll.y-secTop)/scrollRoom));
+        const prog=Math.max(0,Math.min(1,scroll.y/STORY_ROOM));
         const phase=window._viewer3d.setScrollProgress(prog);
         updateStoryPhase(phase,prog);
       });
@@ -1299,17 +1301,13 @@ function startSite(){
     // Scan line mouse tracking (Phase 7)
     document.addEventListener('mousemove',e=>{
       if(_stPhase!==7||!_scanLine)return;
-      const sticky=document.getElementById('story-sticky');
-      if(!sticky)return;
-      const r=sticky.getBoundingClientRect();
-      const relY=Math.max(0,Math.min(1,(e.clientY-r.top)/r.height));
-      _scanLine.style.top=(relY*100)+'%';
+      _scanLine.style.top=(e.clientY/window.innerHeight*100)+'%';
     });
   })();
 
   // ── Section parallax ──
   document.querySelectorAll('[data-scroll-section]').forEach(s=>{
-    if(s.id==='scrub-section'||s.id==='story-sec')return;
+    if(s.id==='scrub-section'||s.id==='story-spacer')return;
     ScrollTrigger.create({
       scroller:'[data-scroll-container]',
       trigger:s,start:'top bottom',end:'bottom top',scrub:true,

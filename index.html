@@ -84,9 +84,124 @@
   <a class="mob-link" href="#cta-sec" onclick="closeMob()" style="color:var(--orange)">Join Waitlist</a>
 </div>
 
+<!-- 3D Canvas — fixed at z-index:1, always visible behind scroll content -->
+<canvas id="story-3d-cv"></canvas>
+
+<!-- 3D Story Overlay — fixed at z-index:5, above scroll content -->
+<div id="story-overlay">
+  <!-- Pencil sketch overlay — Phase 6 -->
+  <canvas id="story-sketch-cv"></canvas>
+  <!-- Green scan line — Phase 7 -->
+  <div id="story-scan-line"></div>
+  <!-- Phase number badge -->
+  <div id="st-pnum" aria-hidden="true">
+    <span id="st-pnum-n">01</span><span id="st-pnum-of">/09</span>
+  </div>
+  <!-- ── Phase 1: Desk Scene ── -->
+  <div class="stp" id="stp1">
+    <div class="stp-eyb">01 / Desk Scene</div>
+    <div class="stp-h">The Setup.</div>
+    <p class="stp-sub">Every decision starts at a desk. Yours includes a plant with opinions.</p>
+  </div>
+  <!-- ── Phase 2: Camera Tilt ── -->
+  <div class="stp" id="stp2">
+    <div class="stp-eyb">02 / Perspective Shift</div>
+    <div class="stp-h">Closer.</div>
+    <p class="stp-sub">Adjusting angle. The plant does not mind. It's been watching you the whole time.</p>
+  </div>
+  <!-- ── Phase 3: Front View + Annotations ── -->
+  <div class="stp stp-full" id="stp3">
+    <div class="stp-left">
+      <div class="stp-eyb">03 / Subject Identified</div>
+      <div class="stp-h">Meet the<br>Asset.</div>
+    </div>
+    <div class="st-annot" style="--ax:60%;--ay:16%">
+      <div class="st-annot-dot"></div>
+      <div class="st-annot-arm"></div>
+      <div class="st-annot-card">
+        <div class="st-ann-lbl">Canopy Index™</div>
+        <div class="st-ann-val">94.7</div>
+      </div>
+    </div>
+    <div class="st-annot" style="--ax:62%;--ay:50%">
+      <div class="st-annot-dot"></div>
+      <div class="st-annot-arm"></div>
+      <div class="st-annot-card">
+        <div class="st-ann-lbl">Stem Velocity</div>
+        <div class="st-ann-val">+3.2 mm/day</div>
+      </div>
+    </div>
+    <div class="st-annot" style="--ax:57%;--ay:75%">
+      <div class="st-annot-dot"></div>
+      <div class="st-annot-arm"></div>
+      <div class="st-annot-card">
+        <div class="st-ann-lbl">Root Health</div>
+        <div class="st-ann-val">Excellent</div>
+      </div>
+    </div>
+  </div>
+  <!-- ── Phase 4: Transparent Pot ── -->
+  <div class="stp" id="stp4">
+    <div class="stp-eyb">04 / Subsurface Analysis</div>
+    <div class="stp-h">Below<br>Ground.</div>
+    <p class="stp-sub">Root architecture revealed. Most CEOs lack this level of transparency.</p>
+  </div>
+  <!-- ── Phase 5: Soil Falls ── -->
+  <div class="stp" id="stp5">
+    <div class="stp-eyb">05 / Soil Dispersion</div>
+    <div class="stp-h">The Roots<br>Speak.</div>
+    <p class="stp-sub">Removing the medium. What's left is what matters.</p>
+  </div>
+  <!-- ── Phase 6: Design Sketch Overlay ── -->
+  <div class="stp" id="stp6">
+    <div class="stp-eyb">06 / Blueprint</div>
+    <div class="stp-h">The<br>Drawing.</div>
+    <p class="stp-sub">Every living system begins as a sketch. Hover the canvas to reveal what's beneath.</p>
+  </div>
+  <!-- ── Phase 7: Scan & Modes ── -->
+  <div class="stp stp-full" id="stp7">
+    <div class="stp-left">
+      <div class="stp-eyb">07 / Analysis Mode</div>
+      <div class="stp-h">See Further.</div>
+      <p class="stp-sub" style="margin-bottom:1.4rem">Move your cursor to scan. Switch modes to reveal hidden layers.</p>
+      <div class="st-modes">
+        <button class="st-mode-btn active" data-mode="thermal">Thermal</button>
+        <button class="st-mode-btn" data-mode="xray">X-Ray</button>
+        <button class="st-mode-btn" data-mode="wireframe">Wireframe</button>
+        <button class="st-mode-btn" data-mode="standard">Standard</button>
+      </div>
+      <div class="st-mode-desc" id="st-mode-desc">Heat signature analysis. Your plant is running hot.</div>
+    </div>
+  </div>
+  <!-- ── Phase 8: Free Rotation ── -->
+  <div class="stp stp-full" id="stp8">
+    <div class="stp-left">
+      <div class="stp-eyb">08 / Explore</div>
+      <div class="stp-h">It's<br>Yours.</div>
+      <div class="st-orbit-hint"><span class="st-orbit-icon">↻</span> click &amp; drag to rotate</div>
+      <a href="#cta-sec" class="btn" style="margin-top:1.8rem;pointer-events:auto">Join Waitlist →</a>
+      <div class="st-tes-mini">
+        <div class="st-tes-item">"Gerald reviewed my portfolio. My portfolio grew leaves."<br><em>— Marcus T., CFO of a plant</em></div>
+        <div class="st-tes-item">"It's scientifically irresponsible. I pre-ordered two."<br><em>— Patricia O., Chief Financial Frond</em></div>
+      </div>
+    </div>
+  </div>
+  <!-- ── Phase 9: Loop Transition ── -->
+  <div class="stp" id="stp9">
+    <div class="stp-eyb">09 / Loop</div>
+    <div class="stp-h">Again.</div>
+    <p class="stp-sub">The plant never stops. Neither does the analysis.</p>
+  </div>
+  <!-- Story scroll progress bar -->
+  <div id="story-prog"><div id="story-prog-fill"></div></div>
+</div>
+
 <!-- SCROLL CONTAINER -->
 <div id="scroll-wrap">
 <div data-scroll-container id="loco-container">
+
+<!-- ══ 3D STORY SPACER — 900vh scroll room for phases 1–9 ══ -->
+<div id="story-spacer" data-scroll-section style="height:900vh;background:transparent"></div>
 
 <!-- ══ HERO ══ -->
 <section id="hero" data-scroll-section>
@@ -148,133 +263,7 @@
 <!-- ══ SCROLL SCRUB ══ -->
 <div id="scrub-section" data-scroll-section></div>
 
-<!-- ══ 3D STORYBOARD ══ -->
-<section id="story-sec" data-scroll-section style="height:900vh;position:relative;background:var(--black)">
-  <div id="story-sticky" data-scroll data-scroll-sticky data-scroll-target="#story-sec">
 
-    <!-- Three.js canvas -->
-    <canvas id="story-3d-cv"></canvas>
-
-    <!-- Pencil sketch overlay — Phase 6 -->
-    <canvas id="story-sketch-cv"></canvas>
-
-    <!-- Green scan line — Phase 7 (follows mouse Y) -->
-    <div id="story-scan-line"></div>
-
-    <!-- Phase number tracker -->
-    <div id="st-pnum" aria-hidden="true">
-      <span id="st-pnum-n">01</span><span id="st-pnum-of">/09</span>
-    </div>
-
-    <!-- ── Phase 1: Desk Scene ── -->
-    <div class="stp" id="stp1">
-      <div class="stp-eyb">01 / Desk Scene</div>
-      <div class="stp-h">The Setup.</div>
-      <p class="stp-sub">Every decision starts at a desk. Yours includes a plant with opinions.</p>
-    </div>
-
-    <!-- ── Phase 2: Camera Tilt ── -->
-    <div class="stp" id="stp2">
-      <div class="stp-eyb">02 / Perspective Shift</div>
-      <div class="stp-h">Closer.</div>
-      <p class="stp-sub">Adjusting angle. The plant does not mind. It's been watching you the whole time.</p>
-    </div>
-
-    <!-- ── Phase 3: Front View + Annotations ── -->
-    <div class="stp stp-full" id="stp3">
-      <div class="stp-left">
-        <div class="stp-eyb">03 / Subject Identified</div>
-        <div class="stp-h">Meet the<br>Asset.</div>
-      </div>
-      <div class="st-annot" style="--ax:60%;--ay:16%">
-        <div class="st-annot-dot"></div>
-        <div class="st-annot-arm"></div>
-        <div class="st-annot-card">
-          <div class="st-ann-lbl">Canopy Index™</div>
-          <div class="st-ann-val">94.7</div>
-        </div>
-      </div>
-      <div class="st-annot" style="--ax:62%;--ay:50%">
-        <div class="st-annot-dot"></div>
-        <div class="st-annot-arm"></div>
-        <div class="st-annot-card">
-          <div class="st-ann-lbl">Stem Velocity</div>
-          <div class="st-ann-val">+3.2 mm/day</div>
-        </div>
-      </div>
-      <div class="st-annot" style="--ax:57%;--ay:75%">
-        <div class="st-annot-dot"></div>
-        <div class="st-annot-arm"></div>
-        <div class="st-annot-card">
-          <div class="st-ann-lbl">Root Health</div>
-          <div class="st-ann-val">Excellent</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Phase 4: Transparent Pot ── -->
-    <div class="stp" id="stp4">
-      <div class="stp-eyb">04 / Subsurface Analysis</div>
-      <div class="stp-h">Below<br>Ground.</div>
-      <p class="stp-sub">Root architecture revealed. Most CEOs lack this level of transparency.</p>
-    </div>
-
-    <!-- ── Phase 5: Soil Falls ── -->
-    <div class="stp" id="stp5">
-      <div class="stp-eyb">05 / Soil Dispersion</div>
-      <div class="stp-h">The Roots<br>Speak.</div>
-      <p class="stp-sub">Removing the medium. What's left is what matters.</p>
-    </div>
-
-    <!-- ── Phase 6: Design Sketch Overlay ── -->
-    <div class="stp" id="stp6">
-      <div class="stp-eyb">06 / Blueprint</div>
-      <div class="stp-h">The<br>Drawing.</div>
-      <p class="stp-sub">Every living system begins as a sketch. Hover the canvas to reveal what's beneath.</p>
-    </div>
-
-    <!-- ── Phase 7: Scan & Modes ── -->
-    <div class="stp stp-full" id="stp7">
-      <div class="stp-left">
-        <div class="stp-eyb">07 / Analysis Mode</div>
-        <div class="stp-h">See Further.</div>
-        <p class="stp-sub" style="margin-bottom:1.4rem">Move your cursor to scan. Switch modes to reveal hidden layers.</p>
-        <div class="st-modes">
-          <button class="st-mode-btn active" data-mode="thermal">Thermal</button>
-          <button class="st-mode-btn" data-mode="xray">X-Ray</button>
-          <button class="st-mode-btn" data-mode="wireframe">Wireframe</button>
-          <button class="st-mode-btn" data-mode="standard">Standard</button>
-        </div>
-        <div class="st-mode-desc" id="st-mode-desc">Heat signature analysis. Your plant is running hot.</div>
-      </div>
-    </div>
-
-    <!-- ── Phase 8: Free Rotation ── -->
-    <div class="stp stp-full" id="stp8">
-      <div class="stp-left">
-        <div class="stp-eyb">08 / Explore</div>
-        <div class="stp-h">It's<br>Yours.</div>
-        <div class="st-orbit-hint"><span class="st-orbit-icon">↻</span> click &amp; drag to rotate</div>
-        <a href="#cta-sec" class="btn" style="margin-top:1.8rem;pointer-events:auto">Join Waitlist →</a>
-        <div class="st-tes-mini">
-          <div class="st-tes-item">"Gerald reviewed my portfolio. My portfolio grew leaves."<br><em>— Marcus T., CFO of a plant</em></div>
-          <div class="st-tes-item">"It's scientifically irresponsible. I pre-ordered two."<br><em>— Patricia O., Chief Financial Frond</em></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Phase 9: Loop Transition ── -->
-    <div class="stp" id="stp9">
-      <div class="stp-eyb">09 / Loop</div>
-      <div class="stp-h">Again.</div>
-      <p class="stp-sub">The plant never stops. Neither does the analysis.</p>
-    </div>
-
-    <!-- Story scroll progress bar -->
-    <div id="story-prog"><div id="story-prog-fill"></div></div>
-
-  </div><!-- /story-sticky -->
-</section>
 
 <!-- ══ STACK REVEAL ══ -->
 <section id="stack-sec" data-scroll-section>
