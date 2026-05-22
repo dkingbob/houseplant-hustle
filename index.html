@@ -325,6 +325,29 @@ h1.hero-h1{
 .inn{max-width:1520px;margin:0 auto}
 .dash{height:1px;background:rgba(240,237,230,.055)}
 
+/* ─── SECTION DIVIDERS ───────────────────── */
+/* diagonal wedge at bottom of tagline, matches body bg below */
+#tagline::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:80px;pointer-events:none;z-index:2;
+  background:var(--black);
+  clip-path:polygon(0 100%,100% 20%,100% 100%);
+}
+/* angled top on team-sec, bleeds gotcha's bg upward */
+#team-sec::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:70px;pointer-events:none;z-index:2;
+  background:var(--surface);
+  clip-path:polygon(0 0,100% 0,0 100%);
+}
+/* diagonal top on nl-sec */
+#nl-sec::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:60px;pointer-events:none;z-index:2;
+  background:var(--deep);
+  clip-path:polygon(0 0,100% 100%,0 100%);
+}
+
 /* ─── TAGLINE SECTION ─────────────────────── */
 #tagline{padding:20vh var(--px) 16vh;position:relative;overflow:hidden}
 .tl-bleed-n{
@@ -1350,6 +1373,29 @@ footer{
   .stack-txt{display:none}
   .stack-prog{display:none}
   #viewer-grid{grid-template-columns:1fr}
+  /* comparison table → horizontal scroll on mobile */
+  #comp-sec{overflow-x:auto}
+  .comp-table{min-width:640px}
+  /* blog cards slightly smaller */
+  .bcard{flex:0 0 84vw}
+  /* newsletter input stacks */
+  .nl-form{flex-direction:column;gap:.5rem;border-radius:18px;max-width:92vw}
+  .nl-input{padding:1em 1.2em}
+  .nl-btn{border-radius:12px!important;padding:1em 1.6em}
+  /* chatbot offscreen bottom push for ticker */
+  #suc-btn{bottom:5.5rem}
+  #suc-box{bottom:9rem;right:1rem;left:1rem;width:auto}
+  #btt{right:1rem;bottom:9rem}
+  #audio-btn{left:1rem;transform:none;bottom:4.2rem}
+}
+@media(max-width:500px){
+  #nav{padding:1.1rem var(--px)}
+  #nav.scrolled{padding-top:.75rem;padding-bottom:.75rem}
+  .comp-h{margin-bottom:2.5rem}
+  .faq-h{font-size:clamp(2.4rem,9vw,9vw)}
+  .price-card{padding:2.5rem 2rem}
+  #gotcha{padding:12vh var(--px)}
+  .gotcha-h{font-size:clamp(1.8rem,7vw,7vw)}
 }
 </style>
 </head>
