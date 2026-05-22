@@ -3757,7 +3757,11 @@ function startSite(){
   ScrollTrigger.create({
     scroller:'[data-scroll-container]',
     trigger:'#roi-sec',start:'top 75%',once:true,
-    onEnter:()=>gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09})
+    onEnter:()=>{
+      gsap.to('.roi-head h2 .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
+      // Trigger initial calculation after brief delay
+      setTimeout(()=>{if(typeof calc==='function')calc();},600);
+    }
   });
 
   // ── FAQ reveals ──
@@ -4628,6 +4632,10 @@ function nlSub(){
     ()=>`Leaf Sentiment: BULLISH 🌿`,
     ()=>`Neural Syncs: ${(14200+Math.floor(Math.random()*800)).toLocaleString()}/ms`,
     ()=>`Frond Index: ${(Math.random()>.3?'▲ ':'▼ ')}${(Math.random()*4+1).toFixed(2)}`,
+    ()=>`Photosynthesis: ${(3.2+Math.random()*1.2).toFixed(2)} mol/day`,
+    ()=>`Gerald Sentiment: WATCHFUL`,
+    ()=>`Root Depth: ${(42+Math.floor(Math.random()*18))}mm (strategic)`,
+    ()=>`Branch ROI: ▲ ${(8+Math.random()*4).toFixed(1)}%`,
   ];
   let mi=0;
   setInterval(()=>{
