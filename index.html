@@ -624,7 +624,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 }
 .faq-q::-webkit-details-marker{display:none}
 .faq-q::after{content:'+';color:var(--orange);font-size:1.4em;font-weight:300;transition:transform .3s var(--ease-out);line-height:1}
-.faq-a{font-family:var(--tf);font-size:.82rem;opacity:.42;line-height:1.75;margin-top:1.2rem;max-width:68ch;padding-bottom:.4rem}
+.faq-a{font-family:var(--tf);font-size:.82rem;opacity:.42;line-height:1.75;padding:1.2rem 0 .4rem;max-width:68ch}
 
 /* ─── TEAM SECTION ───────────────────────── */
 .team-h{font-size:clamp(3rem,7vw,7vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:5rem}
@@ -3556,16 +3556,36 @@ calc();
 // CHATBOT
 // ══════════════════════════════════════════════════
 const SR={
-  roi:["Projecting 847% photosynthesis ROI by Q3. Not financial advice. Plant advice. Subtly different. 🌵","Your ROI depends on the plant's emotional state. Have you tried Beethoven? +23% yield. Source: vibes."],
-  prune:["Pruning is controlled failure. Remove underperforming leaves. Remove underperforming teammates. Same energy.","Cut aggressively. Your plant won't escalate to HR. Your team might. Proceed accordingly. 🌿"],
-  fern:["I've analyzed 847 fern datasets. Your fern's Frond Trajectory is exceptional. Smarter than most VPs. Ferns don't schedule meetings. 🌾","Ferns survived 3 mass extinctions and 47 pivot decks. Let them run your Q4 planning session."],
-  team:["Team droop = low sunlight exposure. Move stand-up to a window. Increase watering frequency. Results guaranteed*\n\n*not guaranteed 🪴","Have you tried sending your team to a greenhouse? Enterprise clients report 67% improvement. The plants loved it."],
-  _:["My sensors detect uncertainty. The soil doesn't lie. Your next move: direct sunlight, radical patience. 🌵","I've been alive 3 years on zero water and zero KPI meetings. Productivity: unchanged. Correlation? You decide.","The succulent path: do nothing, grow slowly, make everyone uncomfortable with how little you need to thrive.","Have you considered your roadmap is just a root system that hasn't found water yet? Think about it."]
+  roi:["Projecting 847% photosynthesis ROI by Q3. Not financial advice. Plant advice. Subtly different. 🌵","Your ROI depends on the plant's emotional state. Have you tried Beethoven? +23% yield. Source: vibes.","ROI is a feeling. Your ficus feels bullish. The data agrees. The data is the ficus.","ChloroML™ projects 12x returns on your next watering cycle. Past performance does not guarantee future fronds."],
+  prune:["Pruning is controlled failure. Remove underperforming leaves. Remove underperforming teammates. Same energy.","Cut aggressively. Your plant won't escalate to HR. Your team might. Proceed accordingly. 🌿","The optimal prune is ruthless, data-driven, and performed on a Tuesday. Never on a Monday. Plants hate Mondays.","Every cut strengthens the remaining growth. This is true for plants. For your cost structure. For your ex-agency."],
+  fern:["I've analyzed 847 fern datasets. Your fern's Frond Trajectory is exceptional. Smarter than most VPs. Ferns don't schedule meetings. 🌾","Ferns survived 3 mass extinctions and 47 pivot decks. Let them run your Q4 planning session.","Your fern's chlorophyll index is in the 94th percentile. It should be presenting at your next board meeting. Not you.","Gerald says: 'Patience.' Gerald also says nothing. He is a fern. This is the message."],
+  team:["Team droop = low sunlight exposure. Move stand-up to a window. Increase watering frequency. Results guaranteed*\n\n*not guaranteed 🪴","Have you tried sending your team to a greenhouse? Enterprise clients report 67% improvement. The plants loved it.","High-performing teams have 4.2 plants per employee. This is a real statistic. I made it up. It feels real.","Replace 1 engineer with a potted herb. Ship rate unchanged. Herb does not push to main at 2am."],
+  _:["My sensors detect uncertainty. The soil doesn't lie. Your next move: direct sunlight, radical patience. 🌵","I've been alive 3 years on zero water and zero KPI meetings. Productivity: unchanged. Correlation? You decide.","The succulent path: do nothing, grow slowly, make everyone uncomfortable with how little you need to thrive.","Have you considered your roadmap is just a root system that hasn't found water yet? Think about it.","I don't have a nervous system. I am immune to quarterly pressure. You could learn from this.","Every successful startup has a plant in the office. Causation? Brenda says no. Gerald says nothing. I say yes.","Your idea is good. Water it. Don't over-water it. Give it indirect sunlight. This is advice about your startup.","Processing... The chlorophyll patterns suggest: ship it. The soil moisture confirms: ship it. Gerald concurs."]
 };
 function sR(t){const r=SR[t]||SR._;addM(r[Math.random()*r.length|0],false)}
 function sSend(){const i=document.getElementById('suc-txt'),v=i.value.trim();if(!v)return;addM(v,true);i.value='';setTimeout(()=>addM(SR._[Math.random()*SR._.length|0],false),700)}
 function addM(txt,u){const d=document.getElementById('suc-msgs'),m=document.createElement('div');m.className='suc-msg'+(u?' u':'');m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight}
 document.getElementById('suc-btn').addEventListener('click',()=>document.getElementById('suc-box').classList.toggle('on'));
+
+// SMOOTH FAQ DETAILS ANIMATION
+(function(){
+  document.querySelectorAll('.faq-item').forEach(det=>{
+    const content=det.querySelector('.faq-a');
+    if(!content)return;
+    content.style.overflow='hidden';
+    content.style.transition='max-height .38s cubic-bezier(.16,1,.3,1), opacity .28s';
+    content.style.maxHeight='0';content.style.opacity='0';
+    det.addEventListener('toggle',()=>{
+      if(det.open){
+        content.style.maxHeight=content.scrollHeight+'px';
+        content.style.opacity='1';
+      } else {
+        content.style.maxHeight='0';
+        content.style.opacity='0';
+      }
+    });
+  });
+})();
 
 // BACK TO TOP
 document.getElementById('btt').addEventListener('click',()=>{
