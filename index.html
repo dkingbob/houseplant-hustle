@@ -665,6 +665,22 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .price-no{opacity:.2!important;text-decoration:line-through}
 @media(max-width:900px){.pricing-grid{grid-template-columns:1fr}.price-card-featured{margin-top:0;padding-top:4.3rem}}
 
+/* ─── TOOLTIP SYSTEM ─────────────────────── */
+[data-tip]{position:relative;cursor:default}
+[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;bottom:130%;left:50%;transform:translateX(-50%) translateY(4px);
+  background:var(--mid);border:1px solid rgba(240,237,230,.1);
+  color:rgba(240,237,230,.75);
+  font-family:var(--tf);font-size:.62rem;line-height:1.4;
+  padding:.55em .9em;border-radius:8px;
+  white-space:nowrap;max-width:200px;white-space:normal;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;z-index:900;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+[data-tip]:hover::after{opacity:1;transform:translateX(-50%) translateY(0)}
+
 /* ─── COMPARISON TABLE ───────────────────── */
 .comp-h{font-size:clamp(2.8rem,6vw,6vw);line-height:.88;font-weight:800;letter-spacing:-.04em;margin-bottom:5rem}
 .comp-h .lw{display:block;overflow:hidden}
@@ -1419,6 +1435,7 @@ footer{
   display:inline-flex;align-items:center;justify-content:center;gap:.7em;
   font-family:var(--df);font-size:.82rem;font-weight:700;
   text-transform:uppercase;letter-spacing:.1em;
+  animation:wlGlow 3.5s ease-in-out infinite;
   padding:1.05em 3.2em;
   background:rgba(240,237,230,.04);color:rgba(240,237,230,.22);
   border:1px solid rgba(240,237,230,.09);border-radius:100px;
@@ -1432,6 +1449,7 @@ footer{
 #wl-btn:hover::before{transform:scaleX(1)}
 #wl-btn:hover{color:var(--black);border-color:var(--orange)}
 #wl-btn span{position:relative;z-index:1}
+@keyframes wlGlow{0%,100%{box-shadow:0 0 0 0 rgba(224,120,48,0)}50%{box-shadow:0 0 0 12px rgba(224,120,48,0.12),0 0 32px rgba(224,120,48,0.08)}}
 #wl-btn.joined{
   background:rgba(88,240,102,.07);border-color:rgba(88,240,102,.35);
   color:var(--green);cursor:default;pointer-events:none;
@@ -1934,13 +1952,13 @@ footer{
         <div class="comp-col">Consultants</div>
         <div class="comp-col">Gut Feeling</div>
       </div>
-      <div class="comp-row"><div class="comp-feat">Photosynthesis KPI</div><div class="comp-col comp-col-us">✓ Native</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
-      <div class="comp-row"><div class="comp-feat">Leaf Sentiment Analysis</div><div class="comp-col comp-col-us">✓ Real-time</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col">Sometimes</div></div>
-      <div class="comp-row"><div class="comp-feat">Root Cause Analysis™</div><div class="comp-col comp-col-us">✓ Literally</div><div class="comp-col comp-no">✗</div><div class="comp-col">$240/hr</div><div class="comp-col comp-no">✗</div></div>
-      <div class="comp-row"><div class="comp-feat">Q4 Droop Detection</div><div class="comp-col comp-col-us">✓ Automated</div><div class="comp-col">Manual</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
-      <div class="comp-row"><div class="comp-feat">Chlorophyll Revenue Model</div><div class="comp-col comp-col-us">✓ Patented</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
-      <div class="comp-row"><div class="comp-feat">Fern Certified</div><div class="comp-col comp-col-us">✓ By Gerald</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
-      <div class="comp-row"><div class="comp-feat">Monthly Cost</div><div class="comp-col comp-col-us">$0 (waitlist)</div><div class="comp-col">$299</div><div class="comp-col">$18,000</div><div class="comp-col">Free*</div></div>
+      <div class="comp-row"><div class="comp-feat" data-tip="Measures photosynthetic output against quarterly OKRs. Brenda audited this.">Photosynthesis KPI</div><div class="comp-col comp-col-us">✓ Native</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat" data-tip="Natural Language Processing applied to leaf curl patterns. Accuracy: 94.7%. The leaf never lies.">Leaf Sentiment Analysis</div><div class="comp-col comp-col-us">✓ Real-time</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col">Sometimes</div></div>
+      <div class="comp-row"><div class="comp-feat" data-tip="We literally look at the roots. This is the analysis. We found the cause. It was the roots.">Root Cause Analysis™</div><div class="comp-col comp-col-us">✓ Literally</div><div class="comp-col comp-no">✗</div><div class="comp-col">$240/hr</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat" data-tip="Predicts end-of-quarter performance degradation 3 weeks in advance via stem posture telemetry.">Q4 Droop Detection</div><div class="comp-col comp-col-us">✓ Automated</div><div class="comp-col">Manual</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat" data-tip="Converts chlorophyll density into revenue projections. Patent pending. Geneva agrees.">Chlorophyll Revenue Model</div><div class="comp-col comp-col-us">✓ Patented</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat" data-tip="Gerald personally reviewed this product. Gerald said nothing. We interpreted this as approval.">Fern Certified</div><div class="comp-col comp-col-us">✓ By Gerald</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div><div class="comp-col comp-no">✗</div></div>
+      <div class="comp-row"><div class="comp-feat" data-tip="Waitlist pricing is $0. Series A is $847/mo. Spreadsheets are $299 + your dignity.">Monthly Cost</div><div class="comp-col comp-col-us">$0 (waitlist)</div><div class="comp-col">$299</div><div class="comp-col">$18,000</div><div class="comp-col">Free*</div></div>
     </div>
     <p class="fine rv" style="text-align:center;margin-top:2rem">* Gut feeling cost: two failed pivots, one emergency board meeting, and a very uncomfortable offsite in Ibiza.</p>
   </div>
