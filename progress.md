@@ -17,11 +17,11 @@
 |-------|-------|--------|
 | 1 | Bug Fixes & Cleanup | ✅ DONE |
 | 2 | Animation Fixes | ✅ DONE |
-| 3 | Mode Buttons & Hologram | ⬜ NEXT |
-| 4 | 3D Plant Asset (.glb) | ⬜ PENDING |
+| 3 | Mode Buttons & Hologram | ✅ DONE |
+| 4 | 3D Plant Asset (.glb) | ✅ DONE |
 | 5 | File Organization | ✅ DONE |
-| 6 | Storyboard / Scroll Narrative | ⬜ PENDING |
-| 7 | Interactive Details | ⬜ PENDING |
+| 6 | Storyboard / Scroll Narrative | ✅ DONE |
+| 7 | Interactive Details | 🔄 IN PROGRESS |
 | 8 | Endless Loop | ⬜ PENDING |
 | 9 | Cool JS Integrations | ⬜ PENDING |
 | 10 | Audio | ⬜ PENDING |
@@ -30,8 +30,8 @@
 
 ## WHERE WE ARE RIGHT NOW
 
-**Completed through**: GROUP 2 feedback round 3 (all animation + UX fixes).
-**Next up**: GROUP 3 — Mode Buttons & Hologram (waiting for user's updated prompt).
+**Completed through**: GROUP 6 — Full 9-phase storyboard rebuild (2026-05-22).
+**Next up**: GROUP 7 — Interactive Details (leaf react to hover/touch, annotation hover effects).
 
 ---
 
@@ -82,15 +82,14 @@
 
 ---
 
-## GROUP 3: MODE BUTTONS & HOLOGRAM — ⬜ NEXT
+## GROUP 3: MODE BUTTONS & HOLOGRAM — ✅ DONE (2026-05-22)
 
-**Waiting for user's updated GROUP 3 prompt before starting.**
-
-Original brief:
-- [ ] Replace plain text "Analysis Mode / Standard / Thermal / X-Ray / Wire" with interactive UI buttons
-- [ ] Buttons must work and switch views in-scene
-- [ ] Hologram style: glowing cyan/blue wireframe, measurement callouts, grid dots, subtle flicker
-- [ ] Hologram not static — lines pulse, numbers refresh
+- [x] Mode buttons (Standard, Thermal, X-Ray, Wireframe) in Phase 7 panel, all functional
+- [x] Each mode switches material on the Three.js plant in real time
+- [x] Phase 6 replaced with Design Sketch Overlay (pencil/charcoal lines, hover → green glow)
+- [x] Phase 7: Green scan line follows mouse Y; mode buttons active
+- [x] Phase 8: Free drag-to-rotate (OrbitControls), pre-order CTA + mini testimonials
+- [x] Phase 9: Loop transition — camera rises back to Phase 1 top-down angle
 
 ---
 
@@ -112,18 +111,19 @@ Original brief:
 
 ---
 
-## GROUP 6: STORYBOARD — SCROLL NARRATIVE — ⬜ PENDING
-- [ ] Phase 1: Desk top-down view, scattered items, plant center
-- [ ] Phase 2: Camera tilts top-view → front-view, desk items fade out
-- [ ] Phase 3: Front view pot + plant, info text on side
-- [ ] Phase 4: Pot becomes transparent, soil + roots visible
-- [ ] Phase 5: Soil falls downward, roots exposed, particles drift
-- [ ] Phase 6: Blue holographic scan grid sweeps plant, data points appear
-- [ ] Phase 7: Soil particles reform into word/message
-- [ ] Phase 8: Mode toggles active (Thermal, X-Ray, Wireframe), glitch effects, satirical data
-- [ ] Phase 9: Clean hero shot, free click+drag rotation
-- [ ] Brighter vibrant colors throughout
-- [ ] Mouse-driven tilt feels meaningful because of the desk scene
+## GROUP 6: STORYBOARD — SCROLL NARRATIVE — ✅ DONE (2026-05-22)
+- [x] Phase 1: Desk top-down, terracotta pot + plant centered, all desk items visible
+- [x] Phase 2: Camera tilts from top-down to 3/4 to front, desk items fade
+- [x] Phase 3: Front view, pot + plant, info text + annotations on side
+- [x] Phase 4: Pot becomes semi-transparent (opacity 0.18), soil + roots visible
+- [x] Phase 5: Pot dissolved, soil particles fall with physics, bare roots
+- [x] Phase 6: Design sketch overlay — pencil/charcoal lines of plant, hover → green glow
+- [x] Phase 7: Green scan line follows mouse Y, mode toggles (Standard/Thermal/X-Ray/Wireframe)
+- [x] Phase 8: Free drag-to-rotate, CTA button, satirical mini testimonials
+- [x] Phase 9: Loop transition — camera rises back toward Phase 1 top-down view
+- [x] Mouse desk tilt in Phase 1 (camera follows cursor subtly)
+- [x] Scene background fixed to match CSS --black (#1e2e20) — no color seam
+- [x] Persistent Three.js canvas inside Locomotive sticky throughout 900vh scroll
 
 ---
 

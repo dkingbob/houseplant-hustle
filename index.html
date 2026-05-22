@@ -155,6 +155,12 @@
     <!-- Three.js canvas -->
     <canvas id="story-3d-cv"></canvas>
 
+    <!-- Pencil sketch overlay — Phase 6 -->
+    <canvas id="story-sketch-cv"></canvas>
+
+    <!-- Green scan line — Phase 7 (follows mouse Y) -->
+    <div id="story-scan-line"></div>
+
     <!-- Phase number tracker -->
     <div id="st-pnum" aria-hidden="true">
       <span id="st-pnum-n">01</span><span id="st-pnum-of">/09</span>
@@ -220,51 +226,48 @@
       <p class="stp-sub">Removing the medium. What's left is what matters.</p>
     </div>
 
-    <!-- ── Phase 6: Holographic Scan ── -->
-    <div class="stp stp-full" id="stp6">
-      <div class="stp-left">
-        <div class="stp-eyb">06 / ChloroML™ Scan</div>
-        <div class="stp-h">Scanning.</div>
-      </div>
-      <div class="st-scan-panel">
-        <div class="st-scan-line"><span class="st-scan-lbl">H₂O ABSORPTION</span><span class="st-scan-v" id="sv1">—</span></div>
-        <div class="st-scan-line"><span class="st-scan-lbl">CHLOROPHYLL DENSITY</span><span class="st-scan-v" id="sv2">—</span></div>
-        <div class="st-scan-line"><span class="st-scan-lbl">ROOT BIOMASS</span><span class="st-scan-v" id="sv3">—</span></div>
-        <div class="st-scan-line"><span class="st-scan-lbl">STEM DIAMETER</span><span class="st-scan-v" id="sv4">—</span></div>
-        <div class="st-scan-line"><span class="st-scan-lbl">GROWTH VECTOR</span><span class="st-scan-v" id="sv5">—</span></div>
-        <div class="st-scan-status" id="st-scan-status">INITIALIZING…</div>
-      </div>
+    <!-- ── Phase 6: Design Sketch Overlay ── -->
+    <div class="stp" id="stp6">
+      <div class="stp-eyb">06 / Blueprint</div>
+      <div class="stp-h">The<br>Drawing.</div>
+      <p class="stp-sub">Every living system begins as a sketch. Hover the canvas to reveal what's beneath.</p>
     </div>
 
-    <!-- ── Phase 7: Word Reveal ── -->
-    <div class="stp stp-word" id="stp7">
-      <div class="st-word-reveal">
-        <div class="st-word-line">CHLOROPHYLL</div>
-        <div class="st-word-line">IS YOUR</div>
-        <div class="st-word-line st-word-orange">NORTH STAR.</div>
-      </div>
-    </div>
-
-    <!-- ── Phase 8: Mode Toggles ── -->
-    <div class="stp stp-full" id="stp8">
+    <!-- ── Phase 7: Scan & Modes ── -->
+    <div class="stp stp-full" id="stp7">
       <div class="stp-left">
-        <div class="stp-eyb">08 / Analysis Mode</div>
+        <div class="stp-eyb">07 / Analysis Mode</div>
         <div class="stp-h">See Further.</div>
+        <p class="stp-sub" style="margin-bottom:1.4rem">Move your cursor to scan. Switch modes to reveal hidden layers.</p>
         <div class="st-modes">
           <button class="st-mode-btn active" data-mode="thermal">Thermal</button>
           <button class="st-mode-btn" data-mode="xray">X-Ray</button>
           <button class="st-mode-btn" data-mode="wireframe">Wireframe</button>
+          <button class="st-mode-btn" data-mode="standard">Standard</button>
         </div>
         <div class="st-mode-desc" id="st-mode-desc">Heat signature analysis. Your plant is running hot.</div>
       </div>
     </div>
 
-    <!-- ── Phase 9: Free Orbit ── -->
+    <!-- ── Phase 8: Free Rotation ── -->
+    <div class="stp stp-full" id="stp8">
+      <div class="stp-left">
+        <div class="stp-eyb">08 / Explore</div>
+        <div class="stp-h">It's<br>Yours.</div>
+        <div class="st-orbit-hint"><span class="st-orbit-icon">↻</span> click &amp; drag to rotate</div>
+        <a href="#cta-sec" class="btn" style="margin-top:1.8rem;pointer-events:auto">Join Waitlist →</a>
+        <div class="st-tes-mini">
+          <div class="st-tes-item">"Gerald reviewed my portfolio. My portfolio grew leaves."<br><em>— Marcus T., CFO of a plant</em></div>
+          <div class="st-tes-item">"It's scientifically irresponsible. I pre-ordered two."<br><em>— Patricia O., Chief Financial Frond</em></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Phase 9: Loop Transition ── -->
     <div class="stp" id="stp9">
-      <div class="stp-eyb">09 / Explore</div>
-      <div class="stp-h">It's Yours.</div>
-      <p class="stp-sub">Drag to rotate. Inspect every frond.</p>
-      <div class="st-orbit-hint"><span class="st-orbit-icon">↻</span> click &amp; drag to rotate</div>
+      <div class="stp-eyb">09 / Loop</div>
+      <div class="stp-h">Again.</div>
+      <p class="stp-sub">The plant never stops. Neither does the analysis.</p>
     </div>
 
     <!-- Story scroll progress bar -->

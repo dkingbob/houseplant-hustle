@@ -43,6 +43,7 @@ export class HH3DViewer {
     this._camLerpT  = 1;
     this._camFrom   = { pos: new THREE.Vector3(), tgt: new THREE.Vector3() };
     this._camTo     = { pos: new THREE.Vector3(), tgt: new THREE.Vector3() };
+    this._mouseNDC  = { x: 0, y: 0 }; // for Phase 1 desk tilt
     // Soil particles (Phase 5 + 7)
     this._soilPS       = null;
     this._soilGeo      = null;
@@ -77,8 +78,8 @@ export class HH3DViewer {
 
     // Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x1a2c1b);
-    this.scene.fog = new THREE.FogExp2(0x1a2c1b, 0.22);
+    this.scene.background = new THREE.Color(0x1e2e20); // matches CSS --black
+    this.scene.fog = new THREE.FogExp2(0x1e2e20, 0.15);
 
     // Camera (starts top-down for Phase 1)
     this.camera = new THREE.PerspectiveCamera(42, canvas.clientWidth / canvas.clientHeight, 0.01, 40);
@@ -110,6 +111,16 @@ export class HH3DViewer {
 
     // Resize observer
     new ResizeObserver(() => this._onResize(canvas)).observe(canvas);
+
+    // Mouse tracking for Phase 1 desk tilt
+    canvas.addEventListener('mousemove', e => {
+      const r = canvas.getBoundingClientRect();
+      this._mouseNDC = {
+        x: (e.clientX - r.left) / r.width  * 2 - 1,
+        y: -((e.clientY - r.top) / r.height * 2 - 1),
+      };
+    });
+    canvas.addEventListener('mouseleave', () => { this._mouseNDC = { x: 0, y: 0 }; });
 
     // Render loop
     this._loop();
@@ -463,44 +474,7 @@ export class HH3DViewer {
         break;
 
       case 6:
-        // Holographic scan — cyan grid + sweep
-        this._setDeskItemsOpacity(0, false);
-        this._setPotOpacity(0, false);
-        this._setPlantVisible(true);
-        if (this._soilPS) this._soilPS.visible = false;
-        if (this._scanGroup) {
-          this._scanGroup.visible = true;
-          this.setScanProgress(0);
-        }
-        this._moveCamera({ x: 0.25, y: 1.1, z: 2.5 }, { x: 0, y: 0.85, z: 0 }, animated ? 1.2 : 0);
-        this.controls.enabled = false;
-        break;
-
-      case 7:
-        // Soil particles swirl upward + word reveal
-        this._setDeskItemsOpacity(0, false);
-        this._setPotOpacity(0, false);
-        this._setPlantVisible(true);
-        if (this._scanGroup) this._scanGroup.visible = false;
-        this._moveCamera({ x: 0, y: 0.9, z: 2.8 }, { x: 0, y: 0.9, z: 0 }, animated ? 0.8 : 0);
-        this.controls.enabled = false;
-        break;
-
-      case 8:
-        // Mode toggles — pot visible, material switching
-        this._setDeskItemsOpacity(0, false);
-        this._setPotOpacity(1, animated);
-        this._setPlantVisible(true);
-        this._setDeskVisible(false);
-        if (this._soilPS) this._soilPS.visible = false;
-        if (this._scanGroup) this._scanGroup.visible = false;
-        this._moveCamera({ x: 0, y: 0.9, z: 2.8 }, { x: 0, y: 0.9, z: 0 }, animated ? 0.8 : 0);
-        if (this._matMode !== 'thermal') this.setMaterialMode('thermal');
-        this.controls.enabled = false;
-        break;
-
-      case 9:
-        // Free orbit — clean hero shot
+        // Design sketch overlay — camera front view, sketch canvas controlled by main.js
         this._setDeskItemsOpacity(0, false);
         this._setPotOpacity(1, animated);
         this._setPlantVisible(true);
@@ -508,10 +482,49 @@ export class HH3DViewer {
         if (this._soilPS) this._soilPS.visible = false;
         if (this._scanGroup) this._scanGroup.visible = false;
         this.setMaterialMode('standard');
-        this.controls.enabled     = true;
-        this.controls.enableZoom  = false; // no scroll zoom (conflicts with Locomotive)
+        this._moveCamera({ x: 0, y: 0.9, z: 2.8 }, { x: 0, y: 0.9, z: 0 }, animated ? 0.8 : 0);
+        this.controls.enabled = false;
+        break;
+
+      case 7:
+        // Scan line + material mode toggles
+        this._setDeskItemsOpacity(0, false);
+        this._setPotOpacity(1, animated);
+        this._setPlantVisible(true);
+        this._setDeskVisible(false);
+        if (this._soilPS) this._soilPS.visible = false;
+        if (this._scanGroup) this._scanGroup.visible = false;
+        this._moveCamera({ x: 0, y: 0.9, z: 2.8 }, { x: 0, y: 0.9, z: 0 }, animated ? 0.5 : 0);
+        if (this._matMode === 'standard') this.setMaterialMode('thermal');
+        this.controls.enabled = false;
+        break;
+
+      case 8:
+        // Free orbit — clean hero, drag to rotate, testimonials on side
+        this._setDeskItemsOpacity(0, false);
+        this._setPotOpacity(1, animated);
+        this._setPlantVisible(true);
+        this._setDeskVisible(false);
+        if (this._soilPS) this._soilPS.visible = false;
+        if (this._scanGroup) this._scanGroup.visible = false;
+        this.setMaterialMode('standard');
+        this.controls.enabled    = true;
+        this.controls.enableZoom = false; // avoid conflict with Locomotive scroll
         this.controls.target.set(0, 0.9, 0);
         this.controls.update();
+        break;
+
+      case 9:
+        // Loop transition — camera rises back toward Phase 1 top-down view
+        this._setDeskItemsOpacity(0, false);
+        this._setPotOpacity(0.55, animated);
+        this._setPlantVisible(true);
+        this._setDeskVisible(false);
+        if (this._soilPS) this._soilPS.visible = false;
+        if (this._scanGroup) this._scanGroup.visible = false;
+        this.setMaterialMode('standard');
+        this.controls.enabled = false;
+        this._moveCamera({ x: 0, y: 2.8, z: 0.9 }, { x: 0, y: 0.5, z: 0 }, animated ? 2.0 : 0);
         break;
     }
   }
@@ -882,19 +895,9 @@ export class HH3DViewer {
     const newPhase = zone.p;
     if (newPhase !== this.phase) this.setPhase(newPhase, false);
 
-    // Sub-phase: drive scan sweep progress
-    if (newPhase === 6) {
-      const pct = Math.max(0, Math.min(1, (t - zone.s) / (zone.e - zone.s)));
-      this.setScanProgress(pct);
-    }
-
     // Sub-phase: trigger soil fall once on entering phase 5
     if (newPhase === 5 && !this._soilFalling && !this._soilSwirling) {
       this._startSoilFall();
-    }
-    // Sub-phase: trigger swirl once on entering phase 7
-    if (newPhase === 7 && !this._soilSwirling) {
-      this._startSoilSwirl();
     }
 
     return newPhase;
@@ -911,6 +914,14 @@ export class HH3DViewer {
     this._raf = requestAnimationFrame(() => this._loop());
     const dt = Math.min(this.clock.getDelta(), 0.05);
     this._updateSoilParticles(dt);
+    // Phase 1: subtle desk tilt following mouse
+    if (this.phase === 1) {
+      const tx = this._mouseNDC.x * 0.26;
+      const tz = 0.01 + this._mouseNDC.y * -0.14;
+      this.camera.position.x += (tx - this.camera.position.x) * 0.055;
+      this.camera.position.z += (tz - this.camera.position.z) * 0.055;
+      this.camera.lookAt(0, 0, 0);
+    }
     if (this.controls.enabled) this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }

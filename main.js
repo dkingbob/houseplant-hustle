@@ -1014,6 +1014,7 @@ function startSite(){
   });
 
   initBlueprint(loco);
+  initSketchOverlay();
 
   // ── Stack reveal — driven by Locomotive scroll position ──
   (function(){
@@ -1232,28 +1233,7 @@ function startSite(){
     if(!storySec)return;
 
     let _stPhase=0;
-    let _wordRevealed=false;
-    const scanVals=[
-      {id:'sv1',v:'94.7%',   t:0.18},
-      {id:'sv2',v:'88.3 mg/L',t:0.34},
-      {id:'sv3',v:'12.4 g',  t:0.52},
-      {id:'sv4',v:'0.82 cm', t:0.68},
-      {id:'sv5',v:'+3.2 mm/d',t:0.84},
-    ];
-
-    function tickScanData(pct){
-      scanVals.forEach(({id,v,t})=>{
-        const el=document.getElementById(id);
-        if(el&&pct>=t)el.textContent=v;
-        else if(el&&pct<t)el.textContent='—';
-      });
-      const st=document.getElementById('st-scan-status');
-      if(!st)return;
-      if(pct<0.2)st.textContent='INITIALIZING…';
-      else if(pct<0.65)st.textContent='SCANNING…';
-      else if(pct<0.9)st.textContent='ANALYZING DATA…';
-      else st.textContent='COMPLETE — 97.3% CONFIDENCE';
-    }
+    const _scanLine=document.getElementById('story-scan-line');
 
     function updateStoryPhase(phase,prog){
       if(phase!==_stPhase){
@@ -1264,32 +1244,15 @@ function startSite(){
         const pn=document.getElementById('st-pnum-n');
         if(pn)pn.textContent=String(phase).padStart(2,'0');
 
-        // Word reveal stagger on entering phase 7
-        if(phase===7&&!_wordRevealed){
-          _wordRevealed=true;
-          document.querySelectorAll('.st-word-line').forEach((el,i)=>{
-            setTimeout(()=>el.classList.add('st-word-in'),i*260+80);
-          });
-        }
-        if(phase!==7){
-          _wordRevealed=false;
-          document.querySelectorAll('.st-word-line').forEach(el=>el.classList.remove('st-word-in'));
+        // Phase 6: show sketch overlay
+        if(phase===6){
+          window._sketchOverlay?.show();
+        } else {
+          window._sketchOverlay?.hide();
         }
 
-        // Reset scan values when leaving phase 6
-        if(phase!==6){
-          scanVals.forEach(({id})=>{
-            const el=document.getElementById(id);
-            if(el)el.textContent='—';
-          });
-        }
-      }
-
-      // Live scan data during phase 6
-      if(phase===6){
-        const zone={s:0.62,e:0.74};
-        const pct=Math.max(0,Math.min(1,(prog-zone.s)/(zone.e-zone.s)));
-        tickScanData(pct);
+        // Phase 7: show green scan line
+        if(_scanLine)_scanLine.classList.toggle('active',phase===7);
       }
 
       // Progress bar
@@ -1315,7 +1278,7 @@ function startSite(){
     // Fallback if event already fired before this code ran
     if(window._viewer3d)attachStoryScroll();
 
-    // Mode button interactions (Phase 8)
+    // Mode button interactions (Phase 7)
     document.querySelectorAll('.st-mode-btn').forEach(btn=>{
       btn.addEventListener('click',()=>{
         const mode=btn.dataset.mode;
@@ -1323,13 +1286,24 @@ function startSite(){
         document.querySelectorAll('.st-mode-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
         const descs={
+          standard:'Standard view. Clean botanical architecture.',
           thermal:'Heat signature analysis. Your plant is running hot.',
           xray:'Structural scan complete. Root architecture is impeccable.',
-          wireframe:'Geometric skeleton. Pure botanical architecture.',
+          wireframe:'Geometric skeleton. Pure botanical framework.',
         };
         const desc=document.getElementById('st-mode-desc');
         if(desc)desc.textContent=descs[mode]||'';
       });
+    });
+
+    // Scan line mouse tracking (Phase 7)
+    document.addEventListener('mousemove',e=>{
+      if(_stPhase!==7||!_scanLine)return;
+      const sticky=document.getElementById('story-sticky');
+      if(!sticky)return;
+      const r=sticky.getBoundingClientRect();
+      const relY=Math.max(0,Math.min(1,(e.clientY-r.top)/r.height));
+      _scanLine.style.top=(relY*100)+'%';
     });
   })();
 
@@ -1411,6 +1385,147 @@ function startSite(){
   preRenderPlantFrames();
 }
 
+
+// ══════════════════════════════════════════════════
+// SKETCH OVERLAY — Phase 6
+// Draws a pencil/charcoal sketch of the plant on a 2D canvas.
+// On hover: transitions from sepia to glowing green.
+// ══════════════════════════════════════════════════
+function initSketchOverlay(){
+  const cv=document.getElementById('story-sketch-cv');
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  let hoverT=0,hoverTarget=0,rafId=null;
+  let cvW=0,cvH=0;
+
+  // Deterministic jitter list (avoids flash on redraw)
+  const JT=[2.4,-1.8,3.1,-2.6,1.5,-3.2,2.8,-1.2,3.6,-2.1,1.9,-3.4,2.2,-1.6,3.3,-2.3];
+  let ji=0;
+  const j=(n,amp=5)=>n+JT[ji++%JT.length]*(amp/5);
+
+  function lerpColor(t){
+    // sepia(0) → green(1)
+    const r=Math.round(130+(88-130)*t);
+    const g=Math.round(90+(240-90)*t);
+    const b=Math.round(50+(102-50)*t);
+    return (a)=>`rgba(${r},${g},${b},${a})`;
+  }
+
+  function draw(t){
+    if(cvW!==cv.offsetWidth||cvH!==cv.offsetHeight){
+      cvW=cv.offsetWidth; cvH=cv.offsetHeight;
+      cv.width=cvW; cv.height=cvH;
+    }
+    ctx.clearRect(0,0,cvW,cvH);
+    if(!cv.classList.contains('active'))return;
+    ji=0;
+
+    const cx=cvW*0.5;
+    const plantH=cvH*0.62;
+    const potY=cvH*0.8;
+    const sc=plantH;
+    const plantTop=potY-sc;
+    const C=lerpColor(t);
+
+    ctx.save();
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    if(t>0.08){ctx.shadowColor=`rgba(88,240,102,${t*0.45})`;ctx.shadowBlur=t*14;}
+    else{ctx.shadowBlur=0;}
+
+    // ── POT ──
+    ctx.beginPath();
+    ctx.moveTo(j(cx-sc*0.13,6),j(potY+sc*0.04,4));
+    ctx.lineTo(j(cx-sc*0.17,6),j(potY-sc*0.19,4));
+    ctx.lineTo(j(cx+sc*0.17,6),j(potY-sc*0.19,4));
+    ctx.lineTo(j(cx+sc*0.13,6),j(potY+sc*0.04,4));
+    ctx.closePath();
+    ctx.strokeStyle=C(0.52); ctx.lineWidth=1.8+t*0.5; ctx.stroke();
+
+    // Pot rim line
+    ctx.beginPath();
+    ctx.moveTo(j(cx-sc*0.21,5),j(potY-sc*0.19,3));
+    ctx.lineTo(j(cx+sc*0.21,5),j(potY-sc*0.19,3));
+    ctx.strokeStyle=C(0.65); ctx.lineWidth=2+t*0.4; ctx.stroke();
+
+    // ── MAIN STEM ──
+    ctx.beginPath();
+    ctx.moveTo(j(cx,3),j(potY-sc*0.18,3));
+    ctx.bezierCurveTo(j(cx-10,5),j(potY-sc*0.42,5),j(cx+8,5),j(potY-sc*0.72,5),j(cx-4,4),j(plantTop,4));
+    ctx.strokeStyle=C(0.72); ctx.lineWidth=2.5+t*0.6; ctx.stroke();
+
+    // ── LEAVES ──
+    const leaves=[
+      [cx-7,potY-sc*0.28, cx-sc*0.30,potY-sc*0.41, cx-sc*0.18,potY-sc*0.23, cx-sc*0.37,potY-sc*0.34],
+      [cx-6,potY-sc*0.46, cx-sc*0.26,potY-sc*0.67, cx-sc*0.16,potY-sc*0.50, cx-sc*0.33,potY-sc*0.57],
+      [cx-4,potY-sc*0.63, cx-sc*0.20,potY-sc*0.85, cx-sc*0.12,potY-sc*0.66, cx-sc*0.25,potY-sc*0.74],
+      [cx+5,potY-sc*0.22, cx+sc*0.32,potY-sc*0.35, cx+sc*0.19,potY-sc*0.18, cx+sc*0.39,potY-sc*0.27],
+      [cx+6,potY-sc*0.42, cx+sc*0.27,potY-sc*0.63, cx+sc*0.17,potY-sc*0.44, cx+sc*0.34,potY-sc*0.52],
+      [cx+4,potY-sc*0.60, cx+sc*0.22,potY-sc*0.80, cx+sc*0.13,potY-sc*0.62, cx+sc*0.28,potY-sc*0.70],
+    ];
+    leaves.forEach((l,idx)=>{
+      ctx.beginPath();
+      ctx.moveTo(j(l[0],5),j(l[1],5));
+      ctx.bezierCurveTo(j(l[4],6),j(l[5],6),j(l[6],6),j(l[7],6),j(l[2],5),j(l[3],5));
+      // return arc to close leaf
+      ctx.bezierCurveTo(j((l[2]+l[0])/2,4),j((l[3]+l[1])/2-sc*0.03,4),j(l[0]+3,4),j(l[1]+2,4),j(l[0],4),j(l[1],4));
+      ctx.strokeStyle=C(0.42+(idx%2)*0.14); ctx.lineWidth=1.6+t*0.4; ctx.stroke();
+      // central vein
+      ctx.beginPath();
+      ctx.moveTo(j(l[0],3),j(l[1],3));
+      ctx.lineTo(j((l[0]+l[2])/2+4,5),j((l[1]+l[3])/2,5));
+      ctx.strokeStyle=C(0.18); ctx.lineWidth=0.7; ctx.stroke();
+    });
+
+    // ── TOP SPROUT ──
+    [[cx-3,plantTop, cx-sc*0.13,plantTop-sc*0.11],
+     [cx+2,plantTop+sc*0.03, cx+sc*0.11,plantTop-sc*0.09]].forEach(l=>{
+      ctx.beginPath();
+      ctx.moveTo(j(l[0],3),j(l[1],3));
+      ctx.quadraticCurveTo(j(l[0]-sc*0.07,4),j((l[1]+l[3])/2,4),j(l[2],4),j(l[3],4));
+      ctx.strokeStyle=C(0.40); ctx.lineWidth=1.3+t*0.3; ctx.stroke();
+    });
+
+    // ── CROSSHATCH TEXTURE ──
+    for(let i=0;i<7;i++){
+      ctx.beginPath();
+      const hx=cx+(JT[i*2%JT.length]/5)*sc*0.28;
+      const hy=potY-sc*(0.15+i*0.08);
+      ctx.moveTo(j(hx,9),j(hy,9));
+      ctx.lineTo(j(hx+(JT[(i*3)%JT.length]/5)*28,9),j(hy+(JT[(i*5)%JT.length]/5)*16,9));
+      ctx.strokeStyle=C(0.10); ctx.lineWidth=0.7; ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function tick(){
+    const speed=0.10;
+    const diff=hoverTarget-hoverT;
+    if(Math.abs(diff)>0.005){
+      hoverT+=diff*speed;
+      draw(hoverT);
+      rafId=requestAnimationFrame(tick);
+    } else {
+      hoverT=hoverTarget;
+      draw(hoverT);
+      rafId=null;
+    }
+  }
+
+  cv.addEventListener('mouseenter',()=>{hoverTarget=1;if(!rafId)rafId=requestAnimationFrame(tick);});
+  cv.addEventListener('mouseleave',()=>{hoverTarget=0;if(!rafId)rafId=requestAnimationFrame(tick);});
+  window.addEventListener('resize',()=>{if(cv.classList.contains('active'))draw(hoverT);});
+
+  window._sketchOverlay={
+    show(){cv.classList.add('active');draw(hoverT);},
+    hide(){
+      cv.classList.remove('active');
+      ctx.clearRect(0,0,cvW,cvH);
+      // Reset so next Phase 6 entry starts fresh in sepia
+      hoverT=0; hoverTarget=0;
+      if(rafId){cancelAnimationFrame(rafId);rafId=null;}
+    }
+  };
+}
 
 // ══════════════════════════════════════════════════
 // ROI CALCULATOR
