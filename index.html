@@ -740,9 +740,17 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .comp-feat-col{font-family:var(--mf);font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;opacity:.22}
 .comp-col{font-family:var(--mf);font-size:.6rem;letter-spacing:.08em;text-align:center;opacity:.4;text-transform:uppercase}
 .comp-col-us{color:var(--green);opacity:.85;font-weight:500}
-.comp-row{padding:.9rem 0;border-bottom:1px solid rgba(240,237,230,.04);transition:background .2s,padding-left .2s;opacity:0;position:relative}
-.comp-row:hover{background:rgba(88,240,102,.025);padding-left:.6rem}
-.comp-row:hover::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:rgba(88,240,102,.35)}
+.comp-row{padding:.9rem 0;border-bottom:1px solid rgba(240,237,230,.04);transition:background .2s,padding-left .2s;opacity:0;position:relative;overflow:hidden}
+.comp-row::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(88,240,102,.04) 0%,transparent 55%);
+  transform:translateX(-100%);transition:transform .4s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.comp-row:hover::after{transform:translateX(0)}
+.comp-row:hover{padding-left:.6rem}
+.comp-row:hover::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:rgba(88,240,102,.35);z-index:1}
+.comp-row:hover .comp-col-us{color:var(--green);opacity:1;text-shadow:0 0 16px rgba(88,240,102,.3)}
 .comp-feat{font-family:var(--tf);font-size:.78rem;opacity:.55}
 .comp-no{opacity:.15}
 
@@ -807,6 +815,8 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
   margin-bottom:4rem;padding:0 var(--px);
 }
 .blog-track-outer{overflow:hidden;padding:0 0 3rem}
+#blog-prog-wrap{height:1px;background:rgba(240,237,230,.06);margin:0 var(--px);position:relative}
+#blog-prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--orange),rgba(224,120,48,.4));transition:width .1s linear}
 .blog-track{display:flex;gap:1.5vw;will-change:transform;padding:0 var(--px)}
 .bcard{
   flex:0 0 29vw;padding:2.5rem;
@@ -1115,11 +1125,12 @@ footer{
 #suc-btn.has-notif .suc-notif{display:block}
 #suc-box{
   position:fixed;bottom:6.5rem;right:2.5rem;width:310px;
-  background:var(--mid);
-  border:1px solid rgba(240,237,230,.055);
+  background:rgba(15,26,16,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(88,240,102,.1);
   z-index:600;display:none;flex-direction:column;
-  box-shadow:0 32px 80px rgba(0,0,0,.7);
-  border-radius:16px;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.7),0 0 0 1px rgba(88,240,102,.04);
+  border-radius:18px;overflow:hidden;
 }
 #suc-box.on{display:flex}
 .suc-hd{
@@ -2318,6 +2329,7 @@ footer{
       <article class="bcard"><div class="bcard-em">🏆</div><div><div class="bcard-tag">Case Study · 9 min</div><h3 class="bcard-h">How a Snake Plant Led a $47M Turnaround (Without Scheduling One Meeting)</h3><p class="bcard-p">Anonymised enterprise client. $47M in stranded revenue. One snake plant added to the CFO's desk. Three months later: restructure complete, team morale up 340%, plant still going. Brenda is reviewing the case for publication.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Jan 2026</span></div></article>
     </div>
   </div>
+  <div id="blog-prog-wrap"><div id="blog-prog-fill"></div></div>
 </section>
 
 <!-- ══ TESTIMONIALS ══ -->
@@ -2673,6 +2685,8 @@ footer{
     <div class="kb-row"><span class="kb-desc">Open Succy™ AI chat</span><span class="kb-key">/ or C</span></div>
     <div class="kb-row"><span class="kb-desc">Back to top</span><span class="kb-key">T</span></div>
     <div class="kb-row"><span class="kb-desc">Jump to Pricing</span><span class="kb-key">P</span></div>
+    <div class="kb-row"><span class="kb-desc">Newsletter signup</span><span class="kb-key">N</span></div>
+    <div class="kb-row"><span class="kb-desc">Jump to FAQ</span><span class="kb-key">F</span></div>
     <div class="kb-row"><span class="kb-desc">Show/hide shortcuts</span><span class="kb-key">?</span></div>
     <div class="kb-row"><span class="kb-desc">Secret growth protocol</span><span class="kb-key">↑↑↓↓←→←→BA</span></div>
     <div class="kb-row"><span class="kb-desc">Close any overlay</span><span class="kb-key">Esc</span></div>
@@ -3768,7 +3782,11 @@ function startSite(){
         trigger:blogSec,start:'center center',
         end:`+=${extraScroll}`,
         scrub:1.4,pin:true,
-        onUpdate:()=>loco.update()
+        onUpdate:(self)=>{
+          loco.update();
+          const pf=document.getElementById('blog-prog-fill');
+          if(pf)pf.style.width=(self.progress*100)+'%';
+        }
       }
     });
   }
@@ -4597,6 +4615,16 @@ function nlSub(){
     // 'p' → go to pricing
     if(e.key==='p'){
       if(window._loco)window._loco.scrollTo('#pricing-sec',{duration:900,easing:[.16,1,.3,1]});
+    }
+    // 'n' → newsletter
+    if(e.key==='n'){
+      if(window._loco)window._loco.scrollTo('#nl-sec',{duration:900,easing:[.16,1,.3,1]});
+      else document.getElementById('nl-sec')?.scrollIntoView({behavior:'smooth'});
+    }
+    // 'f' → FAQ
+    if(e.key==='f'){
+      if(window._loco)window._loco.scrollTo('#faq-sec',{duration:900,easing:[.16,1,.3,1]});
+      else document.getElementById('faq-sec')?.scrollIntoView({behavior:'smooth'});
     }
     // Escape → close chatbot/legal/cert/kb
     if(e.key==='Escape'){
