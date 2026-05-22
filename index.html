@@ -228,6 +228,17 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
 .nav-links a::after{content:attr(data-text);position:absolute;top:100%;left:0;display:block}
 .nav-links a:hover span{transform:translateY(-100%)}
 
+/* time-on-site widget in nav */
+#nav-timer{
+  font-family:var(--mf);font-size:.44rem;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(240,237,230,.22);opacity:0;transition:opacity .6s;
+  display:flex;align-items:center;gap:.4em;
+  white-space:nowrap;
+}
+#nav-timer.vis{opacity:1}
+#nav-timer::before{content:'🌿';font-size:.65rem}
+@media(max-width:900px){#nav-timer{display:none}}
+
 /* ─── MOBILE HAMBURGER ───────────────────── */
 #ham{
   display:none;flex-direction:column;gap:5px;
@@ -1694,6 +1705,7 @@ footer{
     <li><a href="#blog-sec" data-text="Insights"><span>Insights</span></a></li>
     <li><a href="#tes-sec" data-text="Proof"><span>Proof</span></a></li>
   </ul>
+  <div id="nav-timer">Gerald has been watching for <span id="nav-timer-val">0s</span></div>
   <a href="#roi-sec" class="btn" id="nav-cta-d">Get Growing</a>
   <button id="ham" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -4300,6 +4312,25 @@ function nlSub(){
       document.getElementById('legal-overlay').classList.remove('on');
     }
   });
+})();
+
+// TIME ON SITE — Gerald's watching timer
+(function(){
+  const el=document.getElementById('nav-timer');
+  const val=document.getElementById('nav-timer-val');
+  if(!el||!val)return;
+  const start=Date.now();
+  function fmt(s){
+    if(s<60)return s+'s';
+    const m=Math.floor(s/60),sec=s%60;
+    return m+'m '+(sec<10?'0':'')+sec+'s';
+  }
+  setTimeout(()=>{
+    el.classList.add('vis');
+    setInterval(()=>{
+      val.textContent=fmt(Math.floor((Date.now()-start)/1000));
+    },1000);
+  },5000);
 })();
 
 // PLANT OF THE DAY (footer)
