@@ -546,7 +546,9 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
   position:relative;border-radius:4px;
   display:flex;flex-direction:column;gap:1.6rem;
   opacity:0;
+  transition:transform .35s var(--ease-out),box-shadow .35s;
 }
+.price-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.4)}
 .price-card-featured{
   background:var(--lift);
   outline:1px solid rgba(224,120,48,.25);
@@ -588,8 +590,11 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .faq-h .lw{display:block;overflow:hidden}
 .faq-h .lw span{display:block;transform:translateY(105%)}
 .faq-list{display:flex;flex-direction:column;max-width:860px}
-.faq-item{border-bottom:1px solid rgba(240,237,230,.05);padding:1.6rem 0}
+.faq-item{border-bottom:1px solid rgba(240,237,230,.05);padding:1.6rem 0;transition:padding .3s}
+.faq-item[open]{padding-bottom:2rem}
 .faq-item[open] .faq-q::after{transform:rotate(45deg)}
+.faq-item[open] .faq-q{opacity:1}
+.faq-q{opacity:.65;transition:opacity .2s}
 .faq-q{
   font-family:var(--df);font-size:clamp(.9rem,1.4vw,1.4vw);font-weight:700;
   cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;
