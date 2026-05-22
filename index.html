@@ -1243,6 +1243,24 @@ footer{
 .spt-msg{font-family:var(--mf);font-size:.48rem;letter-spacing:.05em;opacity:.38}
 .spt-ts{font-family:var(--mf);font-size:.44rem;color:var(--orange);opacity:.7;margin-top:.2rem}
 
+/* ─── MILESTONE ACHIEVEMENT TOAST ─────────────── */
+#ms-toast{
+  position:fixed;top:6rem;right:2rem;z-index:660;
+  background:linear-gradient(135deg,rgba(10,22,11,.95),rgba(18,36,19,.95));
+  border:1px solid rgba(88,240,102,.22);
+  border-radius:14px;padding:.85rem 1.2rem;max-width:240px;
+  display:flex;align-items:center;gap:.8rem;
+  box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 0 1px rgba(88,240,102,.08);
+  transform:translateX(120%);opacity:0;
+  transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .4s;
+  pointer-events:none;
+}
+#ms-toast.show{transform:translateX(0);opacity:1}
+.mst-icon{font-size:1.3rem;flex-shrink:0}
+.mst-body{display:flex;flex-direction:column;gap:.12rem}
+.mst-label{font-family:var(--mf);font-size:.44rem;letter-spacing:.14em;text-transform:uppercase;color:var(--green);opacity:.7}
+.mst-title{font-family:var(--df);font-size:.68rem;font-weight:700;line-height:1.25}
+
 /* ─── TEAM CARD HOVER ────────────────────────── */
 .team-card{transition:padding-top .3s}
 .team-card:hover{padding-top:0}
@@ -1309,10 +1327,16 @@ footer{
 .press-logo{
   font-family:var(--df);font-weight:800;font-size:clamp(.9rem,1.3vw,1.3vw);
   text-transform:uppercase;letter-spacing:-.02em;
-  opacity:.12;transition:opacity .3s;white-space:nowrap;cursor:default;
+  opacity:.12;transition:opacity .35s,color .35s,text-shadow .35s;white-space:nowrap;cursor:default;
 }
 .press-logo em{font-style:italic;font-weight:400;letter-spacing:.01em}
-.press-logo:hover{opacity:.48}
+.press-logo:hover{opacity:.55}
+.press-logo:nth-child(6n+1):hover{color:var(--green);text-shadow:0 0 22px rgba(88,240,102,.28)}
+.press-logo:nth-child(6n+2):hover{color:var(--orange);text-shadow:0 0 22px rgba(224,120,48,.28)}
+.press-logo:nth-child(6n+3):hover{color:#7ed4f5;text-shadow:0 0 22px rgba(126,212,245,.22)}
+.press-logo:nth-child(6n+4):hover{color:#c4a6f7;text-shadow:0 0 22px rgba(196,166,247,.22)}
+.press-logo:nth-child(6n+5):hover{color:#f7c56a;text-shadow:0 0 22px rgba(247,197,106,.22)}
+.press-logo:nth-child(6n+0):hover{color:#f27e7e;text-shadow:0 0 22px rgba(242,126,126,.22)}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ─── SOLD-OUT CTA ────────────────────────────── */
@@ -2377,6 +2401,15 @@ footer{
     <div class="spt-name" id="spt-name">Oliver T.</div>
     <div class="spt-msg" id="spt-msg">just joined the waitlist</div>
     <div class="spt-ts" id="spt-ts">2 seconds ago</div>
+  </div>
+</div>
+
+<!-- MILESTONE ACHIEVEMENT TOAST -->
+<div id="ms-toast">
+  <div class="mst-icon" id="mst-icon">🏆</div>
+  <div class="mst-body">
+    <div class="mst-label">Achievement Unlocked</div>
+    <div class="mst-title" id="mst-title">PlantIQ™ Explorer</div>
   </div>
 </div>
 
@@ -3690,6 +3723,45 @@ document.getElementById('btt').addEventListener('click',()=>{
   }
   setTimeout(showToast,8000);
   setInterval(showToast,14000);
+})();
+
+// SCROLL MILESTONE ACHIEVEMENTS
+(function(){
+  const el=document.getElementById('ms-toast');
+  const iconEl=document.getElementById('mst-icon');
+  const titleEl=document.getElementById('mst-title');
+  if(!el)return;
+  const milestones=[
+    {section:'#tagline',icon:'📊',title:'Data Visionary'},
+    {section:'#ai-sec',icon:'🧠',title:'Neural Botanist'},
+    {section:'#roi-sec',icon:'💰',title:'ROI Alchemist'},
+    {section:'#pricing-sec',icon:'💎',title:'Investment Ready'},
+    {section:'#team-sec',icon:'🌿',title:'Met the Team'},
+    {section:'#tes-sec',icon:'⭐',title:'Social Proof Believer'},
+    {section:'#blog-sec',icon:'📖',title:'Thought Leader'},
+    {section:'#cta-sec',icon:'🚀',title:'Ready to Hustle'},
+  ];
+  const seen=new Set();
+  let showing=false;
+  function showMs(icon,title){
+    if(showing)return;
+    showing=true;
+    iconEl.textContent=icon;titleEl.textContent=title;
+    el.classList.add('show');
+    setTimeout(()=>{el.classList.remove('show');setTimeout(()=>{showing=false},600);},3600);
+  }
+  window.addEventListener('scroll',()=>{
+    milestones.forEach(m=>{
+      if(seen.has(m.section))return;
+      const s=document.querySelector(m.section);
+      if(!s)return;
+      const r=s.getBoundingClientRect();
+      if(r.top<window.innerHeight*.55){
+        seen.add(m.section);
+        setTimeout(()=>showMs(m.icon,m.title),600);
+      }
+    });
+  },{passive:true});
 })();
 
 // ══════════════════════════════════════════════════
