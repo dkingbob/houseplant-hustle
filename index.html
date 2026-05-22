@@ -240,6 +240,27 @@ p{font-family:var(--tf);font-weight:300;line-height:1.65}
 }
 #hero-canvas{position:absolute;inset:0;width:100%;height:100%}
 .hero-inner{position:relative;z-index:2}
+/* floating live chip */
+.hero-live-chip{
+  position:absolute;top:5.5rem;right:var(--px);z-index:3;
+  display:inline-flex;align-items:center;gap:.55rem;
+  font-family:var(--mf);font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;
+  background:rgba(10,22,11,.75);border:1px solid rgba(88,240,102,.18);
+  color:rgba(240,237,230,.55);padding:.4em 1.1em;border-radius:100px;
+  backdrop-filter:blur(8px);
+  animation:chipFloat 5s ease-in-out infinite;
+  opacity:0;transition:opacity .6s;
+}
+.hero-live-chip.vis{opacity:1}
+.hero-live-chip-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--green);flex-shrink:0;
+  animation:livePulse 1.8s ease-in-out infinite;
+}
+@keyframes chipFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
 .hero-tag{
   font-family:var(--mf);font-size:.62rem;letter-spacing:.34em;text-transform:uppercase;
   color:var(--orange);margin-bottom:2.5rem;
@@ -1552,6 +1573,10 @@ footer{
 <!-- ══ HERO ══ -->
 <section id="hero" data-scroll-section>
   <canvas id="hero-canvas"></canvas>
+  <div class="hero-live-chip" id="hero-chip">
+    <span class="hero-live-chip-dot"></span>
+    <span id="hero-chip-n">14,204</span> plants monitored globally
+  </div>
   <div class="hero-inner inn">
     <div class="hero-tag" data-scroll data-scroll-speed="-1">
       PlantIQ™ AI Engine &nbsp;·&nbsp; v3.2 &nbsp;·&nbsp; Now with Leaf Sentiment
@@ -3778,8 +3803,37 @@ function nlSub(){
   const inp=document.getElementById('nl-in'),btn=inp.nextElementSibling;
   if(!inp.value.includes('@')){gsap.fromTo(inp,{x:-4},{x:4,duration:.08,repeat:5,yoyo:true,onComplete:()=>gsap.set(inp,{x:0})});return}
   btn.textContent='Growing… 🌱';btn.style.pointerEvents='none';
-  setTimeout(()=>{btn.textContent='Rooted! ✓';btn.style.background='#58f066';btn.style.color='#0d1a0f';inp.value=''},1300);
+  setTimeout(()=>{
+    btn.textContent='Rooted! ✓';btn.style.background='#58f066';btn.style.color='#0d1a0f';inp.value='';
+    // newsletter confetti
+    const emojis=['🌿','🌱','🍃','🌸','✦'];
+    const rect=btn.getBoundingClientRect();
+    const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+    for(let i=0;i<24;i++){
+      const p=document.createElement('span');
+      const angle=Math.random()*Math.PI*2;
+      const vel=80+Math.random()*120;
+      p.textContent=emojis[i%emojis.length];
+      p.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;font-size:${0.6+Math.random()*0.6}rem;pointer-events:none;z-index:9500;transform:translate(-50%,-50%)`;
+      document.body.appendChild(p);
+      gsap.to(p,{x:Math.cos(angle)*vel,y:Math.sin(angle)*vel-50,opacity:0,duration:0.8+Math.random()*0.4,ease:'power2.out',onComplete:()=>p.remove()});
+    }
+  },1300);
 }
+
+// HERO LIVE CHIP COUNTER
+(function(){
+  const chip=document.getElementById('hero-chip');
+  const nEl=document.getElementById('hero-chip-n');
+  if(!chip||!nEl)return;
+  let n=14200+Math.floor(Math.random()*50);
+  setTimeout(()=>chip.classList.add('vis'),2200);
+  nEl.textContent=n.toLocaleString();
+  setInterval(()=>{
+    n+=Math.floor(Math.random()*3)+1;
+    nEl.textContent=n.toLocaleString();
+  },4500);
+})();
 
 // ══════════════════════════════════════════════════
 // SECTION DOTS NAV
