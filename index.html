@@ -2184,6 +2184,10 @@ footer{
     <span class="cta-live-dot"></span>
     <span id="cta-live-n">12</span> people viewing this page right now
   </div>
+  <div class="cta-live-row rv" style="margin-top:.6rem">
+    <span class="cta-live-dot" style="background:var(--orange)"></span>
+    $<span id="cta-rev">0</span> photosynthesis revenue generated today
+  </div>
   <div class="cta-cd rv" id="cta-cd">
     <div class="cta-cd-lbl">Pre-launch window closes in</div>
     <div class="cta-cd-digits">
@@ -2210,6 +2214,9 @@ footer{
         <h2 style="font-size:clamp(2rem,4.5vw,4.5vw);line-height:.88;font-weight:500" class="rv">Grow Your<br>Mindset.</h2>
       </div>
       <a href="#" class="btn ol rf">All Fronds →</a>
+    </div>
+    <div style="font-family:var(--mf);font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;opacity:.18;margin-top:.5rem;display:flex;align-items:center;gap:.5em">
+      <span>←</span> drag to scroll <span>→</span>
     </div>
   </div>
   <div class="blog-track-outer" style="padding:0 var(--px)">
@@ -4227,6 +4234,20 @@ document.getElementById('btt').addEventListener('click',()=>{
       gsap.to(p,{x:dx,y:dy,rotation:rot,opacity:0,duration:0.9+Math.random()*0.5,ease:'power2.out',onComplete:()=>p.remove()});
     }
   });
+})();
+
+// LIVE REVENUE COUNTER
+(function(){
+  const el=document.getElementById('cta-rev');
+  if(!el)return;
+  // Start from a plausible "amount so far today"
+  let rev=Math.floor(Date.now()/86400000%1)*2400000+Math.random()*800000;
+  rev=Math.round(847000+Math.random()*400000);
+  el.textContent=rev.toLocaleString();
+  setInterval(()=>{
+    rev+=Math.round(Math.random()*847+100);
+    el.textContent=rev.toLocaleString();
+  },2300);
 })();
 
 // CTA COUNTDOWN — counts down from a random ~4-6h window
