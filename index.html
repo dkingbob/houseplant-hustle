@@ -587,8 +587,10 @@ h1.hero-h1{
   transition:transform .35s var(--ease-out);
 }
 .feat:hover::before{transform:scaleY(1)}
-.feat-ic{font-size:.95rem}
-.feat-name{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.feat:hover .feat-name{color:var(--green)}
+.feat:hover .feat-ic{transform:scale(1.25) rotate(-8deg);filter:drop-shadow(0 0 8px rgba(88,240,102,.45))}
+.feat-ic{font-size:.95rem;transition:transform .3s var(--ease-out),filter .3s;display:block;line-height:1}
+.feat-name{font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;transition:color .25s}
 .feat-sub{font-family:var(--tf);font-size:.72rem;opacity:.28;margin-top:.2rem}
 .feat-tag{
   font-family:var(--mf);font-size:.53rem;letter-spacing:.1em;
@@ -1040,6 +1042,12 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
   display:flex;max-width:480px;margin:0 auto;
   background:var(--mid);
   border-radius:100px;overflow:hidden;padding:.3rem;
+  transition:box-shadow .3s,outline .3s;
+  outline:1px solid transparent;
+}
+.nl-form:focus-within{
+  outline:1px solid rgba(88,240,102,.22);
+  box-shadow:0 0 0 4px rgba(88,240,102,.06),0 0 30px rgba(88,240,102,.08);
 }
 .nl-input{
   flex:1;background:transparent;border:none;outline:none;
@@ -1185,6 +1193,13 @@ footer{
   89%{transform:translate(-1px,1px)}
 }
 .glitch{animation:gt 8s ease-in-out infinite}
+#hero-rotate{
+  background:linear-gradient(90deg,var(--orange) 0%,#f7d060 40%,var(--orange) 80%);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gt 8s ease-in-out infinite,ctaShimmer 4s linear infinite;
+}
 
 /* ─── MODE PANEL ───────────────────────────── */
 #mode-panel{
@@ -1448,6 +1463,14 @@ footer{
   transform:skewY(-1.5deg);margin:0 -5vw;
   position:relative;z-index:2;
 }
+.reel::before{
+  content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.055) 0px,rgba(0,0,0,.055) 1px,transparent 1px,transparent 4px);
+}
+.reel::after{
+  content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,.15) 0%,transparent 40%,transparent 60%,rgba(255,255,255,.08) 100%);
+}
 .reel-track{
   display:flex;gap:3.5rem;white-space:nowrap;
   animation:reelRun 22s linear infinite;
@@ -1532,7 +1555,18 @@ footer{
 }
 .cta-h .lw{display:block;overflow:hidden}
 .cta-h .lw span{display:block;transform:translateY(105%)}
-.cta-h em{font-style:normal;color:var(--orange)}
+.cta-h em{
+  font-style:normal;
+  background:linear-gradient(90deg,var(--orange) 0%,#f5c04a 40%,var(--orange) 80%);
+  background-size:200% auto;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:ctaShimmer 5s linear infinite;
+}
+@keyframes ctaShimmer{
+  0%{background-position:0% center}
+  100%{background-position:200% center}
+}
 .cta-sub{
   font-family:var(--tf);font-size:clamp(.85rem,1.1vw,1.1vw);
   opacity:.32;max-width:46ch;margin:0 auto 3.5rem;line-height:1.72;
@@ -4102,6 +4136,10 @@ document.getElementById('btt').addEventListener('click',()=>{
     {av:'🪴',name:'Camille B.',msg:'achieved 847% photosynthesis ROI',ts:'just now'},
     {av:'🌺',name:'Jonas L.',msg:'booked a call with Gerald',ts:'8 seconds ago'},
     {av:'🌾',name:'Aisha N.',msg:'just joined the waitlist',ts:'3 seconds ago'},
+    {av:'🍀',name:'Theo R.',msg:'fired his CFO based on leaf data',ts:'just now'},
+    {av:'🌻',name:'Yuki S.',msg:'named her cactus Director of Sales',ts:'4 seconds ago'},
+    {av:'🪻',name:'Brent H.',msg:'Series A funding secured via fern',ts:'just now'},
+    {av:'🌲',name:'Luna C.',msg:'achieved photosynthetic profitability',ts:'11 seconds ago'},
   ];
   const el=document.getElementById('sp-toast');
   const avEl=document.getElementById('spt-av');
