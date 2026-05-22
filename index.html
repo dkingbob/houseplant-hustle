@@ -724,11 +724,13 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
   padding:.35em 1em;white-space:nowrap;
 }
 .price-tier{font-family:var(--mf);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);opacity:.8}
-.price-amount{font-family:var(--df);font-size:clamp(2.5rem,4vw,4vw);font-weight:800;line-height:1}
+.price-amount{font-family:var(--df);font-size:clamp(2.5rem,4vw,4vw);font-weight:800;line-height:1;transition:text-shadow .3s}
+.price-card:hover .price-amount{text-shadow:0 0 40px rgba(224,120,48,.2)}
 .price-per{font-size:.9rem;font-weight:300;opacity:.4}
 .price-desc{font-family:var(--tf);font-size:.74rem;opacity:.38;line-height:1.6}
 .price-feats{list-style:none;display:flex;flex-direction:column;gap:.6rem;flex:1}
-.price-feats li{font-family:var(--mf);font-size:.56rem;letter-spacing:.06em;opacity:.55}
+.price-feats li{font-family:var(--mf);font-size:.56rem;letter-spacing:.06em;opacity:.55;transition:opacity .2s,padding-left .2s}
+.price-feats li:hover{opacity:.95;padding-left:.4rem}
 .price-feats li:first-child,.price-feats li:nth-child(2),.price-feats li:nth-child(3){opacity:.75}
 .price-no{opacity:.2!important;text-decoration:line-through}
 .price-brenda{font-family:var(--tf);font-size:.6rem;opacity:.15;line-height:1.5;margin-top:1.2rem;font-style:italic}
@@ -3794,6 +3796,25 @@ function startSite(){
     onEnter:()=>{
       gsap.to('.comp-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
       gsap.fromTo('.comp-row',{opacity:0,y:16},{opacity:1,y:0,duration:.6,stagger:.07,ease:'power2.out',delay:.3});
+    }
+  });
+
+  // ── Gotcha section entry burst ──
+  ScrollTrigger.create({
+    scroller:'[data-scroll-container]',
+    trigger:'#gotcha',start:'top 65%',once:true,
+    onEnter:()=>{
+      gsap.to('.gotcha-h .lw span',{y:0,duration:.9,ease:'power3.out',stagger:.08});
+      // Confetti burst from center of screen
+      const emojis=['🌿','🌵','✦','🌱','🍃','💚','🎉'];
+      for(let i=0;i<22;i++){
+        const p=document.createElement('span');
+        p.textContent=emojis[Math.random()*emojis.length|0];
+        p.style.cssText=`position:fixed;left:50%;top:50%;font-size:${.8+Math.random()*.8}rem;pointer-events:none;z-index:9999;user-select:none;`;
+        document.body.appendChild(p);
+        const a=Math.random()*Math.PI*2,d=100+Math.random()*180;
+        gsap.to(p,{x:Math.cos(a)*d,y:Math.sin(a)*d-120,opacity:0,duration:1.1+Math.random()*.5,ease:'power2.out',onComplete:()=>p.remove()});
+      }
     }
   });
 
