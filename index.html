@@ -884,7 +884,13 @@ footer{
   text-transform:uppercase;opacity:.18;transition:opacity .2s;
 }
 .f-links a:hover{opacity:.75}
-.f-copy{font-family:var(--mf);font-size:.54rem;opacity:.12;letter-spacing:.08em}
+.f-copy{font-family:var(--mf);font-size:.54rem;opacity:.12;letter-spacing:.08em;max-width:60ch;text-align:right}
+.f-gerald-badge{
+  font-family:var(--mf);font-size:.48rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--green);opacity:.45;
+  border:1px solid rgba(88,240,102,.18);border-radius:100px;
+  padding:.28em 1em;
+}
 
 /* ─── CHATBOT ─────────────────────────────── */
 #suc-btn{
@@ -1213,6 +1219,17 @@ footer{
 @keyframes reelRun{
   from{transform:translateX(0)}
   to{transform:translateX(-50%)}
+}
+.reel-rev{
+  background:var(--mid);
+  transform:skewY(1.5deg);
+  margin-top:-2px;
+}
+.reel-rev .reel-item{color:rgba(240,237,230,.55)}
+.reel-track-rev{animation:reelRunRev 26s linear infinite}
+@keyframes reelRunRev{
+  from{transform:translateX(-50%)}
+  to{transform:translateX(0)}
 }
 
 /* ─── PRESS MARQUEE ──────────────────────────── */
@@ -2045,6 +2062,26 @@ footer{
   </div>
 </section>
 
+<!-- REEL REVERSE -->
+<div class="reel reel-rev" data-scroll-section aria-hidden="true">
+  <div class="reel-track reel-track-rev">
+    <span class="reel-item">Series A Fern</span>
+    <span class="reel-item">847% Growth</span>
+    <span class="reel-item">Photosynthesis KPI</span>
+    <span class="reel-item">Gerald Approved</span>
+    <span class="reel-item">Droop Detection™</span>
+    <span class="reel-item">IPO Ready</span>
+    <span class="reel-item">Brenda's NDA</span>
+    <span class="reel-item">Series A Fern</span>
+    <span class="reel-item">847% Growth</span>
+    <span class="reel-item">Photosynthesis KPI</span>
+    <span class="reel-item">Gerald Approved</span>
+    <span class="reel-item">Droop Detection™</span>
+    <span class="reel-item">IPO Ready</span>
+    <span class="reel-item">Brenda's NDA</span>
+  </div>
+</div>
+
 <!-- ══ NEWSLETTER ══ -->
 <section id="nl-sec" data-scroll-section>
   <div class="inn" style="max-width:900px;text-align:center">
@@ -2059,7 +2096,10 @@ footer{
 </section>
 
 <footer data-scroll-section>
-  <div class="f-brand">HOUSEPLANT<em>HUSTLE</em></div>
+  <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
+    <div class="f-brand">HOUSEPLANT<em>HUSTLE</em></div>
+    <div class="f-gerald-badge">🌿 Gerald Certified™</div>
+  </div>
   <ul class="f-links">
     <li><a href="#">Privacy Policy</a></li>
     <li><a href="#" onclick="event.preventDefault();document.getElementById('legal-overlay').classList.add('on')">Terms of Foliage</a></li>
@@ -2067,7 +2107,7 @@ footer{
     <li><a href="#">HHPL: IPO Q3 2026</a></li>
     <li><a href="#" id="share-link" onclick="event.preventDefault();copyLink()">Share Site ↗</a></li>
   </ul>
-  <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real. HHPL listed on NASDAQ Greenhouse Exchange. Certified by Gerald (he's a fern).</div>
+  <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real. HHPL listed on NASDAQ Greenhouse Exchange. Certified by Gerald (he's a fern). This is satire.</div>
 </footer>
 
 </div><!-- /loco-container -->
@@ -3212,6 +3252,8 @@ function startSite(){
     onEnter:()=>{
       gsap.to('.pricing-h .lw span',{y:0,duration:1,ease:'power3.out',stagger:.09});
       gsap.fromTo('.price-card',{opacity:0,y:30},{opacity:1,y:0,duration:.75,stagger:.12,ease:'power2.out',delay:.2});
+      // stagger feature list items by x-slide only (opacity managed by CSS)
+      setTimeout(()=>gsap.fromTo('.price-feats li',{x:-8},{x:0,duration:.35,stagger:.03,ease:'power2.out'}),550);
     }
   });
 
@@ -3634,6 +3676,22 @@ document.getElementById('btt').addEventListener('click',()=>{
     btn.classList.add('joined');
     if(txt)txt.innerHTML='&#10003; &nbsp;You\'re on the list. The fern will contact you.';
     if(cnt)cnt.textContent=n.toLocaleString();
+    // confetti burst
+    const emojis=['🌿','🌵','🌱','🍃','🌸','✦','✧'];
+    const rect=btn.getBoundingClientRect();
+    const cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+    for(let i=0;i<38;i++){
+      const p=document.createElement('span');
+      const angle=Math.random()*Math.PI*2;
+      const vel=120+Math.random()*180;
+      const dx=Math.cos(angle)*vel,dy=Math.sin(angle)*vel-60;
+      const rot=(Math.random()-0.5)*720;
+      const sz=0.7+Math.random()*0.8;
+      p.textContent=emojis[i%emojis.length];
+      p.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;font-size:${sz}rem;pointer-events:none;z-index:9500;transform:translate(-50%,-50%);will-change:transform`;
+      document.body.appendChild(p);
+      gsap.to(p,{x:dx,y:dy,rotation:rot,opacity:0,duration:0.9+Math.random()*0.5,ease:'power2.out',onComplete:()=>p.remove()});
+    }
   });
 })();
 
