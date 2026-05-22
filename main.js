@@ -699,7 +699,7 @@ window.addEventListener('load',function(){
 function startSite(){
   // ── Locomotive Scroll ──
   const locoEl=document.querySelector('[data-scroll-container]');
-  const loco=new LocomotiveScroll({el:locoEl,smooth:true,lerp:.08,multiplier:.9,getDirection:true,getSpeed:true,tablet:{smooth:true},smartphone:{smooth:false}});
+  const loco=new LocomotiveScroll({el:locoEl,smooth:true,lerp:.065,multiplier:.65,getDirection:true,getSpeed:true,tablet:{smooth:true},smartphone:{smooth:false}});
   window._loco=loco;
 
   // Proxy ScrollTrigger → Locomotive
@@ -754,7 +754,7 @@ function startSite(){
     const item=el.closest('.stat-item');
     ScrollTrigger.create({
       scroller:'[data-scroll-container]',
-      trigger:item,start:'top 85%',end:'top 30%',
+      trigger:item,start:'top 65%',end:'top 30%',
       onEnter:()=>{
         const o={v:0};gsap.to(o,{v:target,duration:2,ease:'power2.out',
           onUpdate:()=>el.textContent=Math.floor(o.v)});
