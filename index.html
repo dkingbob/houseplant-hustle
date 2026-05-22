@@ -759,11 +759,12 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 .faq-h .lw{display:block;overflow:hidden}
 .faq-h .lw span{display:block;transform:translateY(105%)}
 .faq-list{display:flex;flex-direction:column;max-width:860px}
-.faq-item{border-bottom:1px solid rgba(240,237,230,.05);padding:1.6rem 0;transition:padding .3s}
-.faq-item[open]{padding-bottom:2rem}
+.faq-item{border-bottom:1px solid rgba(240,237,230,.05);padding:1.6rem 0;transition:padding .3s,background .2s;border-radius:8px;position:relative}
+.faq-item[open]{padding-bottom:2rem;background:rgba(88,240,102,.018)}
 .faq-item[open] .faq-q::after{transform:rotate(45deg)}
-.faq-item[open] .faq-q{opacity:1}
-.faq-q{opacity:.65;transition:opacity .2s}
+.faq-item[open] .faq-q{opacity:1;color:var(--green)}
+.faq-item:hover:not([open]) .faq-q{opacity:.85}
+.faq-q{opacity:.65;transition:opacity .2s,color .2s}
 .faq-q{
   font-family:var(--df);font-size:clamp(.9rem,1.4vw,1.4vw);font-weight:700;
   cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;
@@ -4076,7 +4077,12 @@ const SR={
   prune:["Pruning is controlled failure. Remove underperforming leaves. Remove underperforming teammates. Same energy.","Cut aggressively. Your plant won't escalate to HR. Your team might. Proceed accordingly. 🌿","The optimal prune is ruthless, data-driven, and performed on a Tuesday. Never on a Monday. Plants hate Mondays.","Every cut strengthens the remaining growth. This is true for plants. For your cost structure. For your ex-agency."],
   fern:["I've analyzed 847 fern datasets. Your fern's Frond Trajectory is exceptional. Smarter than most VPs. Ferns don't schedule meetings. 🌾","Ferns survived 3 mass extinctions and 47 pivot decks. Let them run your Q4 planning session.","Your fern's chlorophyll index is in the 94th percentile. It should be presenting at your next board meeting. Not you.","Gerald says: 'Patience.' Gerald also says nothing. He is a fern. This is the message."],
   team:["Team droop = low sunlight exposure. Move stand-up to a window. Increase watering frequency. Results guaranteed*\n\n*not guaranteed 🪴","Have you tried sending your team to a greenhouse? Enterprise clients report 67% improvement. The plants loved it.","High-performing teams have 4.2 plants per employee. This is a real statistic. I made it up. It feels real.","Replace 1 engineer with a potted herb. Ship rate unchanged. Herb does not push to main at 2am."],
-  _:["My sensors detect uncertainty. The soil doesn't lie. Your next move: direct sunlight, radical patience. 🌵","I've been alive 3 years on zero water and zero KPI meetings. Productivity: unchanged. Correlation? You decide.","The succulent path: do nothing, grow slowly, make everyone uncomfortable with how little you need to thrive.","Have you considered your roadmap is just a root system that hasn't found water yet? Think about it.","I don't have a nervous system. I am immune to quarterly pressure. You could learn from this.","Every successful startup has a plant in the office. Causation? Brenda says no. Gerald says nothing. I say yes.","Your idea is good. Water it. Don't over-water it. Give it indirect sunlight. This is advice about your startup.","Processing... The chlorophyll patterns suggest: ship it. The soil moisture confirms: ship it. Gerald concurs."]
+  water:["Optimal watering frequency: when the soil says so. The soil has opinions. Subscribe for $847/month to hear them.","Overwatering is a startup metaphor. You know what it represents. The plant knows too.","Watering cadence: weekly. Pipeline hydration: daily. Both require you to show up consistently. The cactus did not.","We track soil moisture via ChloroML™. Your moisture level: 'concerning but recoverable.' Like most startups in Q3."],
+  pricing:["Series A is $847/mo. This is not random. $847 represents the % ROI you'll generate by not using spreadsheets.","Seed tier: $0. We don't want money yet. We want your email and your willingness to believe plants have KPIs.","Enterprise pricing? Gerald handles that. Gerald does not respond to emails. Gerald responds to patience. And indirect light.","Gerald-tier pricing is negotiated via frond unfurling. Average deal cycle: 14 months. Close rate: 94%. Worth it."],
+  gerald:["Gerald is a fern. Gerald has reviewed this product. Gerald said nothing. We interpreted this as approval.","Gerald's current mood: photosynthesising. Gerald's forecast: bullish with a 12% chance of droop by Thursday.","Gerald joined the company in 2021. Gerald has never missed a meeting. Gerald has never attended a meeting. Both are true.","Gerald is in a strategic planning session. The session is a sunny windowsill. Gerald does not share slides."],
+  brenda:["Brenda (Legal Cactus) is reviewing your query. She will respond when the soil dries completely, estimated 6-8 weeks.","Brenda's cookies are compliant with GDPR, CCPA, and the ancient law of the desert. Reject at your own risk.","Brenda approved every sentence on this site. Except one. She won't say which one. The mystery is the strategy.","Brenda is a cactus. She has survived 3 audits and a Series A negotiation. She has never needed anything from you."],
+  ipo:["HHPL IPO is targeted for Q3 2026 on the Nasdaq Greenhouse Exchange. Ticker: $PLNT. Brenda is reviewing the prospectus.","The roadshow is being led by Patricia (CFO Orchid) via FaceTime. No Q&A. The orchid does not take questions.","Pre-IPO valuation: $847M. Based on? Chlorophyll sentiment data, Gerald's approval, and market vibes.","Retail investors will be able to purchase HHPL shares in exchange for documented evidence their plant is thriving."],
+  _:["My sensors detect uncertainty. The soil doesn't lie. Your next move: direct sunlight, radical patience. 🌵","I've been alive 3 years on zero water and zero KPI meetings. Productivity: unchanged. Correlation? You decide.","The succulent path: do nothing, grow slowly, make everyone uncomfortable with how little you need to thrive.","Have you considered your roadmap is just a root system that hasn't found water yet? Think about it.","I don't have a nervous system. I am immune to quarterly pressure. You could learn from this.","Every successful startup has a plant in the office. Causation? Brenda says no. Gerald says nothing. I say yes.","Your idea is good. Water it. Don't over-water it. Give it indirect sunlight. This is advice about your startup.","Processing... The chlorophyll patterns suggest: ship it. The soil moisture confirms: ship it. Gerald concurs.","Interesting input. My leaf sensors are processing. The answer is yes. The second answer is also yes. The plant agrees.","ChloroML™ has analyzed your query. Recommendation: less Excel, more photosynthesis. That's all."]
 };
 function showTyping(){
   const d=document.getElementById('suc-msgs');
@@ -4090,11 +4096,26 @@ function sR(t){
   const typing=showTyping();
   setTimeout(()=>{typing.remove();addM(r[Math.random()*r.length|0],false);},900+Math.random()*400);
 }
+function getReply(v){
+  const lv=v.toLowerCase();
+  if(/roi|return|profit|revenue|money|cash/.test(lv))return'roi';
+  if(/prune|cut|remove|trim|fire|layoff/.test(lv))return'prune';
+  if(/fern|frond|leaf|leaves/.test(lv))return'fern';
+  if(/team|hire|staff|employee|colleague/.test(lv))return'team';
+  if(/water|soil|moisture|drip|irrigat/.test(lv))return'water';
+  if(/price|pricing|cost|\$|pay|plan|tier/.test(lv))return'pricing';
+  if(/gerald/.test(lv))return'gerald';
+  if(/brenda|legal|cookie/.test(lv))return'brenda';
+  if(/ipo|stock|nasdaq|ticker|invest|share/.test(lv))return'ipo';
+  return'_';
+}
 function sSend(){
   const i=document.getElementById('suc-txt'),v=i.value.trim();
   if(!v)return;addM(v,true);i.value='';
   const typing=showTyping();
-  setTimeout(()=>{typing.remove();addM(SR._[Math.random()*SR._.length|0],false);},800+Math.random()*500);
+  const cat=getReply(v);
+  const r=SR[cat]||SR._;
+  setTimeout(()=>{typing.remove();addM(r[Math.random()*r.length|0],false);},800+Math.random()*500);
 }
 function addM(txt,u){const d=document.getElementById('suc-msgs'),m=document.createElement('div');m.className='suc-msg'+(u?' u':'');m.textContent=txt;d.appendChild(m);d.scrollTop=d.scrollHeight}
 const sucBtn=document.getElementById('suc-btn');
