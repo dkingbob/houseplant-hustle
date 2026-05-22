@@ -321,6 +321,7 @@ h1.hero-h1{
   line-height:.82;font-weight:800;
   text-transform:uppercase;letter-spacing:-.04em;
   overflow:hidden;margin-bottom:5vh;
+  text-shadow:0 0 80px rgba(88,240,102,.04);
 }
 .hero-h1 .lw{display:block;overflow:hidden}
 .hero-h1 .lw span{display:block;transform:translateY(105%)}
@@ -424,6 +425,12 @@ h1.hero-h1{
   font-size:clamp(12rem,38vw,38vw);line-height:1;
   color:var(--white);opacity:.025;
   pointer-events:none;user-select:none;letter-spacing:-.06em;
+  animation:bleedDrift 12s ease-in-out infinite;
+}
+@keyframes bleedDrift{
+  0%,100%{transform:translateY(-50%) translateX(0)}
+  33%{transform:translateY(-53%) translateX(-1vw)}
+  66%{transform:translateY(-47%) translateX(1vw)}
 }
 .tl-wrap{max-width:1520px;margin:0 auto}
 .tl-top{
@@ -840,7 +847,8 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
   text-align:right;flex-shrink:0;
   display:flex;flex-direction:column;align-items:flex-end;gap:.8rem;min-width:max-content;
 }
-.tes-av2{font-size:2.2rem}
+.tes-av2{font-size:2.2rem;transition:transform .35s var(--ease-out),filter .35s}
+.tes-av2:hover{transform:scale(1.15) rotate(8deg);filter:drop-shadow(0 0 12px rgba(88,240,102,.4))}
 .tes-nm2{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .tes-role2{font-family:var(--mf);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;opacity:.2}
 .tes-stars{color:var(--orange);font-size:.72rem;letter-spacing:.14em;margin-top:.28rem}
@@ -2216,7 +2224,7 @@ footer{
       <a href="#" class="btn ol rf">All Fronds →</a>
     </div>
     <div style="font-family:var(--mf);font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;opacity:.18;margin-top:.5rem;display:flex;align-items:center;gap:.5em">
-      <span>←</span> drag to scroll <span>→</span>
+      scroll to reveal <span>→</span>
     </div>
   </div>
   <div class="blog-track-outer" style="padding:0 var(--px)">
@@ -4088,6 +4096,7 @@ document.getElementById('btt').addEventListener('click',()=>{
     {section:'#tes-sec',icon:'⭐',title:'Social Proof Believer'},
     {section:'#blog-sec',icon:'📖',title:'Thought Leader'},
     {section:'#cta-sec',icon:'🚀',title:'Ready to Hustle'},
+    {section:'footer',icon:'🌵',title:'You Scrolled Everything'},
   ];
   const seen=new Set();
   let showing=false;
