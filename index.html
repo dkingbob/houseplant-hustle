@@ -902,6 +902,29 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
 }
 #legal-close:hover{color:var(--white)}
 
+/* ─── GERALD CERTIFICATE ─────────────────────── */
+#gerald-cert{
+  position:fixed;inset:0;z-index:3100;
+  background:rgba(5,12,6,.92);backdrop-filter:blur(12px);
+  display:none;align-items:center;justify-content:center;padding:var(--px);
+}
+#gerald-cert.on{display:flex;animation:kfIn .3s ease-out forwards}
+.gcert-inner{
+  background:linear-gradient(135deg,#0d1a0f,#0a1a0c);
+  border:1px solid rgba(88,240,102,.18);
+  border-radius:20px;padding:3.5rem;max-width:560px;width:100%;
+  text-align:center;position:relative;
+  box-shadow:0 0 80px rgba(88,240,102,.08),0 32px 64px rgba(0,0,0,.6);
+}
+.gcert-seal{font-size:3.5rem;margin-bottom:1.5rem;display:block;animation:kSpin 8s linear infinite}
+.gcert-label{font-family:var(--mf);font-size:.5rem;letter-spacing:.28em;text-transform:uppercase;color:var(--green);opacity:.5;margin-bottom:1rem}
+.gcert-title{font-size:clamp(1.4rem,3vw,3vw);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:.6rem}
+.gcert-name{font-size:clamp(1rem,2vw,2vw);color:var(--orange);font-weight:700;margin:.8rem 0}
+.gcert-body{font-family:var(--tf);font-size:.76rem;opacity:.3;line-height:1.65;max-width:38ch;margin:0 auto 2rem}
+.gcert-sig{font-family:var(--df);font-size:.68rem;opacity:.18;letter-spacing:.08em}
+.gcert-close{position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:rgba(240,237,230,.28);font-size:1.2rem;cursor:pointer;transition:color .2s;padding:0}
+.gcert-close:hover{color:var(--white)}
+
 /* ─── KONAMI EASTER EGG ─────────────────────── */
 #konami-overlay{
   position:fixed;inset:0;z-index:3000;
@@ -2121,6 +2144,7 @@ footer{
       <article class="bcard"><div class="bcard-em">🌿</div><div><div class="bcard-tag">Strategy · 7 min</div><h3 class="bcard-h">The Monstera Mindset: Growing Towards Light in a Dark Market</h3><p class="bcard-p">Fenestration isn't just for leaves. Learn to create strategic holes in your business model that let light through while maintaining structural integrity during market downturns.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Apr 2026</span></div></article>
       <article class="bcard"><div class="bcard-em">✂️</div><div><div class="bcard-tag">Leadership · 5 min</div><h3 class="bcard-h">Dead Leaves and Dead Weight: A Guide to Pruning Your Portfolio</h3><p class="bcard-p">Your fiddle-leaf fig has been removing underperformers since 2019. Maybe it's time you listened to the plant in the corner office instead of the consultant on the Zoom call.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Mar 2026</span></div></article>
       <article class="bcard"><div class="bcard-em">💡</div><div><div class="bcard-tag">Innovation · 6 min</div><h3 class="bcard-h">Photosynthesis as a Service: The B2B Model Nature Invented First</h3><p class="bcard-p">CO₂ in. Oxygen out. Zero churn. The biosphere's NPS score: indeterminate. Disruption, meet chloroplasts. Your SaaS dashboard could never.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Feb 2026</span></div></article>
+      <article class="bcard"><div class="bcard-em">🏆</div><div><div class="bcard-tag">Case Study · 9 min</div><h3 class="bcard-h">How a Snake Plant Led a $47M Turnaround (Without Scheduling One Meeting)</h3><p class="bcard-p">Anonymised enterprise client. $47M in stranded revenue. One snake plant added to the CFO's desk. Three months later: restructure complete, team morale up 340%, plant still going. Brenda is reviewing the case for publication.</p></div><div class="bcard-ft"><span class="bcard-read">Read →</span><span class="bcard-date">Jan 2026</span></div></article>
     </div>
   </div>
 </section>
@@ -2282,7 +2306,7 @@ footer{
 <footer data-scroll-section>
   <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
     <div class="f-brand">HOUSEPLANT<em>HUSTLE</em></div>
-    <div class="f-gerald-badge">🌿 Gerald Certified™</div>
+    <div class="f-gerald-badge" onclick="document.getElementById('gerald-cert').classList.add('on')" style="cursor:pointer" title="View Certificate">🌿 Gerald Certified™</div>
   </div>
   <ul class="f-links">
     <li><a href="#">Privacy Policy</a></li>
@@ -2453,6 +2477,22 @@ footer{
   <h2 id="konami-h">Secret Growth Protocol<br>Activated</h2>
   <p id="konami-p">Congratulations. Your plant is now technically a unicorn startup. Valuation: $1.2B. The ficus led the Series A. The cactus wants carry.</p>
   <button class="btn" onclick="document.getElementById('konami-overlay').classList.remove('on')">Close (The Orchid Is Watching)</button>
+</div>
+
+<!-- GERALD CERTIFICATE MODAL -->
+<div id="gerald-cert">
+  <div class="gcert-inner">
+    <button class="gcert-close" onclick="document.getElementById('gerald-cert').classList.remove('on')">✕</button>
+    <span class="gcert-seal">🌿</span>
+    <div class="gcert-label">Certificate of Botanical Excellence</div>
+    <h2 class="gcert-title">This Site Has Been<br>Reviewed by Gerald</h2>
+    <div class="gcert-name">Gerald T. Fern, Chief Executive Fern</div>
+    <p class="gcert-body">We hereby certify that this product has been reviewed by Gerald, our Chief Executive Fern, who has been alive since 2019 and has never attended a single meeting. His review process consisted of being in the same room as a laptop for approximately 4 hours. Gerald said nothing. We took this as approval.</p>
+    <div class="gcert-sig">Countersigned by Brenda (Legal Cactus) · HHPL Certificate #0000847</div>
+    <div style="margin-top:2rem">
+      <button class="btn" onclick="document.getElementById('gerald-cert').classList.remove('on')">I Accept Gerald's Endorsement</button>
+    </div>
+  </div>
 </div>
 
 <!-- SECTION PROGRESS DOTS (right side) -->
