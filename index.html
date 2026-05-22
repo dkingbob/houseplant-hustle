@@ -148,6 +148,131 @@
 <!-- ══ SCROLL SCRUB ══ -->
 <div id="scrub-section" data-scroll-section></div>
 
+<!-- ══ 3D STORYBOARD ══ -->
+<section id="story-sec" data-scroll-section style="height:900vh;position:relative;background:var(--black)">
+  <div id="story-sticky" data-scroll data-scroll-sticky data-scroll-target="#story-sec">
+
+    <!-- Three.js canvas -->
+    <canvas id="story-3d-cv"></canvas>
+
+    <!-- Phase number tracker -->
+    <div id="st-pnum" aria-hidden="true">
+      <span id="st-pnum-n">01</span><span id="st-pnum-of">/09</span>
+    </div>
+
+    <!-- ── Phase 1: Desk Scene ── -->
+    <div class="stp" id="stp1">
+      <div class="stp-eyb">01 / Desk Scene</div>
+      <div class="stp-h">The Setup.</div>
+      <p class="stp-sub">Every decision starts at a desk. Yours includes a plant with opinions.</p>
+    </div>
+
+    <!-- ── Phase 2: Camera Tilt ── -->
+    <div class="stp" id="stp2">
+      <div class="stp-eyb">02 / Perspective Shift</div>
+      <div class="stp-h">Closer.</div>
+      <p class="stp-sub">Adjusting angle. The plant does not mind. It's been watching you the whole time.</p>
+    </div>
+
+    <!-- ── Phase 3: Front View + Annotations ── -->
+    <div class="stp stp-full" id="stp3">
+      <div class="stp-left">
+        <div class="stp-eyb">03 / Subject Identified</div>
+        <div class="stp-h">Meet the<br>Asset.</div>
+      </div>
+      <div class="st-annot" style="--ax:60%;--ay:16%">
+        <div class="st-annot-dot"></div>
+        <div class="st-annot-arm"></div>
+        <div class="st-annot-card">
+          <div class="st-ann-lbl">Canopy Index™</div>
+          <div class="st-ann-val">94.7</div>
+        </div>
+      </div>
+      <div class="st-annot" style="--ax:62%;--ay:50%">
+        <div class="st-annot-dot"></div>
+        <div class="st-annot-arm"></div>
+        <div class="st-annot-card">
+          <div class="st-ann-lbl">Stem Velocity</div>
+          <div class="st-ann-val">+3.2 mm/day</div>
+        </div>
+      </div>
+      <div class="st-annot" style="--ax:57%;--ay:75%">
+        <div class="st-annot-dot"></div>
+        <div class="st-annot-arm"></div>
+        <div class="st-annot-card">
+          <div class="st-ann-lbl">Root Health</div>
+          <div class="st-ann-val">Excellent</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Phase 4: Transparent Pot ── -->
+    <div class="stp" id="stp4">
+      <div class="stp-eyb">04 / Subsurface Analysis</div>
+      <div class="stp-h">Below<br>Ground.</div>
+      <p class="stp-sub">Root architecture revealed. Most CEOs lack this level of transparency.</p>
+    </div>
+
+    <!-- ── Phase 5: Soil Falls ── -->
+    <div class="stp" id="stp5">
+      <div class="stp-eyb">05 / Soil Dispersion</div>
+      <div class="stp-h">The Roots<br>Speak.</div>
+      <p class="stp-sub">Removing the medium. What's left is what matters.</p>
+    </div>
+
+    <!-- ── Phase 6: Holographic Scan ── -->
+    <div class="stp stp-full" id="stp6">
+      <div class="stp-left">
+        <div class="stp-eyb">06 / ChloroML™ Scan</div>
+        <div class="stp-h">Scanning.</div>
+      </div>
+      <div class="st-scan-panel">
+        <div class="st-scan-line"><span class="st-scan-lbl">H₂O ABSORPTION</span><span class="st-scan-v" id="sv1">—</span></div>
+        <div class="st-scan-line"><span class="st-scan-lbl">CHLOROPHYLL DENSITY</span><span class="st-scan-v" id="sv2">—</span></div>
+        <div class="st-scan-line"><span class="st-scan-lbl">ROOT BIOMASS</span><span class="st-scan-v" id="sv3">—</span></div>
+        <div class="st-scan-line"><span class="st-scan-lbl">STEM DIAMETER</span><span class="st-scan-v" id="sv4">—</span></div>
+        <div class="st-scan-line"><span class="st-scan-lbl">GROWTH VECTOR</span><span class="st-scan-v" id="sv5">—</span></div>
+        <div class="st-scan-status" id="st-scan-status">INITIALIZING…</div>
+      </div>
+    </div>
+
+    <!-- ── Phase 7: Word Reveal ── -->
+    <div class="stp stp-word" id="stp7">
+      <div class="st-word-reveal">
+        <div class="st-word-line">CHLOROPHYLL</div>
+        <div class="st-word-line">IS YOUR</div>
+        <div class="st-word-line st-word-orange">NORTH STAR.</div>
+      </div>
+    </div>
+
+    <!-- ── Phase 8: Mode Toggles ── -->
+    <div class="stp stp-full" id="stp8">
+      <div class="stp-left">
+        <div class="stp-eyb">08 / Analysis Mode</div>
+        <div class="stp-h">See Further.</div>
+        <div class="st-modes">
+          <button class="st-mode-btn active" data-mode="thermal">Thermal</button>
+          <button class="st-mode-btn" data-mode="xray">X-Ray</button>
+          <button class="st-mode-btn" data-mode="wireframe">Wireframe</button>
+        </div>
+        <div class="st-mode-desc" id="st-mode-desc">Heat signature analysis. Your plant is running hot.</div>
+      </div>
+    </div>
+
+    <!-- ── Phase 9: Free Orbit ── -->
+    <div class="stp" id="stp9">
+      <div class="stp-eyb">09 / Explore</div>
+      <div class="stp-h">It's Yours.</div>
+      <p class="stp-sub">Drag to rotate. Inspect every frond.</p>
+      <div class="st-orbit-hint"><span class="st-orbit-icon">↻</span> click &amp; drag to rotate</div>
+    </div>
+
+    <!-- Story scroll progress bar -->
+    <div id="story-prog"><div id="story-prog-fill"></div></div>
+
+  </div><!-- /story-sticky -->
+</section>
+
 <!-- ══ STACK REVEAL ══ -->
 <section id="stack-sec" data-scroll-section>
   <div id="stack-sticky" data-scroll data-scroll-sticky data-scroll-target="#stack-sec">
@@ -836,5 +961,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
 <script src="main.js"></script>
+
+<!-- 3D Storyboard Viewer — ES module, inits after DOM ready -->
+<script type="module">
+  import { HH3DViewer } from './assets/viewer3d.js';
+  const cv = document.getElementById('story-3d-cv');
+  if (cv) {
+    window._viewer3d = new HH3DViewer();
+    window._viewer3d.init(cv, './assets');
+    window.dispatchEvent(new CustomEvent('viewer3d-ready'));
+  }
+</script>
 </body>
 </html>

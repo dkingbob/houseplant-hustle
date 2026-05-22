@@ -40,9 +40,25 @@ export class HH3DViewer {
     this.deskPlane  = null;
     this._raf       = null;
     this._camTarget = new THREE.Vector3();
-    this._camLerpT  = 1; // 1 = no lerp needed
+    this._camLerpT  = 1;
     this._camFrom   = { pos: new THREE.Vector3(), tgt: new THREE.Vector3() };
     this._camTo     = { pos: new THREE.Vector3(), tgt: new THREE.Vector3() };
+    // Soil particles (Phase 5 + 7)
+    this._soilPS       = null;
+    this._soilGeo      = null;
+    this._soilRest     = null;
+    this._soilVelY     = null;
+    this._soilFalling  = false;
+    this._soilSwirling = false;
+    this._swirlTime    = 0;
+    // Holographic scan (Phase 6)
+    this._scanGroup    = null;
+    this._scanSweep    = null;
+    this._scanDots     = null;
+    // Material modes (Phase 8)
+    this._matMode      = 'standard';
+    this._origPlantMat = null;
+    this._origPotMat   = null;
   }
 
   // ──────────────────────────────────────────────
@@ -84,6 +100,10 @@ export class HH3DViewer {
 
     // Desk items (colored Three.js primitives)
     this._createDeskItems();
+
+    // Particle system + scan grid (created before GLB)
+    this._createSoilParticles();
+    this._createScanGrid();
 
     // Load GLB
     this._loadPlant(assetBase);
@@ -383,6 +403,7 @@ export class HH3DViewer {
 
       this.scene.add(model);
       this.plantModel = model;
+      this._storeMaterials();
 
       // Start at Phase 1 (top-down desk)
       this.setPhase(1);
@@ -433,20 +454,64 @@ export class HH3DViewer {
         break;
 
       case 5:
-        // Pot dissolved — plant only
-        this._setDeskItemsOpacity(0, animated);
-        this._setPotOpacity(0, animated);
+        // Soil falls, pot dissolved, roots bare
+        this._setDeskItemsOpacity(0, false);
+        this._setPotOpacity(0, false);
         this._setPlantVisible(true);
+        if (this._scanGroup) this._scanGroup.visible = false;
+        this.controls.enabled = false;
+        break;
+
+      case 6:
+        // Holographic scan — cyan grid + sweep
+        this._setDeskItemsOpacity(0, false);
+        this._setPotOpacity(0, false);
+        this._setPlantVisible(true);
+        if (this._soilPS) this._soilPS.visible = false;
+        if (this._scanGroup) {
+          this._scanGroup.visible = true;
+          this.setScanProgress(0);
+        }
+        this._moveCamera({ x: 0.25, y: 1.1, z: 2.5 }, { x: 0, y: 0.85, z: 0 }, animated ? 1.2 : 0);
+        this.controls.enabled = false;
+        break;
+
+      case 7:
+        // Soil particles swirl upward + word reveal
+        this._setDeskItemsOpacity(0, false);
+        this._setPotOpacity(0, false);
+        this._setPlantVisible(true);
+        if (this._scanGroup) this._scanGroup.visible = false;
+        this._moveCamera({ x: 0, y: 0.9, z: 2.8 }, { x: 0, y: 0.9, z: 0 }, animated ? 0.8 : 0);
+        this.controls.enabled = false;
+        break;
+
+      case 8:
+        // Mode toggles — pot visible, material switching
+        this._setDeskItemsOpacity(0, false);
+        this._setPotOpacity(1, animated);
+        this._setPlantVisible(true);
+        this._setDeskVisible(false);
+        if (this._soilPS) this._soilPS.visible = false;
+        if (this._scanGroup) this._scanGroup.visible = false;
+        this._moveCamera({ x: 0, y: 0.9, z: 2.8 }, { x: 0, y: 0.9, z: 0 }, animated ? 0.8 : 0);
+        if (this._matMode !== 'thermal') this.setMaterialMode('thermal');
         this.controls.enabled = false;
         break;
 
       case 9:
-        // Free rotation
-        this._setDeskItemsOpacity(0, animated);
+        // Free orbit — clean hero shot
+        this._setDeskItemsOpacity(0, false);
         this._setPotOpacity(1, animated);
         this._setPlantVisible(true);
-        this.controls.enabled = true;
+        this._setDeskVisible(false);
+        if (this._soilPS) this._soilPS.visible = false;
+        if (this._scanGroup) this._scanGroup.visible = false;
+        this.setMaterialMode('standard');
+        this.controls.enabled     = true;
+        this.controls.enableZoom  = false; // no scroll zoom (conflicts with Locomotive)
         this.controls.target.set(0, 0.9, 0);
+        this.controls.update();
         break;
     }
   }
@@ -554,6 +619,287 @@ export class HH3DViewer {
     this._camTarget.copy(toTgt);
   }
 
+  // ──────────────────────────────────────────────
+  // SOIL PARTICLE SYSTEM — Phase 5 (fall) + Phase 7 (swirl)
+  // ──────────────────────────────────────────────
+  _createSoilParticles() {
+    const COUNT = 420;
+    const pos   = new Float32Array(COUNT * 3);
+    const col   = new Float32Array(COUNT * 3);
+    for (let i = 0; i < COUNT; i++) {
+      const r = Math.random() * 0.19, theta = Math.random() * Math.PI * 2;
+      pos[i*3]   = Math.cos(theta) * r;
+      pos[i*3+1] = 0.04 + Math.random() * 0.08;  // soil disk height
+      pos[i*3+2] = Math.sin(theta) * r;
+      col[i*3]   = 0.46 + Math.random() * 0.32;  // warm brown/terracotta
+      col[i*3+1] = 0.22 + Math.random() * 0.14;
+      col[i*3+2] = 0.06 + Math.random() * 0.06;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
+    this._soilGeo      = geo;
+    this._soilRest     = pos.slice();
+    this._soilVelY     = new Float32Array(COUNT);
+    this._soilFalling  = false;
+    this._soilSwirling = false;
+    this._swirlTime    = 0;
+    const mat = new THREE.PointsMaterial({
+      size: 0.012, vertexColors: true, sizeAttenuation: true,
+      transparent: true, opacity: 0.88,
+    });
+    this._soilPS         = new THREE.Points(geo, mat);
+    this._soilPS.visible = false;
+    this.scene.add(this._soilPS);
+  }
+
+  _startSoilFall() {
+    if (!this._soilPS) return;
+    this._resetSoilParticles();
+    for (let i = 0; i < this._soilVelY.length; i++) {
+      this._soilVelY[i] = -0.02 - Math.random() * 0.07;
+    }
+    this._soilFalling        = true;
+    this._soilSwirling       = false;
+    this._soilPS.material.opacity = 0.88;
+    this._soilPS.visible     = true;
+  }
+
+  _startSoilSwirl() {
+    if (!this._soilPS) return;
+    this._soilFalling  = false;
+    this._soilSwirling = true;
+    this._swirlTime    = 0;
+    this._soilPS.material.opacity = 0.88;
+    // Scatter particles from below viewport, rising
+    const pos = this._soilGeo.attributes.position.array;
+    for (let i = 0, n = this._soilVelY.length; i < n; i++) {
+      pos[i*3]   = (Math.random() - 0.5) * 0.7;
+      pos[i*3+1] = -1.5 - Math.random() * 0.5;
+      pos[i*3+2] = (Math.random() - 0.5) * 0.7;
+    }
+    this._soilGeo.attributes.position.needsUpdate = true;
+    this._soilPS.visible = true;
+  }
+
+  _resetSoilParticles() {
+    if (!this._soilGeo) return;
+    this._soilGeo.attributes.position.array.set(this._soilRest);
+    this._soilVelY.fill(0);
+    this._soilFalling  = false;
+    this._soilSwirling = false;
+    this._soilGeo.attributes.position.needsUpdate = true;
+  }
+
+  _updateSoilParticles(dt) {
+    if (!this._soilPS?.visible) return;
+    const pos = this._soilGeo.attributes.position.array;
+    const vel = this._soilVelY;
+    const n   = vel.length;
+
+    if (this._soilFalling) {
+      for (let i = 0; i < n; i++) {
+        vel[i]     -= 1.7 * dt;
+        pos[i*3+1] += vel[i] * dt;
+        pos[i*3]   += (Math.random() - 0.5) * 0.002;
+        pos[i*3+2] += (Math.random() - 0.5) * 0.002;
+      }
+      this._soilGeo.attributes.position.needsUpdate = true;
+    }
+
+    if (this._soilSwirling) {
+      this._swirlTime += dt;
+      const now = performance.now() * 0.0016;
+      for (let i = 0; i < n; i++) {
+        const px = pos[i*3], py = pos[i*3+1], pz = pos[i*3+2];
+        const dx = -px, dy = 1.1 - py, dz = -pz;
+        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz) + 0.001;
+        const spd  = Math.min(2.8, 0.8 + this._swirlTime * 0.38) * dt;
+        const spiralR = Math.max(0, 0.06 - this._swirlTime * 0.009);
+        const ang = now + i * 0.088;
+        pos[i*3]   += dx / dist * spd + Math.cos(ang) * spiralR;
+        pos[i*3+1] += dy / dist * spd;
+        pos[i*3+2] += dz / dist * spd + Math.sin(ang) * spiralR;
+      }
+      this._soilGeo.attributes.position.needsUpdate = true;
+      if (this._swirlTime > 2.4) {
+        const fade = Math.max(0, 1 - (this._swirlTime - 2.4) / 1.4);
+        this._soilPS.material.opacity = fade * 0.88;
+        if (fade <= 0.01) {
+          this._soilPS.visible   = false;
+          this._soilSwirling     = false;
+        }
+      }
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // HOLOGRAPHIC SCAN GRID — Phase 6
+  // ──────────────────────────────────────────────
+  _createScanGrid() {
+    const grp  = new THREE.Group();
+    const mkMat = (color, op) => new THREE.LineBasicMaterial({
+      color, transparent: true, opacity: op,
+    });
+    const W = 1.1, H = 1.85, rows = 26, cols = 16;
+
+    // Horizontal scan lines (cyan)
+    for (let r = 0; r <= rows; r++) {
+      const y   = (r / rows) * H;
+      const geo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-W/2, y, 0), new THREE.Vector3(W/2, y, 0),
+      ]);
+      grp.add(new THREE.Line(geo, mkMat(0x00ccff, 0.20)));
+    }
+    // Vertical grid lines (blue)
+    for (let c = 0; c <= cols; c++) {
+      const x   = (c / cols) * W - W/2;
+      const geo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x, 0, 0), new THREE.Vector3(x, H, 0),
+      ]);
+      grp.add(new THREE.Line(geo, mkMat(0x0055ff, 0.13)));
+    }
+
+    // Glowing sweep plane
+    this._scanSweep = new THREE.Mesh(
+      new THREE.PlaneGeometry(W + 0.1, 0.045),
+      new THREE.MeshBasicMaterial({
+        color: 0x00eeff, transparent: true, opacity: 0.82,
+        side: THREE.DoubleSide,
+      }),
+    );
+    this._scanSweep.position.set(0, 0, 0.006);
+    grp.add(this._scanSweep);
+
+    // Anatomical marker dots (appear as sweep passes)
+    const dotSpec = [[0, 1.55], [0.24, 1.08], [-0.2, 0.72], [0.12, 0.42], [-0.06, 1.7]];
+    this._scanDots = dotSpec.map(([x, y]) => {
+      const m   = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+      const dot = new THREE.Mesh(new THREE.CircleGeometry(0.01, 8), m);
+      dot.position.set(x, y, 0.009);
+      grp.add(dot);
+      return dot;
+    });
+
+    grp.position.set(0, 0, 0.08);   // slightly in front of plant
+    grp.visible      = false;
+    this._scanGroup  = grp;
+    this.scene.add(grp);
+  }
+
+  // Drive scan sweep from progress 0→1 (bottom → top of plant)
+  setScanProgress(t) {
+    if (!this._scanSweep) return;
+    this._scanSweep.position.y = t * 1.85;
+    this._scanDots?.forEach(dot => {
+      const dotY   = dot.position.y;
+      const sweepY = this._scanSweep.position.y;
+      const frac   = sweepY > dotY - 0.08
+        ? Math.min(1, (sweepY - dotY + 0.1) * 12)
+        : 0;
+      dot.material.opacity = frac;
+    });
+  }
+
+  // ──────────────────────────────────────────────
+  // MATERIAL MODES — Phase 8 (thermal / xray / wireframe)
+  // ──────────────────────────────────────────────
+  _storeMaterials() {
+    this._origPlantMat = this.plantMesh?.material.clone() ?? null;
+    this._origPotMat   = this.potMesh?.material.clone()   ?? null;
+  }
+
+  setMaterialMode(mode) {
+    if (!this.plantMesh) return;
+    this._matMode = mode;
+    switch (mode) {
+      case 'standard':
+        if (this._origPlantMat) {
+          this.plantMesh.material = this._origPlantMat.clone();
+          this.plantMesh.material.wireframe = false;
+        }
+        if (this.potMesh && this._origPotMat) {
+          this.potMesh.material = this._origPotMat.clone();
+          this.potMesh.material.wireframe    = false;
+          this.potMesh.material.transparent  = true;
+          this.potMesh.material.opacity      = 1;
+        }
+        this.clearClipping();
+        break;
+
+      case 'thermal':
+        this.plantMesh.material = new THREE.MeshStandardMaterial({
+          color: 0xff5500, emissive: 0xcc1100, emissiveIntensity: 0.45,
+          roughness: 0.28, metalness: 0.08,
+        });
+        if (this.potMesh) this.potMesh.material = new THREE.MeshStandardMaterial({
+          color: 0xff8800, emissive: 0x441100, emissiveIntensity: 0.3, roughness: 0.4,
+        });
+        break;
+
+      case 'xray':
+        this.plantMesh.material = new THREE.MeshStandardMaterial({
+          color: 0x44aaff, emissive: 0x0022cc, emissiveIntensity: 0.55,
+          transparent: true, opacity: 0.50, roughness: 0.06, metalness: 0.9,
+        });
+        if (this.potMesh) this.potMesh.material = new THREE.MeshStandardMaterial({
+          color: 0x2266cc, transparent: true, opacity: 0.20, roughness: 0.1,
+        });
+        break;
+
+      case 'wireframe':
+        this.plantMesh.material = new THREE.MeshBasicMaterial({
+          color: 0x00ff88, wireframe: true,
+        });
+        if (this.potMesh) this.potMesh.material = new THREE.MeshBasicMaterial({
+          color: 0x004422, wireframe: true, transparent: true, opacity: 0.44,
+        });
+        break;
+    }
+  }
+
+  // ──────────────────────────────────────────────
+  // SCROLL-DRIVEN PHASE CONTROLLER
+  // Called from main.js loco.on('scroll', ...) handler
+  // t = 0→1 across the full story section scroll room
+  // Returns current phase number so overlays can be updated
+  // ──────────────────────────────────────────────
+  setScrollProgress(t) {
+    const zones = [
+      { s: 0.00, e: 0.10, p: 1 },
+      { s: 0.10, e: 0.22, p: 2 },
+      { s: 0.22, e: 0.36, p: 3 },
+      { s: 0.36, e: 0.48, p: 4 },
+      { s: 0.48, e: 0.62, p: 5 },
+      { s: 0.62, e: 0.74, p: 6 },
+      { s: 0.74, e: 0.84, p: 7 },
+      { s: 0.84, e: 0.93, p: 8 },
+      { s: 0.93, e: 1.00, p: 9 },
+    ];
+    let zone = zones[0];
+    for (const z of zones) if (t >= z.s) zone = z;
+
+    const newPhase = zone.p;
+    if (newPhase !== this.phase) this.setPhase(newPhase, false);
+
+    // Sub-phase: drive scan sweep progress
+    if (newPhase === 6) {
+      const pct = Math.max(0, Math.min(1, (t - zone.s) / (zone.e - zone.s)));
+      this.setScanProgress(pct);
+    }
+
+    // Sub-phase: trigger soil fall once on entering phase 5
+    if (newPhase === 5 && !this._soilFalling && !this._soilSwirling) {
+      this._startSoilFall();
+    }
+    // Sub-phase: trigger swirl once on entering phase 7
+    if (newPhase === 7 && !this._soilSwirling) {
+      this._startSoilSwirl();
+    }
+
+    return newPhase;
+  }
+
   _onResize(canvas) {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     this.camera.aspect = w / h;
@@ -563,6 +909,8 @@ export class HH3DViewer {
 
   _loop() {
     this._raf = requestAnimationFrame(() => this._loop());
+    const dt = Math.min(this.clock.getDelta(), 0.05);
+    this._updateSoilParticles(dt);
     if (this.controls.enabled) this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }

@@ -1226,9 +1226,116 @@ function startSite(){
     },700);
   }
 
+  // ── 3D Storyboard scroll driver ──
+  (function(){
+    const storySec=document.getElementById('story-sec');
+    if(!storySec)return;
+
+    let _stPhase=0;
+    let _wordRevealed=false;
+    const scanVals=[
+      {id:'sv1',v:'94.7%',   t:0.18},
+      {id:'sv2',v:'88.3 mg/L',t:0.34},
+      {id:'sv3',v:'12.4 g',  t:0.52},
+      {id:'sv4',v:'0.82 cm', t:0.68},
+      {id:'sv5',v:'+3.2 mm/d',t:0.84},
+    ];
+
+    function tickScanData(pct){
+      scanVals.forEach(({id,v,t})=>{
+        const el=document.getElementById(id);
+        if(el&&pct>=t)el.textContent=v;
+        else if(el&&pct<t)el.textContent='—';
+      });
+      const st=document.getElementById('st-scan-status');
+      if(!st)return;
+      if(pct<0.2)st.textContent='INITIALIZING…';
+      else if(pct<0.65)st.textContent='SCANNING…';
+      else if(pct<0.9)st.textContent='ANALYZING DATA…';
+      else st.textContent='COMPLETE — 97.3% CONFIDENCE';
+    }
+
+    function updateStoryPhase(phase,prog){
+      if(phase!==_stPhase){
+        _stPhase=phase;
+        document.querySelectorAll('.stp').forEach(el=>el.classList.remove('active'));
+        const el=document.getElementById('stp'+phase);
+        if(el)el.classList.add('active');
+        const pn=document.getElementById('st-pnum-n');
+        if(pn)pn.textContent=String(phase).padStart(2,'0');
+
+        // Word reveal stagger on entering phase 7
+        if(phase===7&&!_wordRevealed){
+          _wordRevealed=true;
+          document.querySelectorAll('.st-word-line').forEach((el,i)=>{
+            setTimeout(()=>el.classList.add('st-word-in'),i*260+80);
+          });
+        }
+        if(phase!==7){
+          _wordRevealed=false;
+          document.querySelectorAll('.st-word-line').forEach(el=>el.classList.remove('st-word-in'));
+        }
+
+        // Reset scan values when leaving phase 6
+        if(phase!==6){
+          scanVals.forEach(({id})=>{
+            const el=document.getElementById(id);
+            if(el)el.textContent='—';
+          });
+        }
+      }
+
+      // Live scan data during phase 6
+      if(phase===6){
+        const zone={s:0.62,e:0.74};
+        const pct=Math.max(0,Math.min(1,(prog-zone.s)/(zone.e-zone.s)));
+        tickScanData(pct);
+      }
+
+      // Progress bar
+      const fill=document.getElementById('story-prog-fill');
+      if(fill)fill.style.width=(prog*100)+'%';
+    }
+
+    function attachStoryScroll(){
+      if(!window._viewer3d)return;
+      loco.on('scroll',({scroll})=>{
+        const secTop=storySec.offsetTop;
+        const secH=storySec.offsetHeight;
+        const scrollRoom=secH-innerHeight;
+        if(scrollRoom<=0||scroll.y<secTop-innerHeight||scroll.y>secTop+secH+innerHeight)return;
+        const prog=Math.max(0,Math.min(1,(scroll.y-secTop)/scrollRoom));
+        const phase=window._viewer3d.setScrollProgress(prog);
+        updateStoryPhase(phase,prog);
+      });
+    }
+
+    // Attach once viewer3d is ready (module script fires custom event)
+    window.addEventListener('viewer3d-ready',attachStoryScroll);
+    // Fallback if event already fired before this code ran
+    if(window._viewer3d)attachStoryScroll();
+
+    // Mode button interactions (Phase 8)
+    document.querySelectorAll('.st-mode-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const mode=btn.dataset.mode;
+        window._viewer3d?.setMaterialMode(mode);
+        document.querySelectorAll('.st-mode-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const descs={
+          thermal:'Heat signature analysis. Your plant is running hot.',
+          xray:'Structural scan complete. Root architecture is impeccable.',
+          wireframe:'Geometric skeleton. Pure botanical architecture.',
+        };
+        const desc=document.getElementById('st-mode-desc');
+        if(desc)desc.textContent=descs[mode]||'';
+      });
+    });
+  })();
+
   // ── Section parallax ──
   document.querySelectorAll('[data-scroll-section]').forEach(s=>{
-    if(s.id==='scrub-section')return;
+    if(s.id==='scrub-section'||s.id==='story-sec')return;
     ScrollTrigger.create({
       scroller:'[data-scroll-container]',
       trigger:s,start:'top bottom',end:'bottom top',scrub:true,
