@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GROUP 4 — Desk Scene Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f1c10; color: #c8e8c8; font-family: monospace; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+  #canvas-wrap { flex: 1; position: relative; }
+  canvas { width: 100%; height: 100%; display: block; }
+
+  #controls {
+    padding: 10px 16px;
+    background: #111f13;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 1px solid #2a4430;
+    font-size: 12px;
+  }
+
+  #controls label { color: #7ab87a; letter-spacing: .05em; }
+
+  button {
+    background: #1e3820;
+    border: 1px solid #3a6040;
+    color: #c8e8c8;
+    padding: 5px 14px;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 12px;
+    letter-spacing: .06em;
+    transition: background .2s;
+  }
+  button:hover { background: #2a5035; }
+  button.active { background: #1e5530; border-color: #58f066; color: #58f066; }
+
+  #status {
+    margin-left: auto;
+    color: #58f066;
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+
+  #phase-label {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    font-size: 11px;
+    letter-spacing: .14em;
+    color: rgba(88,240,102,.55);
+    pointer-events: none;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-wrap">
+  <canvas id="preview-cv"></canvas>
+  <div id="phase-label">Phase 1 — Top-Down Desk</div>
+</div>
+
+<div id="controls">
+  <label>PHASE:</label>
+  <button class="active" data-phase="1">1 — Top-Down</button>
+  <button data-phase="2">2 — Tilt</button>
+  <button data-phase="3">3 — Front</button>
+  <button data-phase="4">4 — Pot Transparent</button>
+  <button data-phase="5">5 — Plant Only</button>
+  <button data-phase="9">9 — Free Orbit</button>
+  <div id="status">Loading GLB…</div>
+</div>
+
+<script type="module">
+  import { HH3DViewer } from './viewer3d.js';
+
+  const cv     = document.getElementById('preview-cv');
+  const label  = document.getElementById('phase-label');
+  const status = document.getElementById('status');
+
+  // Size canvas to its container
+  function resize() {
+    const wrap = cv.parentElement;
+    cv.width  = wrap.clientWidth  * devicePixelRatio;
+    cv.height = wrap.clientHeight * devicePixelRatio;
+    cv.style.width  = wrap.clientWidth  + 'px';
+    cv.style.height = wrap.clientHeight + 'px';
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const phaseNames = {
+    1: 'Phase 1 — Top-Down Desk',
+    2: 'Phase 2 — Camera Tilt',
+    3: 'Phase 3 — Front View',
+    4: 'Phase 4 — Pot Transparent (Roots)',
+    5: 'Phase 5 — Plant Only',
+    9: 'Phase 9 — Free Orbit',
+  };
+
+  const viewer = new HH3DViewer();
+
+  // Use parent directory as asset base (this file lives in assets/)
+  viewer.init(cv, '.');
+
+  // Poll until GLB is loaded
+  const poll = setInterval(() => {
+    if (viewer.plantMesh) {
+      status.textContent = 'GLB loaded — plant ready';
+      clearInterval(poll);
+    }
+  }, 300);
+
+  // Phase buttons
+  document.querySelectorAll('button[data-phase]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const phase = parseInt(btn.dataset.phase);
+      viewer.setPhase(phase, true);
+      label.textContent = phaseNames[phase] || `Phase ${phase}`;
+      document.querySelectorAll('button[data-phase]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
