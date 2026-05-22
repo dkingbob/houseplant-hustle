@@ -1167,6 +1167,29 @@ footer{
 #btt.vis{opacity:1;transform:translateY(0);pointer-events:auto}
 #btt:hover{background:rgba(224,120,48,.18);border-color:rgba(224,120,48,.35);color:var(--orange)}
 
+/* ─── RUNNING TEXT REEL ──────────────────────── */
+.reel{
+  overflow:hidden;padding:1.4rem 0;
+  background:var(--orange);
+  transform:skewY(-1.5deg);margin:0 -5vw;
+  position:relative;z-index:2;
+}
+.reel-track{
+  display:flex;gap:3.5rem;white-space:nowrap;
+  animation:reelRun 22s linear infinite;
+  will-change:transform;
+}
+.reel-item{
+  font-family:var(--df);font-size:clamp(.72rem,1.1vw,1.1vw);
+  font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--black);flex-shrink:0;display:flex;align-items:center;gap:3.5rem;
+}
+.reel-item::after{content:'✦';font-size:.55em;opacity:.5}
+@keyframes reelRun{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+
 /* ─── PRESS MARQUEE ──────────────────────────── */
 #press-sec{
   padding:9vh 0;background:var(--deep);overflow:hidden;
@@ -1732,6 +1755,26 @@ footer{
     </div>
   </div>
 </section>
+
+<!-- REEL BAND -->
+<div class="reel" data-scroll-section aria-hidden="true">
+  <div class="reel-track">
+    <span class="reel-item">Leaf Sentiment Engine</span>
+    <span class="reel-item">ChloroML™ v3.2</span>
+    <span class="reel-item">Root Cause Analysis</span>
+    <span class="reel-item">Photosynthesis ROI</span>
+    <span class="reel-item">Fern Certified</span>
+    <span class="reel-item">Q4 Droop Detection</span>
+    <span class="reel-item">Gerald Approved</span>
+    <span class="reel-item">Leaf Sentiment Engine</span>
+    <span class="reel-item">ChloroML™ v3.2</span>
+    <span class="reel-item">Root Cause Analysis</span>
+    <span class="reel-item">Photosynthesis ROI</span>
+    <span class="reel-item">Fern Certified</span>
+    <span class="reel-item">Q4 Droop Detection</span>
+    <span class="reel-item">Gerald Approved</span>
+  </div>
+</div>
 
 <!-- ══ TEAM ══ -->
 <section id="team-sec" class="sec" data-scroll-section>
