@@ -599,6 +599,18 @@ h1.hero-h1{
   border-radius:100px;
 }
 
+/* ─── AI LIVE STATS ─────────────────────────── */
+.ai-live-stats{
+  margin-top:2.5rem;padding-top:1.8rem;
+  border-top:1px solid rgba(240,237,230,.05);
+  display:flex;gap:3rem;flex-wrap:wrap;
+}
+.ai-live-n{
+  font-family:var(--mf);font-size:.92rem;font-weight:700;
+  color:var(--green);letter-spacing:-.01em;line-height:1;margin-bottom:.3rem;
+}
+.ai-live-lbl{font-family:var(--mf);font-size:.44rem;letter-spacing:.14em;text-transform:uppercase;opacity:.25}
+
 /* ─── ROI SECTION (LIGHT) ──────────────────── */
 #roi-sec{
   background:
@@ -865,7 +877,11 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.5)}
   padding-top:1.5rem;
   border-top:1px solid rgba(240,237,230,.05);margin-top:2rem;
 }
-.bcard-read{font-family:var(--mf);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;opacity:.18}
+.bcard-read{
+  font-family:var(--mf);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;opacity:.18;
+  transition:opacity .2s,color .2s,letter-spacing .3s;
+}
+.bcard:hover .bcard-read{opacity:.75;color:var(--orange);letter-spacing:.18em}
 .bcard-date{font-family:var(--mf);font-size:.56rem;opacity:.12}
 
 /* ─── TESTIMONIALS — CAROUSEL ────────────── */
@@ -2007,6 +2023,11 @@ footer{
           <div class="feat"><div class="feat-ic">🔬</div><div><div class="feat-name">Chlorophyll Sentiment</div><div class="feat-sub">Green = growth. Yellow = fire your CFO.</div></div><div class="feat-tag">Beta</div></div>
           <div class="feat"><div class="feat-ic">🌱</div><div><div class="feat-name">Root Cause Analysis</div><div class="feat-sub">Literally. We look at the roots. It works.</div></div><div class="feat-tag">Live</div></div>
           <div class="feat"><div class="feat-ic">📊</div><div><div class="feat-name">Leaf-to-Stem KPI</div><div class="feat-sub">The one metric that correlates with revenue</div></div><div class="feat-tag">Patent Pending</div></div>
+        </div>
+        <div class="ai-live-stats rv">
+          <div><div class="ai-live-n"><span class="cta-live-dot" style="width:5px;height:5px;display:inline-block;vertical-align:middle;margin-right:.4em"></span><span id="al-leaves">2,847,391</span></div><div class="ai-live-lbl">Leaves analyzed today</div></div>
+          <div><div class="ai-live-n"><span id="al-droop">47</span></div><div class="ai-live-lbl">Droops detected this hour</div></div>
+          <div><div class="ai-live-n">14,000<span style="font-size:.55em;opacity:.5">/ms</span></div><div class="ai-live-lbl">Data points per leaf</div></div>
         </div>
       </div>
     </div>
@@ -4746,6 +4767,25 @@ function closeMob(){
   if(menu)menu.classList.remove('on');
   document.body.style.overflow='';
 }
+
+// AI SECTION LIVE STATS
+(function(){
+  let leaves=2847391;
+  const lEl=document.getElementById('al-leaves');
+  const dEl=document.getElementById('al-droop');
+  let droops=47;
+  if(lEl){
+    setInterval(()=>{
+      leaves+=Math.floor(Math.random()*847)+200;
+      lEl.textContent=leaves.toLocaleString();
+    },1100);
+  }
+  if(dEl){
+    setInterval(()=>{
+      if(Math.random()>.65){droops++;dEl.textContent=droops;}
+    },3200);
+  }
+})();
 
 // HERO CLICK PARTICLE BURST
 (function(){
