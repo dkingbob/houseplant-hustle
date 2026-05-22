@@ -2538,7 +2538,10 @@ footer{
       <div class="f-potd-bio" id="f-potd-bio">Trails indefinitely. Surpassed its KPIs in Q2 2024. Currently managing a small team of cuttings.</div>
     </div>
   </div>
-  <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real. HHPL listed on NASDAQ Greenhouse Exchange. Certified by Gerald (he's a fern). This is satire.</div>
+  <div style="display:flex;flex-direction:column;gap:.4rem">
+    <div class="cta-live-row" style="margin:0;font-size:.48rem;opacity:.3"><span class="cta-live-dot"></span><span id="f-online">8</span> people reading this right now</div>
+    <div class="f-copy">© 2026 Houseplant Hustle Inc. All fronds reserved. Nothing here is real. HHPL listed on NASDAQ Greenhouse Exchange. Certified by Gerald (he's a fern). This is satire.</div>
+  </div>
 </footer>
 
 </div><!-- /loco-container -->
@@ -4796,6 +4799,18 @@ function closeMob(){
   if(menu)menu.classList.remove('on');
   document.body.style.overflow='';
 }
+
+// FOOTER ONLINE COUNT
+(function(){
+  const el=document.getElementById('f-online');
+  if(!el)return;
+  let n=Math.floor(Math.random()*8)+5;
+  el.textContent=n;
+  setInterval(()=>{
+    n=Math.max(4,n+(Math.random()>.5?1:-1)*(Math.random()>.7?2:1));
+    el.textContent=n;
+  },6200);
+})();
 
 // AI SECTION LIVE STATS
 (function(){
