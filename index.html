@@ -1328,6 +1328,23 @@ footer{
 .spt-msg{font-family:var(--mf);font-size:.48rem;letter-spacing:.05em;opacity:.38}
 .spt-ts{font-family:var(--mf);font-size:.44rem;color:var(--orange);opacity:.7;margin-top:.2rem}
 
+/* ─── MARKET ALERT NOTIFICATION ──────────────── */
+#mkt-alert{
+  position:fixed;top:6rem;left:2rem;z-index:660;
+  background:var(--deep);border:1px solid rgba(224,120,48,.3);
+  border-radius:12px;padding:.9rem 1.3rem;max-width:260px;
+  display:flex;align-items:flex-start;gap:.8rem;
+  box-shadow:0 12px 36px rgba(0,0,0,.5);
+  transform:translateX(-130%);opacity:0;
+  transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .4s;
+  pointer-events:none;
+}
+#mkt-alert.show{transform:translateX(0);opacity:1}
+.mka-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem}
+.mka-label{font-family:var(--mf);font-size:.42rem;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);opacity:.7;margin-bottom:.25rem}
+.mka-msg{font-family:var(--df);font-size:.68rem;font-weight:700;line-height:1.3;margin-bottom:.2rem}
+.mka-sub{font-family:var(--tf);font-size:.6rem;opacity:.22;line-height:1.4}
+
 /* ─── MILESTONE ACHIEVEMENT TOAST ─────────────── */
 #ms-toast{
   position:fixed;top:6rem;right:2rem;z-index:660;
@@ -2074,6 +2091,13 @@ footer{
         <p class="team-bio">Grew 34 new leaves in Q3. Promoted over 14 humans. No complaints filed. He received a standing ovation at the last all-hands. He was not present. He was thriving.</p>
         <div class="team-tags"><span>Hypergrowth</span><span>Fenestrated Thinking</span></div>
       </div>
+      <div class="team-card">
+        <div class="team-av">🌾</div>
+        <div class="team-name">Vera Aloevera</div>
+        <div class="team-role">VP of Engineering · Aloe</div>
+        <p class="team-bio">Ships at night. Heals itself. Once pushed directly to production. The deploy was fine. No incident report. The plant did not blink. Runs on indirect light and spite.</p>
+        <div class="team-tags"><span>Infrastructure</span><span>No Downtime</span><span>Self-Healing</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -2553,6 +2577,16 @@ footer{
     <div class="spt-name" id="spt-name">Oliver T.</div>
     <div class="spt-msg" id="spt-msg">just joined the waitlist</div>
     <div class="spt-ts" id="spt-ts">2 seconds ago</div>
+  </div>
+</div>
+
+<!-- MARKET ALERT -->
+<div id="mkt-alert">
+  <div class="mka-icon">📈</div>
+  <div>
+    <div class="mka-label">HHPL Market Alert</div>
+    <div class="mka-msg" id="mka-msg">HHPL ▲ 12.4% — Gerald photosynthesised</div>
+    <div class="mka-sub">Nasdaq Greenhouse Exchange · Just now</div>
   </div>
 </div>
 
@@ -3936,6 +3970,30 @@ document.getElementById('btt').addEventListener('click',()=>{
   }
   setTimeout(showToast,8000);
   setInterval(showToast,14000);
+})();
+
+// HHPL MARKET ALERT
+(function(){
+  const el=document.getElementById('mkt-alert');
+  const msg=document.getElementById('mka-msg');
+  if(!el)return;
+  const alerts=[
+    'HHPL ▲ 12.4% — Gerald photosynthesised',
+    'HHPL ▲ 847% — Fern named TIME Person of the Year',
+    'HHPL ▼ 2.1% — Brenda denied a meeting (expected)',
+    'HHPL hits all-time high — Patricia unavailable for comment',
+    'HHPL ▲ 34% — Marcus grew 3 new fronds overnight',
+    'HHPL trading halted — Gerald moved to a sunnier window',
+  ];
+  let shown=false;
+  function showAlert(){
+    if(shown)return;shown=true;
+    const a=alerts[Math.floor(Math.random()*alerts.length)];
+    if(msg)msg.textContent=a;
+    el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'),5500);
+  }
+  setTimeout(showAlert,60000);
 })();
 
 // SCROLL MILESTONE ACHIEVEMENTS
